@@ -1,0 +1,209 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" href="style.css"><title>Statistical Tests for H1 & H3</title></head><body>
+
+<section class="cover">
+  <div class="kicker">Genomics Hackathon &middot; Methods Primer</div>
+  <h1>Statistical Tests for Hypotheses H1 &amp; H3</h1>
+  <div class="sub">Trend across ordered disease stages, and association between two per-cell scores &mdash; with the donor as the unit of inference</div>
+  <div class="rule"></div>
+  <div class="meta">
+    A teaching companion to the de-zonation analysis.<br>
+    H1: does the de-zonation score change <em>monotonically</em> across ordered stages?<br>
+    H3: do de-zonation and plasticity <em>go together</em>, after controlling for stage?<br><br>
+    Cohort: ~47 donors &middot; hepatocytes &middot; ordered disease stages<br>
+    Golden rule: <strong>the unit of inference is the donor, never the cell.</strong>
+  </div>
+</section>
+
+<section>
+<h2>0. The one rule that governs everything: the donor is the unit</h2>
+
+<p>Before any test, fix the most important idea. We have ~47 donors. Each donor contributes thousands of single cells, and from those cells we compute one summary per donor &mdash; a <span class="mono">de-zonation score</span>. The biological question ("does de-zonation track disease?") is a statement about <em>donors</em>, so the sample size that matters is <span class="mono">n &asymp; 47</span>, not the hundreds of thousands of cells.</p>
+
+<div class="box warn"><span class="lbl">Pitfall &mdash; Pseudoreplication</span>
+If you run a test on cell-level values (treating each cell as an independent observation), you inflate <span class="mono">n</span> from ~47 to ~500,000. Cells from the same donor are <em>not</em> independent &mdash; they share that donor's genetics, treatment, batch and biology. The p-value will be absurdly tiny and <strong>meaningless</strong>. This error is called pseudoreplication. Every test in this primer is run on <strong>one number per donor</strong>.</p></div>
+
+<div class="box key"><span class="lbl">The two-step pattern</span>
+(1) Collapse cells &rarr; one score per donor. (2) Run the donor-level test below. Cell-level structure (like score-vs-score correlation <em>within</em> a donor) is the exception in Part B, and even there we aggregate back up to the donor.</div>
+
+<p>With that nailed down, H1 asks about a <em>trend</em> over an <em>ordered</em> axis, and H3 asks about an <em>association</em> between two scores. Different shapes of question, different tools.</p>
+
+</section>
+
+<!-- ============================ PART A ============================ -->
+<section class="pagebreak">
+<h2>Part A &mdash; H1: does the score change monotonically across ordered stages?</h2>
+
+<div class="box recap"><span class="lbl">Setup</span>
+Each donor has (a) a stage label that is <em>ordered</em> (e.g. healthy &rarr; early &rarr; mid &rarr; advanced) and (b) one de-zonation score. We are not asking "are the groups different?" but the sharper "does the score <em>rise (or fall) in step</em> with stage?" Ordering is information &mdash; tests that use it are more powerful than tests that ignore it.</div>
+
+<h3>A1. Spearman rank correlation &rho;</h3>
+
+<p><strong>Intuition.</strong> Pearson's correlation measures straight-line association between two numbers. But disease stage is an <em>order</em>, not a real-valued quantity, and we only care that the score goes <em>up</em> (or <em>down</em>) with stage &mdash; not that it does so linearly. Spearman's &rho; is exactly Pearson's correlation computed on the <em>ranks</em> instead of the raw values. By replacing each value with its rank, it measures any <em>monotone</em> relationship and stops caring about the exact spacing or about outliers.</p>
+
+<div class="box newc"><span class="lbl">Definition</span>
+Rank the stage values and rank the scores. <span class="mono">&rho;</span> = Pearson correlation between those two rank vectors. When there are no ties, this simplifies to the famous shortcut:</div>
+
+<div class="eq">&rho; = 1 &minus; ( 6 &middot; &Sigma; d&sup2; ) / ( n (n&sup2; &minus; 1) )</div>
+
+<p>where <span class="mono">d<sub>i</sub></span> is the difference between the two ranks of donor <span class="mono">i</span>, and <span class="mono">n</span> is the number of donors.</p>
+
+<ul>
+<li><strong>Sign:</strong> <span class="mono">&rho; &gt; 0</span> &rarr; score tends to rise with stage; <span class="mono">&rho; &lt; 0</span> &rarr; it falls.</li>
+<li><strong>Magnitude:</strong> <span class="mono">|&rho;| = 1</span> is a perfect monotone relation (ranks agree exactly); <span class="mono">&rho; = 0</span> means no monotone trend.</li>
+<li><strong>Significance:</strong> test <span class="mono">H0: &rho; = 0</span>. For our <span class="mono">n &asymp; 47</span> the statistic <span class="mono">t = &rho;&radic;((n&minus;2)/(1&minus;&rho;&sup2;))</span> is compared to a <span class="mono">t</span>-distribution with <span class="mono">n&minus;2</span> df; for small <span class="mono">n</span> use exact/permutation p-values.</li>
+<li><strong>Ties:</strong> the <span class="mono">1 &minus; 6&Sigma;d&sup2;/&hellip;</span> shortcut assumes no ties. With ties (stages are heavily tied!), use the general "Pearson-on-ranks" definition with <em>mid-ranks</em> &mdash; this is what <span class="mono">scipy.stats.spearmanr</span> does automatically.</li>
+</ul>
+
+<div class="box key"><span class="lbl">When to prefer Spearman over Pearson</span>
+Prefer Spearman when the x-axis is ordinal (stages), when the relationship may be monotone-but-curved, when there are outliers, or when scores are not normally distributed &mdash; all true here. Pearson would impose linearity and equal spacing on stages we have no right to assume.</div>
+
+<h4>Worked mini-example (6 donors)</h4>
+<p>Suppose six donors at stages 1&ndash;6 (already ordered) have de-zonation scores:</p>
+<table>
+<tr><th>Donor</th><th>Stage (rank x)</th><th>Score</th><th>Score rank (y)</th><th>d = x&minus;y</th><th>d&sup2;</th></tr>
+<tr><td>A</td><td>1</td><td>0.12</td><td>1</td><td>0</td><td>0</td></tr>
+<tr><td>B</td><td>2</td><td>0.20</td><td>2</td><td>0</td><td>0</td></tr>
+<tr><td>C</td><td>3</td><td>0.18</td><td>3<span class="small"> (note: 0.18&lt;0.20? see below)</span></td><td>0</td><td>0</td></tr>
+<tr><td>D</td><td>4</td><td>0.31</td><td>4</td><td>0</td><td>0</td></tr>
+<tr><td>E</td><td>5</td><td>0.29</td><td>5</td><td>0</td><td>0</td></tr>
+<tr><td>F</td><td>6</td><td>0.40</td><td>6</td><td>0</td><td>0</td></tr>
+</table>
+<p>To make the ranks honest, sort the scores: 0.12, 0.18, 0.20, 0.29, 0.31, 0.40 &rarr; their owners are A, C, B, E, D, F, giving score-ranks A=1, B=3, C=2, D=5, E=4, F=6. Now:</p>
+<div class="eq">d&sup2; = (1&minus;1)&sup2;+(2&minus;3)&sup2;+(3&minus;2)&sup2;+(4&minus;5)&sup2;+(5&minus;4)&sup2;+(6&minus;6)&sup2; = 0+1+1+1+1+0 = 4</div>
+<div class="eq">&rho; = 1 &minus; (6&middot;4)/(6&middot;(36&minus;1)) = 1 &minus; 24/210 = 1 &minus; 0.114 = <strong>0.886</strong></div>
+<p>A strong positive monotone trend: scores rise with stage, with two minor local swaps (B/C and D/E) costing us a little from a perfect 1.0.</p>
+
+<h3>A2. Jonckheere&ndash;Terpstra test (the dedicated ordered-alternative test)</h3>
+
+<p><strong>Intuition.</strong> Spearman treats stage as a single ranked variable. The Jonckheere&ndash;Terpstra (JT) test is purpose-built for the case where donors fall into <span class="mono">k &ge; 3</span> <em>ordered groups</em> (the stages) and you want to test the directional alternative "medians don't decrease as you walk along the order." It is the ordered cousin of Kruskal&ndash;Wallis.</p>
+
+<div class="box newc"><span class="lbl">Hypotheses</span>
+<span class="mono">H0:</span> all <span class="mono">k</span> stage distributions are identical.<br>
+<span class="mono">H1:</span> the medians are non-decreasing along the pre-specified order, with at least one strict increase: <span class="mono">M<sub>1</sub> &le; M<sub>2</sub> &le; &hellip; &le; M<sub>k</sub></span>.</div>
+
+<p><strong>How the J statistic is built.</strong> For every <em>ordered pair</em> of stages <span class="mono">(i &lt; j)</span>, count how often a value from the later stage exceeds a value from the earlier stage &mdash; this is exactly the Mann&ndash;Whitney <span class="mono">U</span> count for that pair (ties count &frac12;). Sum these counts over all <span class="mono">k(k&minus;1)/2</span> ordered pairs:</p>
+<div class="eq">J = &Sigma;<sub>i&lt;j</sub> U<sub>ij</sub>,&nbsp;&nbsp; U<sub>ij</sub> = #{ x &lt; y : x in stage i, y in stage j }</div>
+<p>If the score systematically climbs with stage, later-stage values beat earlier-stage values most of the time, so every <span class="mono">U<sub>ij</sub></span> is large and <span class="mono">J</span> is large.</p>
+
+<div class="box key"><span class="lbl">Why JT beats Kruskal&ndash;Wallis here</span>
+Kruskal&ndash;Wallis only asks "are the groups different <em>somewhere</em>?" &mdash; it spreads its power across all possible patterns of difference. JT spends all its power on the <em>one</em> pattern we predicted in advance (a march in stage order). When that a-priori ordering is real, JT detects it with a smaller sample. The cost: if the true effect is non-monotone (e.g. up then down), JT can miss it while KW would not.</div>
+
+<p><strong>Significance.</strong> Under <span class="mono">H0</span>, <span class="mono">J</span> has a known mean and variance, so a normal approximation gives <span class="mono">z = (J &minus; E[J]) / &radic;Var(J)</span> and a one-sided p-value. For small/tied samples, prefer an exact or <strong>permutation</strong> null (shuffle stage labels, recompute <span class="mono">J</span> many times). Use a one-sided test &mdash; we have a directional hypothesis.</p>
+
+<h3>A3. Donor-level bootstrap confidence interval on the trend</h3>
+
+<p><strong>Intuition.</strong> A p-value says "is the trend distinguishable from zero?" A confidence interval says "how big is it, and how sure are we?" The bootstrap builds a CI by simulating the sampling variability directly: pretend our 47 donors <em>are</em> the population, draw new pseudo-cohorts from them, and watch how much <span class="mono">&rho;</span> wobbles.</p>
+
+<pre>BOOTSTRAP CI for the trend statistic (rho)
+inputs : donors = [(stage_i, score_i)] for i in 1..n     # n ~ 47
+         B = 10000                                         # resamples
+for b in 1..B:
+    sample n donors WITH REPLACEMENT from `donors`         # resample DONORS
+    rho_b = spearman(stage, score) on the resampled set
+    store rho_b
+CI = ( percentile(rho_b, 2.5) , percentile(rho_b, 97.5) ) # 95% interval
+report rho_observed and CI</pre>
+
+<div class="box warn"><span class="lbl">Resample donors, not cells</span>
+The resampling unit must match the inference unit. If you bootstrapped <em>cells</em>, you would model only within-donor noise and again commit pseudoreplication &mdash; the CI would be far too narrow. Resampling whole donors captures donor-to-donor variability, which is the variability our conclusion actually depends on. If the 95% CI excludes 0, the trend is "significant" at the 5% level in the bootstrap sense, and the CI width communicates precision honestly.</div>
+
+<h3>A4. Permutation / label-shuffle negative control</h3>
+
+<p><strong>Intuition.</strong> How large would <span class="mono">&rho;</span> (or <span class="mono">J</span>) look <em>by chance</em> if stage and score had nothing to do with each other? Break the link on purpose: keep the scores, randomly reassign the stage labels across donors, and recompute the statistic. Repeat thousands of times to build the <em>empirical null distribution</em> &mdash; the spread of values produced by pure chance.</p>
+
+<pre>PERMUTATION p-value (label-shuffle null)
+observed = spearman(stage, score)            # real labels
+null = []
+for p in 1..P:                               # P = 10000
+    stage_shuffled = random permutation of stage labels across donors
+    null.append( spearman(stage_shuffled, score) )
+p_value = ( 1 + #{ |null| >= |observed| } ) / (P + 1)   # two-sided; "+1" avoids p=0</pre>
+
+<div class="box key"><span class="lbl">What a valid negative control proves</span>
+Two things. (1) It gives an <em>assumption-free</em> p-value &mdash; no normality, no large-<span class="mono">n</span> approximation, just the data's own labels. (2) Run on a quantity that <em>should</em> be null (e.g. shuffled labels, or a score known to be unrelated), it confirms your pipeline does <strong>not</strong> manufacture signal from noise: the observed-on-shuffled statistic should land in the bulk of the null, p &asymp; 0.5. A pipeline that "finds" a trend in shuffled data is broken.</div>
+
+</section>
+
+<!-- ============================ PART B ============================ -->
+<section class="pagebreak">
+<h2>Part B &mdash; H3: do de-zonation and plasticity go together, controlling for stage?</h2>
+
+<div class="box recap"><span class="lbl">Setup</span>
+Now two per-cell scores: <span class="mono">de-zonation</span> and <span class="mono">plasticity</span>. H3 asks whether they are associated. The trap: both scores tend to rise with disease stage, so a naive pooled correlation will look positive <em>even if they are unrelated within any single donor</em>. The whole job of Part B is to remove that confound.</div>
+
+<h3>B1. Mann&ndash;Whitney U / Wilcoxon rank-sum test</h3>
+
+<p><strong>Intuition.</strong> Split cells (or donors) into two groups &mdash; say <em>de-zonated</em> vs <em>zonated</em> &mdash; and ask "do plasticity values in one group tend to be larger?" Pool all values, rank them from low to high, and check whether one group hogs the high ranks. No means, no normality &mdash; just "who tends to outrank whom."</p>
+
+<div class="box newc"><span class="lbl">The U statistic</span>
+For groups of size <span class="mono">n<sub>1</sub>, n<sub>2</sub></span>, count every pair (one from each group) where the group-1 value exceeds the group-2 value (ties = &frac12;): that count is <span class="mono">U<sub>1</sub></span>. Equivalently, from the rank-sum <span class="mono">R<sub>1</sub></span> of group 1:</div>
+<div class="eq">U<sub>1</sub> = R<sub>1</sub> &minus; n<sub>1</sub>(n<sub>1</sub>+1)/2,&nbsp;&nbsp; U<sub>1</sub> + U<sub>2</sub> = n<sub>1</sub> n<sub>2</sub></div>
+
+<ul>
+<li><strong>No normality assumption</strong> &mdash; it works on ranks, robust to skew and outliers.</li>
+<li><strong>Ties:</strong> use mid-ranks and a tie-corrected variance for the normal approximation.</li>
+<li><strong>Relation to AUC:</strong> <span class="mono">AUC = U<sub>1</sub> / (n<sub>1</sub> n<sub>2</sub>)</span> &mdash; the probability a random group-1 value outranks a random group-2 value. This is the ROC area exactly.</li>
+<li><strong>Effect size (rank-biserial):</strong> <span class="mono">r = 2&middot;AUC &minus; 1 = (U<sub>1</sub> &minus; U<sub>2</sub>)/(n<sub>1</sub> n<sub>2</sub>)</span>, ranging &minus;1&hellip;+1. Always report it beside the p-value.</li>
+</ul>
+
+<h4>Worked mini-example</h4>
+<p>Plasticity in de-zonated donors: <span class="mono">{7, 9, 12}</span>; in zonated donors: <span class="mono">{4, 6, 8}</span>. Pool and rank: 4(1), 6(2), 7(3), 8(4), 9(5), 12(6). Rank-sum of de-zonated group <span class="mono">R<sub>1</sub> = 3+5+6 = 14</span>.</p>
+<div class="eq">U<sub>1</sub> = 14 &minus; 3&middot;4/2 = 14 &minus; 6 = 8,&nbsp;&nbsp; U<sub>2</sub> = 3&middot;3 &minus; 8 = 1</div>
+<div class="eq">AUC = 8/9 = 0.89,&nbsp;&nbsp; rank-biserial r = 2&middot;0.89 &minus; 1 = +0.78</div>
+<p>De-zonated donors almost always out-rank zonated ones on plasticity &mdash; a large positive effect (with <span class="mono">n=3</span> per group the p-value is, of course, not significant; effect size and p tell different stories).</p>
+
+<h3>B2. Within-stratum / within-donor correlation</h3>
+
+<p><strong>Intuition &mdash; the confound, drawn out.</strong> Imagine plasticity and de-zonation are <em>independent</em> within every donor, but both drift upward as disease advances. Pool all cells across donors and you get a strong positive correlation &mdash; entirely from the shared stage trend, a textbook <em>Simpson's paradox</em> / confounding. The fix: never pool. Measure the correlation <em>inside</em> each donor (or each stage stratum), where stage is held fixed, then aggregate those clean within-donor numbers.</p>
+
+<pre>WITHIN-DONOR correlation, then aggregate
+for each donor d:
+    cells_d = all cells of donor d                  # stage is constant here
+    rho_d = spearman(dezonation, plasticity) on cells_d
+summary:
+    mean_rho   = mean(rho_d over donors)            # average within-donor assoc.
+    frac_pos   = fraction of donors with rho_d > 0  # consistency / direction
+    test       = sign test or Wilcoxon signed-rank on {rho_d} vs 0   # n ~ 47</pre>
+
+<div class="box key"><span class="lbl">Why this works</span>
+Within one donor, stage is constant &mdash; it cannot drive a spurious correlation. Each donor gives one honest <span class="mono">&rho;<sub>d</sub></span>. We then have ~47 such numbers and test whether their <em>center</em> sits above zero. Reporting both <span class="mono">mean &rho;</span> (strength) and <span class="mono">% donors with &rho;&gt;0</span> (consistency) is far more convincing than a single pooled coefficient.</div>
+
+<h3>B3. Linear model with covariates (OLS)</h3>
+
+<p><strong>Intuition.</strong> The within-donor recipe above is the "by hand" version of regression. A single linear model can absorb the stage and donor effects as covariates and report the de-zonation&ndash;plasticity link that <em>remains</em> after they are removed:</p>
+<div class="eq">plasticity ~ de_zonation + C(stage) + C(donor)</div>
+
+<ul>
+<li><span class="mono">C(stage)</span> and <span class="mono">C(donor)</span> are categorical (dummy) terms &mdash; they soak up each stage's and each donor's baseline plasticity.</li>
+<li>The coefficient <span class="mono">&beta;</span> on <span class="mono">de_zonation</span> is the association <strong>after removing</strong> stage and donor effects: "holding stage and donor fixed, a one-unit rise in de-zonation moves plasticity by &beta;."</li>
+<li>Its p-value (and CI) test <span class="mono">H0: &beta; = 0</span> &mdash; no partial association.</li>
+</ul>
+
+<div class="box key"><span class="lbl">The regression analogue of "test within donor/stage"</span>
+Including <span class="mono">C(donor)</span> means each comparison is made <em>within</em> a donor &mdash; mathematically the same idea as B2, but pooled into one estimate with one p-value. Watch the caveats: OLS assumes a roughly linear, additive relationship and well-behaved residuals; with cell-level rows you still owe an honest treatment of the donor clustering (the <span class="mono">C(donor)</span> term, or a mixed-effects model with a donor random effect, or clustered standard errors) &mdash; otherwise the de_zonation p-value is over-confident, pseudoreplication in regression clothing.</div>
+
+<h3>B4. Shared section &mdash; rank-based vs parametric, multiple testing, effect sizes</h3>
+
+<table>
+<tr><th>Aspect</th><th>Rank-based (Spearman, MWU, JT)</th><th>Parametric (Pearson, t-test, OLS)</th></tr>
+<tr><td>Assumes normality?</td><td>No</td><td>Yes (residuals)</td></tr>
+<tr><td>Robust to outliers?</td><td>Yes</td><td>No</td></tr>
+<tr><td>Uses exact spacing of values?</td><td>No (only order)</td><td>Yes</td></tr>
+<tr><td>Handles covariates?</td><td>Awkwardly</td><td>Naturally (regression)</td></tr>
+<tr><td>Power when assumptions hold</td><td>Slightly lower</td><td>Highest</td></tr>
+</table>
+
+<p><strong>Rule of thumb here:</strong> default to rank-based for the headline tests (ordinal stages, skewed scores, small <span class="mono">n</span>), and use OLS/mixed models when you need to adjust for several covariates at once. Report both when feasible &mdash; agreement is reassuring.</p>
+
+<div class="box warn"><span class="lbl">Multiple testing &mdash; BH-FDR</span>
+If you test many signatures / many scores, the chance of at least one false positive explodes. Control the <em>false discovery rate</em> with Benjamini&ndash;Hochberg: sort the <span class="mono">m</span> p-values <span class="mono">p<sub>(1)</sub>&le;&hellip;&le;p<sub>(m)</sub></span>, find the largest <span class="mono">k</span> with <span class="mono">p<sub>(k)</sub> &le; (k/m)&middot;q</span> (e.g. <span class="mono">q=0.05</span>), and declare tests 1..k significant. BH-FDR is the right tool for screening many features &mdash; less conservative than Bonferroni, and it controls the expected proportion of false discoveries among your hits.</div>
+
+<div class="box key"><span class="lbl">Always report effect sizes beside p-values</span>
+A p-value answers "could this be chance?" &mdash; not "is it big enough to matter?" With ~47 donors a tiny, biologically trivial effect can be significant, and a real effect can miss significance. So pair every p with its effect size: <span class="mono">&rho;</span> for Spearman, rank-biserial <span class="mono">r</span> or AUC for Mann&ndash;Whitney, <span class="mono">&beta;</span> (with CI) for the linear model. Effect size + CI + p, together, is the honest report.</div>
+
+<div class="box recap"><span class="lbl">One-page recap</span>
+<strong>H1 (trend, ordered):</strong> Spearman &rho; for monotone trend; Jonckheere&ndash;Terpstra for the ordered-groups alternative; donor-level bootstrap for the CI; label-shuffle permutation as the negative control. <strong>H3 (association, controlled):</strong> Mann&ndash;Whitney for two-group rank comparison; within-donor correlation then aggregate to defeat the stage confound; OLS <span class="mono">plasticity ~ de_zonation + C(stage) + C(donor)</span> for the partial association. <strong>Everywhere:</strong> donor = unit of inference, BH-FDR across many tests, effect sizes beside p-values.</div>
+
+</section>
+
+</body></html>

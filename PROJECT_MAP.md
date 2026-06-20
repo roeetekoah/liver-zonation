@@ -1,6 +1,6 @@
 # Project map — Spatial Degradation of Hepatocyte Zonation
 
-The index to this folder: what we have (data, code, results, deliverables) and what's left.
+The index to this folder: what we have (data, code, signatures, results, deliverables) and what's left.
 
 ---
 
@@ -8,87 +8,107 @@ The index to this folder: what we have (data, code, results, deliverables) and w
 
 ```
 Hackathon/
-├── PROJECT_MAP.md            ← this file (the index)
-├── papers/                   ← the source paper PDFs
-├── data/                     ← all raw inputs (large)
-├── docs/                     ← deliverables & write-ups (primer, deck, email, …)
-├── analysis/                 ← all working code + signatures + derived data + results
-└── _archive_DELETE_ME/       ← intermediates & old drafts — safe to delete
+├── PROJECT_MAP.md       ← this file (the index)
+├── GIT_SETUP.md         ← uni↔home + 2-person git workflow
+├── papers/              ← the two source paper PDFs
+├── data/
+│   ├── raw/             ← original downloads (.rds, .mat, supp tables, P2 repo) — large, git-ignored
+│   └── processed/       ← Python-native conversions the pipeline actually reads
+├── signatures/          ← pericentral/periportal gene lists (core / expanded / sensitivity) + README
+├── src/                 ← ALL code (was "analysis/")
+│   ├── prep/            ← one-time conversions (R + .mat→.npz)
+│   ├── steps/           ← per-step stubs (step2…step9) — the hackathon scaffold
+│   ├── plotting/        ← plotting machinery, one function per artefact
+│   ├── pipeline.py      ← integrated donor-level reference (smoke-tested)
+│   ├── classifier.py, run_all.py, run_p2_validation.py, config.py
+│   └── CODING_PLAN.md, README.md, build_deck_final.js
+├── results/             ← figures/ + tables/ (pipeline output target) + feasibility logs
+├── docs/                ← deliverables & write-ups (primer, proposal deck, email, work-division)
+├── presentation/        ← final-talk plan + starter .pptx + figure assets
+└── _archive_DELETE_ME/  ← junk — safe to delete (OneDrive blocks deletion from outside)
 ```
 
-> OneDrive blocks file *deletion* from outside, so junk was moved into **`_archive_DELETE_ME/`** rather than deleted. **Delete that whole folder yourself whenever you like.**
+> Why the rename: `analysis/` had become a "god directory" (code + data + results mixed).
+> Code now lives in `src/`, derived data in `data/processed/`, outputs in `results/`.
 
 ---
 
-## papers/
-- `s41586-024-07465-2.pdf` — Paper 1 (Gribben/Vallier 2024, the disease cohort)
-- `s41586-026-10377-y.pdf` — Paper 2 (Yakubovsky/Itzkovitz 2026, the healthy ruler)
-
-## data/  (raw inputs — keep)
+## data/
+**`data/raw/`** (keep, git-ignored, large):
 | File | What it is |
 |---|---|
-| `GSE202379_SeuratObject_AllCells.rds(.gz)` | Paper 1 Seurat object — source of the hepatocytes |
-| `combined_scRNAseq_atlas_M5M6M7M8.mat` | Paper 2 snRNA-seq atlas — classifier training cells |
-| `zon_struct_all_full.mat` | Paper 2 zonation reconstruction |
-| `41586_2026_10377_MOESM1_ESM.zip`, `2025-01-01424E-s1/` | Paper 2 supplementary tables (zonated genes) |
-| `Human-liver/` | Paper 2 GitHub repo (landmark CSVs + zonation scripts) |
+| `GSE202379_SeuratObject_AllCells.rds(.gz)` | Paper 1 Seurat object (disease cohort) |
+| `combined_scRNAseq_atlas_M5M6M7M8.mat` | Paper 2 snRNA-seq atlas → classifier training |
+| `zon_struct_all_full.mat` | Paper 2 zonation reconstruction (positive control) |
+| `41586_2026_10377_MOESM1_ESM.zip`, `2025-01-01424E-s1/` | Paper 2 supplementary tables |
+| `Human-liver/` | Paper 2 GitHub repo (landmark CSVs + MATLAB zonation scripts) |
 
-## docs/  (deliverables & write-ups)
-| File | What it is |
-|---|---|
-| `Spatial_Degradation_of_Hepatocyte_Zonation.pdf` | **the primer / proposal** (22 pp) — read this first |
-| `zonation_v4.html` | source of the primer PDF (edit → re-render) |
-| `Zonation_Hackathon_Deck.pptx` (+ `.pdf`) | the slide deck |
-| `email_to_professor.md` | green-light request (fill in `[names]`) |
-| `research_question_options.md` | the original 6 candidate questions (history) |
+**`data/processed/`** (what the pipeline reads — built by `src/prep/`):
+- `paper1/` — `counts.mtx` (30,117 genes × 69,426 hepatocytes), `genes.txt`, `barcodes.txt`, `cell_metadata.csv`, `metadata_all_cells.csv`.
+- `paper2_train.npz` — zone-labelled Paper 2 nuclei (classifier training set).
 
----
+`data/README.md` explains the raw→processed mapping in detail.
 
-## analysis/  (code + derived data + results)
+## signatures/  (artifact A1)
+Four families per zone (see `signatures/README.md`):
+- `*_paper2_landmark.txt` — **the EXACT Paper 2 landmark set (extracted verbatim) → the pipeline's default baseline.**
+- `*_core.txt` — curated, biology-informed anchors (derived).
+- `*_expanded.txt` — landmark ∪ core ∪ top-ranked genes from Paper 2's snRNA table (≈100).
+- `periportal_sensitivity.txt` — inflammation-linked genes removed (H1 robustness check).
+PCK2 is placed **pericentrally** (human-specific, per Paper 2). `config.py` defaults to `paper2_landmark`.
 
-### Derived data — `analysis/paper1/`
-`counts.mtx` (30,117 genes × 69,426 hepatocytes), `genes.txt`, `barcodes.txt`,
-`cell_metadata.csv` (cell_type + stage), `metadata_all_cells.csv` (incl. library sizes).
-
-### Signatures (artifact A1)
-`pericentral_genes.txt`, `periportal_genes.txt` — 20 + 20 landmark genes.
-
-### Code
-| Script | Purpose | Status |
+## src/  (code)
+| Path | Purpose | Status |
 |---|---|---|
-| `01_extract_paper1_hepatocytes.R` | R: Seurat `.rds` → `paper1/` (auto-finds the `.rds` under `data/`) | ✅ run |
-| `convert_paper2_mat.py` | **Phase 0**: Paper 2 `.mat` → `paper2_train.npz` (Python cache for the classifier) | ready (run once) |
-| `pipeline.py` | **Main** Steps 2–8: load→normalize→score→validate→ruler→collapse→DE+FDR→plasticity | ✅ smoke-tested |
-| `classifier_step.py` | Step 4b: zone classifier → entropy de-zonation metric (uses `paper2_train.npz` if present) | scaffold |
+| `config.py` | central paths (data/processed, signatures, results) | ✅ |
+| `prep/01_extract_paper1_hepatocytes.R` | Seurat `.rds` → `data/processed/paper1/` | ✅ run |
+| `prep/02_convert_paper2_mat.py` | Paper 2 `.mat` → `paper2_train.npz` | ✅ ready (run once) |
+| `pipeline.py` | integrated Steps 2–8, donor-level | ✅ smoke-tested |
+| `classifier.py` | Step 4b zone classifier → entropy | scaffold |
+| `steps/step2…step9_*.py` | per-step stubs (signature + algorithm + acceptance) | scaffold |
+| `plotting/artefacts.py` | one plotting fn per artefact (A1,A4,A5,A5b,A6,A7,A8) | scaffold |
+| `run_all.py` | driver (Steps 2–8 + classifier) | ✅ ready |
 | `run_p2_validation.py` | Paper-2 positive control | ✅ run |
-| `run_all.py` | driver — runs Steps 2–8 in order (+ classifier if `RUN_CLASSIFIER=True`) | ready |
-| `build_deck_final.js` | regenerates the slide deck | ✅ |
-| `CODING_PLAN.md` | step-by-step build order (Phases 0–10) with acceptance checks | — |
-| `README_pipeline.md` | how to run, order, memory notes | — |
+| `CODING_PLAN.md` | build order, Phases 0–10, acceptance checks | — |
 
-### Results so far (feasibility only)
-`p2_validation.png` (Paper 2 control), `feasibility_fig.png` (Paper 1 collapse), `RESULTS.txt`, `meta_preview.txt`.
-These are sanity checks — the real analysis happens during the hackathon. `out/` is the pipeline's output target.
+## results/
+`figures/` (`p2_validation.png` = positive control, `feasibility_fig.png`), `tables/` (pipeline output target), `RESULTS.txt`, `meta_preview.txt`.
+
+## docs/  (deliverables)
+| File | What it is |
+|---|---|
+| `Spatial_Degradation_of_Hepatocyte_Zonation.pdf` | **the primer / proposal** — read first |
+| `zonation_v8.html` | current source of the primer (edit → re-render) |
+| `WORK_DIVISION.md` | who does what (Roee / Shira) |
+| `Zonation_Hackathon_Deck.pptx` (+ `.pdf`) | the slide deck |
+| `email_to_professor.md`, `research_question_options.md`, `ORIGINAL_PLAN_AND_CHANGES.md` | email + history |
+
+## presentation/  (the final ~15-min talk)
+| File | What it is |
+|---|---|
+| `PRESENTATION_PLAN.md` | slide map: pre-made vs stub, 15-min arc, post-hackathon fill checklist |
+| `Zonation_Final_Presentation.pptx` (+ `.pdf`) | **starter deck** — green slides done; results slides (9–11), conclusions, some backups are labeled placeholders to fill after the hackathon |
+| `assets/` | figure PNGs (rendered from the primer) + the real `p2_validation.png` |
 
 ---
 
 ## STATUS — done vs. left
 
-### Done (prep)
-- ✅ Question locked + motivated; primer, deck, email written.
-- ✅ All data downloaded; Paper 1 hepatocytes extracted; signatures built.
-- ✅ Pipeline written + smoke-tested; method validated on real Paper 2 data.
-- ✅ **Plumbing complete**: `run_all.py` driver + `convert_paper2_mat.py` (Phase 0).
+### Done (prep) — see the primer's "What we've already built" page
+- ✅ Question locked + motivated; primer, deck, email, work-division written.
+- ✅ Data downloaded **and converted** to `data/processed/` (Paper 1 hepatocytes; Paper 2 training nuclei).
+- ✅ Signatures built (3 tiers, revised).
+- ✅ Pipeline written + smoke-tested (donor-level); method validated on real Paper 2 (positive control).
+- ✅ Repo restructured; per-step stubs + plotting machinery + `run_all` driver in place.
 
 ### Left — prep before Sunday
-1. Run `python analysis/convert_paper2_mat.py` once → `paper2_train.npz`.
-2. Send the green-light email (`docs/email_to_professor.md`, fill in names).
+1. Run `python src/prep/02_convert_paper2_mat.py` once (if `paper2_train.npz` not present).
+2. Send the green-light email (`docs/email_to_professor.md`).
 
 ### Left — the hackathon itself (do live)
-3. Step 3 harmonize → Step 4 score + classifier (set `RUN_CLASSIFIER=True`).
-4. Steps 5 / 5b validate + ruler battery — **resolve the weak pericentral arm** seen in feasibility.
-5. Step 6 collapse curve (donor bootstrap + ordered-trend test, H1).
-6. Step 7 zone DE + BH-FDR (H2); Step 8 plasticity link (H3).
-7. Optional bonus (Paper 3 enrichment); figures, write-up, presentation.
+3. Step 3 harmonize → Step 4 score + classifier.
+4. Steps 5 / 5b validate + ruler battery — resolve the weak pericentral arm.
+5. Step 6 collapse (H1); Step 7 zone DE + FDR (H2); Step 8 plasticity (H3).
+6. Optional bonus (Paper 3 enrichment); figures, write-up, presentation.
 
-Full detail + acceptance checks: `analysis/CODING_PLAN.md`. Recommendation: do the *science* live; only the (now-finished) plumbing was worth pre-building.
+Full detail + acceptance checks: `src/CODING_PLAN.md`. Split of labour: `docs/WORK_DIVISION.md`.

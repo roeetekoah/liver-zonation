@@ -1,0 +1,16 @@
+\contentsline {section}{\numberline {1}Where this material comes from}{1}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Recap: how we turn a tissue into numbers (from Lecture 1)}{1}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Single-cell RNA-seq, in one paragraph}{2}{subsection.1.2}%
+\contentsline {section}{\numberline {2}Why position matters --- what dissociation destroys}{2}{section.2}%
+\contentsline {subsection}{\numberline {2.1}The dissociated view}{2}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}The spatial view}{2}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}What only the spatial view can show}{2}{subsection.2.3}%
+\contentsline {section}{\numberline {3}The spatial methods and their trade-offs}{3}{section.3}%
+\contentsline {paragraph}{Sequencing-based (capture \& sequence).}{3}{section*.2}%
+\contentsline {paragraph}{Imaging-based (in situ hybridization / sequencing).}{3}{section*.3}%
+\contentsline {section}{\numberline {4}What you can compute with spatial data}{4}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Reconstructing an axis $\rightarrow $ a zonation index}{4}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Niche / neighborhood analysis}{4}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Spatial ligand--receptor inference}{4}{subsection.4.3}%
+\contentsline {section}{\numberline {5}Limitations --- keep these honest}{4}{section.5}%
+\contentsline {section}{\numberline {6}Connecting to this project}{4}{section.6}%

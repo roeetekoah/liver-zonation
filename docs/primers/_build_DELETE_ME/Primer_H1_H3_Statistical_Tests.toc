@@ -1,0 +1,29 @@
+\contentsline {section}{\numberline {1}The one rule that governs everything: the donor is the unit}{1}{section.1}%
+\contentsline {paragraph}{Pitfall --- pseudoreplication.}{1}{section*.2}%
+\contentsline {paragraph}{The two-step pattern.}{2}{section*.3}%
+\contentsline {section}{\numberline {2}Part A --- H1: does the score change monotonically across ordered stages?}{2}{section.2}%
+\contentsline {paragraph}{Setup.}{2}{section*.4}%
+\contentsline {subsection}{\numberline {2.1}Spearman rank correlation $\rho $}{2}{subsection.2.1}%
+\contentsline {paragraph}{Definition.}{2}{section*.5}%
+\contentsline {paragraph}{When to prefer Spearman over Pearson.}{3}{section*.6}%
+\contentsline {subsection}{\numberline {2.2}Jonckheere--Terpstra test (the dedicated ordered-alternative test)}{3}{subsection.2.2}%
+\contentsline {paragraph}{Hypotheses.}{3}{section*.8}%
+\contentsline {paragraph}{How the $J$ statistic is built.}{3}{section*.9}%
+\contentsline {paragraph}{Why JT beats Kruskal--Wallis here.}{4}{section*.10}%
+\contentsline {paragraph}{Significance.}{4}{section*.11}%
+\contentsline {subsection}{\numberline {2.3}Donor-level bootstrap confidence interval on the trend}{4}{subsection.2.3}%
+\contentsline {paragraph}{Resample donors, not cells.}{4}{section*.12}%
+\contentsline {subsection}{\numberline {2.4}Permutation / label-shuffle negative control}{4}{subsection.2.4}%
+\contentsline {paragraph}{What a valid negative control proves.}{5}{section*.13}%
+\contentsline {section}{\numberline {3}Part B --- H3: do de-zonation and plasticity go together, controlling for stage?}{5}{section.3}%
+\contentsline {paragraph}{Setup.}{5}{section*.14}%
+\contentsline {subsection}{\numberline {3.1}Mann--Whitney $U$ / Wilcoxon rank-sum test}{5}{subsection.3.1}%
+\contentsline {paragraph}{The $U$ statistic.}{5}{section*.15}%
+\contentsline {subsection}{\numberline {3.2}Within-stratum / within-donor correlation}{6}{subsection.3.2}%
+\contentsline {paragraph}{Why this works.}{7}{section*.17}%
+\contentsline {subsection}{\numberline {3.3}Linear model with covariates (OLS)}{7}{subsection.3.3}%
+\contentsline {paragraph}{The regression analogue of ``test within donor/stage.''}{7}{section*.18}%
+\contentsline {subsection}{\numberline {3.4}Shared section --- rank-based vs parametric, multiple testing, effect sizes}{7}{subsection.3.4}%
+\contentsline {paragraph}{Multiple testing --- BH-FDR.}{7}{section*.19}%
+\contentsline {paragraph}{Always report effect sizes beside $p$-values.}{8}{section*.20}%
+\contentsline {paragraph}{Aside --- entropy.}{8}{section*.21}%
