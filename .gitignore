@@ -1,0 +1,32 @@
+# ============================================================
+#  Data — NEVER commit (multi-GB, and the papers are copyrighted).
+#  Each machine downloads these locally; see PROJECT_MAP.md.
+# ============================================================
+data/
+papers/
+analysis/paper1/
+analysis/out/
+*.rds
+*.rds.gz
+*.mat
+*.mtx
+*.npz
+*.npy
+*.h5ad
+*.zip
+
+# ---- scratch / local / IDE ----
+_archive_DELETE_ME/
+.idea/
+__pycache__/
+*.pyc
+*.tmp
+.~lock*#
+.Rhistory
+
+# ============================================================
+#  KEPT in the repo: all code (analysis/*.py, *.R, *.js),
+#  the signatures (pericentral_genes.txt / periportal_genes.txt),
+#  docs/ (primer PDF, deck, email, html source), the small result
+#  PNGs, PROJECT_MAP.md, CODING_PLAN.md, README_pipeline.md.
+# ============================================================

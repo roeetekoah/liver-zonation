@@ -1,0 +1,19 @@
+RESULT — Paper 2 healthy hepatocytes (positive control)
+hepatocytes=50979  PCgenes=20 PPgenes=20
+PC vs PP module spearman = -0.195  (expect strongly NEGATIVE)
+coord vs INDEPENDENT canonical markers (rho):
+   GLUL    rho=+0.029
+   CYP2E1  rho=+0.286
+   CYP1A2  rho=+0.341
+   OAT     rho=+0.024
+   GLUD1   rho=-0.120
+   ASS1    rho=-0.483
+   SDS     rho=-0.431
+   HAL     rho=-0.481
+   PCK1    rho=-0.042
+   ARG1    rho=-0.055
+per-donor coord vs CYP2E1:
+   M5 n= 6255 rho=+0.625
+   M6 n=17118 rho=+0.358
+   M7 n= 7687 rho=+0.542
+   M8 n=19919 rho=+0.551

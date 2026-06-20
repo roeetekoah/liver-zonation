@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Spatial Degradation of Hepatocyte Zonation</title>
+<style>
+@page {
+  size: A4;
+  margin: 22mm 18mm 20mm 18mm;
+  @bottom-center { content: "Spatial Degradation of Hepatocyte Zonation — Hackathon Plan"; font-family:'Georgia',serif; font-size:8pt; color:#8a8f98; }
+  @bottom-right { content: counter(page); font-family:'Georgia',serif; font-size:9pt; color:#5a6472; }
+}
+@page :first { margin:0; @bottom-center{content:none;} @bottom-right{content:none;} }
+html { font-family:'Georgia','Times New Roman',serif; color:#1f2733; font-size:10.6pt; line-height:1.5; }
+body { margin:0; padding:0; }
+h1,h2,h3,h4 { font-family:'Helvetica Neue',Arial,sans-serif; color:#0e3a40; line-height:1.2; }
+h2 { font-size:18pt; border-bottom:3px solid #1b6e78; padding-bottom:4px; margin-top:30px; }
+h3 { font-size:13.5pt; color:#16545c; margin-top:20px; }
+h4 { font-size:11.3pt; color:#a14a1b; margin-top:15px; margin-bottom:4px; }
+p { margin:7px 0; text-align:justify; }
+a { color:#1b6e78; text-decoration:none; }
+ul,ol { margin:7px 0; padding-left:22px; }
+li { margin:4px 0; }
+code,.mono { font-family:'DejaVu Sans Mono','Courier New',monospace; font-size:9pt; }
+.cover { height:297mm; box-sizing:border-box; padding:40mm 24mm 24mm 24mm; background:linear-gradient(160deg,#0e3a40 0%,#16545c 45%,#1b6e78 100%); color:#eef6f7; }
+.cover .kicker { font-family:'Helvetica Neue',Arial,sans-serif; letter-spacing:3px; font-size:11pt; text-transform:uppercase; color:#9fe0e6; }
+.cover h1 { color:#fff; font-size:33pt; line-height:1.08; margin:14px 0 6px 0; }
+.cover .sub { font-size:14pt; color:#cfeef1; font-style:italic; margin-bottom:40px; }
+.cover .meta { font-family:'Helvetica Neue',Arial,sans-serif; font-size:10.5pt; color:#dff3f5; line-height:1.8; }
+.cover .rule { width:80px; height:4px; background:#9fe0e6; margin:18px 0 26px 0; }
+.cover .tag { display:inline-block; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.35); border-radius:14px; padding:4px 12px; font-family:'Helvetica Neue',Arial,sans-serif; font-size:9pt; margin:3px 4px 3px 0; }
+.box { border-radius:8px; padding:11px 15px; margin:14px 0; font-size:10pt; }
+.recap { background:#eef6ff; border-left:5px solid #2b6cb0; }
+.newc  { background:#fff4ec; border-left:5px solid #c05621; }
+.key   { background:#eafaf1; border-left:5px solid #2f855a; }
+.warn  { background:#fff5f5; border-left:5px solid #c53030; }
+.read  { background:#f4f0fb; border-left:5px solid #6b46c1; }
+.box .lbl { font-family:'Helvetica Neue',Arial,sans-serif; font-weight:700; font-size:8.5pt; letter-spacing:1px; text-transform:uppercase; display:block; margin-bottom:3px; }
+.recap .lbl{color:#2b6cb0;} .newc .lbl{color:#c05621;} .key .lbl{color:#2f855a;} .warn .lbl{color:#c53030;} .read .lbl{color:#6b46c1;}
+.tagc { font-family:'Helvetica Neue',Arial,sans-serif; font-size:7.5pt; font-weight:700; letter-spacing:.5px; padding:1px 6px; border-radius:9px; vertical-align:middle; }
+.tcourse { background:#dbeafe; color:#1e40af; }
+.tnew { background:#ffedd5; color:#9a3412; }
+table { border-collapse:collapse; width:100%; margin:14px 0; font-size:9.2pt; font-family:'Helvetica Neue',Arial,sans-serif; }
+th { background:#16545c; color:#fff; text-align:left; padding:7px 9px; font-size:9pt; }
+td { border-bottom:1px solid #d7dde3; padding:6px 9px; vertical-align:top; }
+tr:nth-child(even) td { background:#f4f8f9; }
+.small { font-size:8.7pt; color:#5a6472; }
+pre { background:#10242a; color:#d6f0f2; border-radius:7px; padding:11px 13px; font-family:'DejaVu Sans Mono',monospace; font-size:8.2pt; line-height:1.4; white-space:pre; overflow-x:auto; }
+.quote { border-left:3px solid #b9c6cc; background:#f7f9fa; padding:7px 13px; margin:9px 0; font-style:italic; color:#33404a; font-size:9.5pt; }
+.quote .src { display:block; font-style:normal; font-size:8.2pt; color:#7a8690; margin-top:4px; }
+.toc { font-family:'Helvetica Neue',Arial,sans-serif; font-size:10.3pt; }
+.toc div { padding:3px 0; border-bottom:1px dotted #c8d2d6; }
+.toc .n { color:#1b6e78; font-weight:700; }
+.toc .s { margin-left:16px; font-size:9.6pt; color:#3a4654; }
+.pagebreak { page-break-before:always; }
+figure { margin:16px 0; text-align:center; }
+figure svg { max-width:100%; height:auto; }
+figcaption { font-family:'Helvetica Neue',Arial,sans-serif; font-size:8.7pt; color:#5a6472; margin-top:6px; text-align:center; }
+.lead { font-size:11.5pt; color:#16545c; }
+.artifact { font-family:'Helvetica Neue',Arial,sans-serif; font-size:9pt; background:#f0f7f8; border:1px solid #bcd9dd; border-radius:6px; padding:8px 12px; margin:8px 0; }
+.artifact b{color:#0e3a40;}
+.step { border:1px solid #d7dde3; border-radius:8px; padding:2px 14px 8px 14px; margin:14px 0; }
+.step h4 { border-bottom:1px solid #e3e8ec; padding-bottom:4px; }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<section class="cover">
+  <div class="kicker">Computational Genomics 76553 &middot; Final Hackathon</div>
+  <div class="rule"></div>
+  <h1>Spatial Degradation of<br>Hepatocyte Zonation</h1>
+  <div class="sub">Using a healthy spatial liver atlas to recover, and then watch the collapse of, the lost spatial identity of diseased liver cells</div>
+  <div class="meta">
+    <b>Project proposal, primer &amp; full work plan</b><br>
+    Combining a healthy spatial liver atlas (Yakubovsky et&nbsp;al., Nature 2026)<br>with a single-nucleus disease cohort (Gribben et&nbsp;al., Nature 2024)<br><br>
+    Team of 2 &middot; Two concentrated days + preparation
+  </div>
+  <div style="margin-top:34px;">
+    <span class="tag">snRNA-seq</span><span class="tag">Spatial transcriptomics</span><span class="tag">Zonation reconstruction</span>
+    <span class="tag">Zone classifier + entropy</span><span class="tag">FDR</span><span class="tag">MASLD &rarr; MASH &rarr; cirrhosis</span>
+  </div>
+</section>
+
+<!-- TOC -->
+<section class="pagebreak">
+<h2>Contents</h2>
+<div class="toc">
+  <div><span class="n">1 &nbsp; The question in one breath</span></div>
+  <div><span class="n">2 &nbsp; The biology, from the ground up</span></div>
+  <div class="s">the liver's job &middot; the lobule &amp; the gradient &middot; zonation &middot; the disease spectrum &middot; what breaks &middot; the need this creates</div>
+  <div><span class="n">3 &nbsp; The data that exists — and the lucky gap</span></div>
+  <div class="s">spatial vs dissociated measurement &middot; Paper&nbsp;2 (the map) &middot; Paper&nbsp;1 (the disease) &middot; what to read carefully from each &middot; the gap</div>
+  <div><span class="n">4 &nbsp; The precise question</span></div>
+  <div class="s">research question &middot; H1&ndash;H3 and their nulls &middot; why this is not reproduction</div>
+  <div><span class="n">5 &nbsp; From data to a position-number: the computational logic</span></div>
+  <div class="s">the data table &middot; cleaning it (QC, normalization) &middot; the zeros problem &middot; pooling genes &middot; the classifier &middot; when the ruler breaks &middot; comparing stages (DE, FDR)</div>
+  <div><span class="n">6 &nbsp; The work plan, in detail</span></div>
+  <div class="s">exact inputs &middot; environment &middot; Steps 1&ndash;8 (fine-grained) &middot; optional bonus (Paper 3) &middot; parallelization &middot; risks &middot; checklist &middot; artifacts</div>
+  <div><span class="n">7 &nbsp; Timeline &nbsp;&middot;&nbsp; 8 &nbsp; Glossary &nbsp;&middot;&nbsp; 9 &nbsp; References</span></div>
+</div>
+<p class="small" style="margin-top:14px;">Throughout, <span class="tagc tcourse">COURSE</span> marks an idea from Computational Genomics 76553 (Ex&nbsp;1&ndash;2, Lec&nbsp;5, Lec&nbsp;15&ndash;16); <span class="tagc tnew">NEW</span> marks one we add for this project.</p>
+</section>
+
+<!-- 1 QUESTION -->
+<section class="pagebreak">
+<h2>1 &nbsp; The question in one breath</h2>
+<p class="lead">A healthy liver is spatially organised: each liver cell sits at a position along a blood-flow gradient and does the metabolic job that suits its position. One recent paper measured that organisation in healthy human liver <em>with the positions kept</em>. Another profiled tens of thousands of liver cells across the full fatty-liver disease course, but with a method that <em>throws the positions away</em>. This project uses the healthy map to put a position back onto each spatially-blind diseased cell, and then measures — rigorously — how that spatial organisation falls apart as the disease worsens, and whether the cells that lose their position are the same ones that lose their identity entirely. Crucially, "falls apart" is read from the <em>population</em>, not from any single cell's recovered coordinate (which we never treat as a true position): healthy zonation makes the two opposite gene programs mutually exclusive across cells, and de-zonation is when that exclusivity — not a label we assigned — breaks down.</p>
+<div class="box key"><span class="lbl">Why it can score full marks</span>
+It is not a reproduction of either paper — it is a cross-dataset decode that neither team performed. It runs on the exact machinery of this course (single-cell processing and clustering, differential expression, and Benjamini&ndash;Hochberg FDR). And it fits two days because every individual operation is standard; the originality is in how they are combined.</div>
+</section>
+
+<!-- 2 BIOLOGY -->
+<section class="pagebreak">
+<h2>2 &nbsp; The biology, from the ground up</h2>
+
+<h3>2.1 What the liver does</h3>
+<p>The liver is the body's central metabolic factory: it buffers blood sugar (storing and releasing glucose), synthesises most plasma proteins such as albumin, makes the bile acids that digest fat, converts nitrogen waste into urea, and detoxifies drugs. The single fact that drives this entire project is that these jobs are <b>not</b> shared evenly among liver cells — they are divided up by <em>where</em> a cell sits in the tissue.</p>
+<p>Two kinds of epithelial cell do that work, and the pairing matters later. <b>Hepatocytes</b> are the bulk "factory" cells (metabolism, detox, albumin, bile production). <b>Cholangiocytes</b> are a minority that line the <b>bile ducts</b> — the branching drainage plumbing (the "biliary tree") that carries the bile hepatocytes make out toward the gut. In a healthy liver these two identities are crisp and separate; hold onto that, because disease blurs the line between them (&sect;2.5).</p>
+
+<h3>2.2 The lobule and the blood-flow gradient</h3>
+<p>The liver's repeating unit is the <b>lobule</b>, a roughly hexagonal tile about 0.5&ndash;1&nbsp;mm across. Blood enters at the corners through the <b>portal triads</b> and flows inward to a <b>central vein</b> at the centre. Along that journey — the <b>porto&ndash;central axis</b> — the blood gives up its oxygen and nutrients, so a cell's chemical environment depends entirely on how far along the axis it sits: oxygen-rich at the portal edge, oxygen-poor at the centre.</p>
+
+<figure>
+<svg viewBox="0 0 520 242" xmlns="http://www.w3.org/2000/svg" width="520" height="242">
+  <defs>
+    <radialGradient id="zgRad" cx="200" cy="115" r="105" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2c6fb0"/><stop offset="0.5" stop-color="#7fa9c9"/><stop offset="1" stop-color="#f6c453"/>
+    </radialGradient>
+    <linearGradient id="zgLin" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f6c453"/><stop offset="1" stop-color="#2c6fb0"/></linearGradient>
+    <marker id="ah" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#16545c"/></marker>
+  </defs>
+  <polygon points="150,20 250,20 300,115 250,210 150,210 100,115" fill="#f6c453" opacity="0.6" stroke="#16545c" stroke-width="1.5"/>
+  <polygon points="164,47 236,47 272,115 236,183 164,183 128,115" fill="#b3a872" opacity="0.65"/>
+  <polygon points="176,69 224,69 248,115 224,161 176,161 152,115" fill="#7f93a8" opacity="0.7"/>
+  <polygon points="188,92 212,92 224,115 212,138 188,138 176,115" fill="#2c6fb0" opacity="0.75"/>
+  <circle cx="150" cy="20" r="6" fill="#f6c453" stroke="#7a5a10"/><circle cx="250" cy="20" r="6" fill="#f6c453" stroke="#7a5a10"/>
+  <circle cx="100" cy="115" r="6" fill="#f6c453" stroke="#7a5a10"/><circle cx="300" cy="115" r="6" fill="#f6c453" stroke="#7a5a10"/>
+  <circle cx="150" cy="210" r="6" fill="#f6c453" stroke="#7a5a10"/><circle cx="250" cy="210" r="6" fill="#f6c453" stroke="#7a5a10"/>
+  <circle cx="200" cy="115" r="12" fill="#2c6fb0" stroke="#16374f" stroke-width="1.5"/>
+  <text x="200" y="119" font-size="8" text-anchor="middle" fill="#fff" font-family="Arial">CV</text>
+  <line x1="150" y1="20" x2="190" y2="106" stroke="#16545c" stroke-width="1" marker-end="url(#ah)"/>
+  <line x1="300" y1="115" x2="216" y2="115" stroke="#16545c" stroke-width="1" marker-end="url(#ah)"/>
+  <line x1="150" y1="210" x2="190" y2="124" stroke="#16545c" stroke-width="1" marker-end="url(#ah)"/>
+  <text x="360" y="35" font-size="9" fill="#3a4654" font-family="Arial">PORTAL</text><text x="470" y="35" font-size="9" fill="#3a4654" font-family="Arial">CENTRAL</text>
+  <rect x="360" y="42" width="140" height="16" fill="url(#zgLin)"/>
+  <text x="360" y="80" font-size="8.5" fill="#7a5a10" font-family="Arial">ASS1, HAL, PCK2</text>
+  <text x="360" y="94" font-size="8.5" fill="#7a5a10" font-family="Arial">(urea, gluconeogenesis)</text>
+  <text x="360" y="120" font-size="8.5" fill="#2c6fb0" font-family="Arial">GLUL, CYP2E1, CYP2C8</text>
+  <text x="360" y="134" font-size="8.5" fill="#2c6fb0" font-family="Arial">(detox, glutamine)</text>
+  <text x="118" y="148" font-size="8" fill="#16545c" font-family="Arial">blood flow &rarr; centre</text>
+  <text x="90" y="236" font-size="9" fill="#7a5a10" font-family="Arial">Periportal at the corners; pericentral at the central vein</text>
+</svg>
+<figcaption>Fig.&nbsp;1 — The lobule. Blood flows inward from the oxygen-rich portal corners (yellow) to the oxygen-poor central vein (blue); zonation runs along that path, its bands roughly following the hexagonal lobule (not a circle). Cells specialise by position; representative marker genes for each end are shown.</figcaption>
+</figure>
+
+<h3>2.3 Zonation: the gradient written into gene expression</h3>
+<p>Because the environment changes smoothly along the axis, hepatocytes specialise smoothly too. This division of labour is called <b>liver zonation</b>. The oxygen-hungry jobs — the urea cycle (markers <span class="mono">ASS1</span>, <span class="mono">HAL</span>) and gluconeogenesis (<span class="mono">PCK2</span>) — run at the <b>periportal</b> end; glutamine synthesis (<span class="mono">GLUL</span>) and cytochrome-P450 drug detox (<span class="mono">CYP2E1</span>, <span class="mono">CYP2C8</span>) run at the <b>pericentral</b> end. Crucially the cell carries out this specialisation by <em>switching genes on and off</em> in proportion to its position. So a hepatocyte's set of active genes is, in effect, a readout of where it sits. <b>That is the hinge of the whole project:</b> if position is encoded in expression, then position can be decoded back out of expression — even after the physical location is gone.</p>
+
+<h3>2.4 The disease that erases it: the MASLD spectrum</h3>
+<p>Both papers study <b>MASLD</b> (metabolic dysfunction-associated steatotic liver disease, formerly NAFLD), the commonest chronic liver disease, which advances through ordered stages:</p>
+<table>
+<tr><th>Stage</th><th>What happens</th><th>Hallmark</th></tr>
+<tr><td><b>Healthy</b></td><td>Normal architecture and zonation</td><td>baseline</td></tr>
+<tr><td><b>MASLD / steatosis</b></td><td>Fat droplets accumulate inside hepatocytes</td><td>steatosis</td></tr>
+<tr><td><b>MASH</b></td><td>Fat + inflammation + hepatocyte injury (ballooning)</td><td>inflammation</td></tr>
+<tr><td><b>Cirrhosis</b></td><td>Scarring (fibrosis) replaces working tissue</td><td>fibrosis</td></tr>
+<tr><td><b>End-stage</b></td><td>Architecture destroyed; regenerative nodules</td><td>organ failure</td></tr>
+</table>
+<p><b>Why it happens (in brief).</b> MASLD is a disease of metabolic overload. Chronic excess calories and <b>insulin resistance</b> push more fatty acids into hepatocytes than they can burn or export, so triglyceride accumulates as droplets — <b>steatosis</b>. When the lipid load outstrips the cell's capacity it turns toxic (<em>lipotoxicity</em>): mitochondrial and ER stress, reactive-oxygen damage, hepatocyte injury and death. That damage recruits immune cells (inflammation = <b>MASH</b>) and activates hepatic stellate cells to lay down collagen scar (<b>fibrosis &rarr; cirrhosis</b>). Genetics (e.g. PNPLA3, TM6SF2) and the gut&ndash;metabolic milieu tune individual risk.</p>
+<div class="box recap"><span class="lbl">Where does de-zonation sit — mechanism or symptom?</span>
+Mostly a <b>readout</b>: zonation is maintained by spatial signalling gradients (notably Wnt/&beta;-catenin and oxygen), and metabolic stress plus disrupted Wnt degrade it — so de-zonation largely <em>reports</em> how far cellular identity has unravelled rather than causing the disease. But it is not cosmetic: the two ends run <em>different</em> jobs (pericentral drug-detox vs periportal urea/gluconeogenesis), so losing the gradient means <b>specific liver functions fail in a specific order</b>. Why we map it: (1) a quantitative <b>severity/progression marker</b> finer than histological staging; (2) it pinpoints <b>which functions degrade first</b> (e.g. pericentral CYP drug metabolism — directly relevant to drug dosing in liver disease); (3) it may flag <b>early, pre-fibrotic</b> damage; (4) it connects to the <b>plasticity</b> route linked to cancer risk. The payoff is staging, mechanism, and pointing therapy at which cells/functions to protect — not a cure by itself.</div>
+
+<h3>2.5 What breaks — and the need it creates</h3>
+<p>As disease advances, the orderly lobule degrades in two <em>distinct</em> ways, and keeping them apart is the whole point.</p>
+<p><b>De-zonation</b> is loss of identity <em>within</em> the hepatocyte population: a hepatocyte forgets whether it is periportal or pericentral and starts co-expressing genes from opposite ends of the axis. The gradient blurs.</p>
+<p><b>Epithelial plasticity</b> is loss of identity <em>across</em> cell types: a hepatocyte starts drifting toward a <b>cholangiocyte</b> (bile-duct) identity. "Drift" here is molecular, not physical — the cell does not crawl into a duct; its gene-expression program shifts. A healthy hepatocyte expresses hepatocyte markers (e.g. albumin, <span class="mono">ALB</span>); a cholangiocyte expresses duct markers (e.g. <span class="mono">KRT7</span>, <span class="mono">KRT19</span>). In diseased liver — especially end-stage — one sees cells expressing <em>both</em> at once. Such a cell is <b>biphenotypic</b> (bi = two, phenotype = identity): molecularly part-hepatocyte, part-cholangiocyte. That is striking because mature epithelial types are normally fixed, so a hepatocyte turning duct-like signals that its identity has come unfastened — likely an abnormal disease/repair response, not clean regeneration.</p>
+<p>So the contrast is clean: de-zonation = a hepatocyte forgetting <em>where on the axis</em> it belongs; plasticity = a hepatocyte forgetting <em>that it is a hepatocyte at all</em>. They look like two depths of the same unravelling — which is why we measure the first quantitatively across the disease course and test whether it travels with the second.</p>
+<div class="box key"><span class="lbl">The need this sets up (read this before the next section)</span>
+To measure de-zonation we would need two things we do not obviously possess together: (1) a trustworthy, quantitative map of <b>healthy</b> zonation — a ruler — and (2) a large population of <b>diseased</b> cells, spanning every stage, to lay against that ruler. The next section shows that exactly these two things exist — in two separate papers — and that nobody has put them together.</div>
+</section>
+
+<!-- 3 DATA + GAP -->
+<section class="pagebreak">
+<h2>3 &nbsp; The data that exists — and the lucky gap</h2>
+<p>Our need has two halves — a healthy ruler and diseased cells — and there happen to be two papers, each supplying exactly one half. But to see why they fit together (and why neither alone is enough) we first need one idea about <em>how</em> the measurements are made.</p>
+
+<h3>3.1 Two ways to measure a tissue: keep the map, or dissolve it <span class="tagc tnew">NEW</span></h3>
+<p>There are two families of technique, and the difference between them <em>is</em> our opportunity.</p>
+<ul>
+<li><b>Spatial transcriptomics</b> measures gene expression while preserving each measurement's (x,y) location in the tissue slice. The workhorse, <b>10x Visium</b>, lays the slice on a slide printed with a grid of barcoded <b>spots</b> (~55&nbsp;&mu;m, a few cells each); every transcript inherits its spot's barcode, so position is retained. Higher-resolution variants — <b>Visium HD</b> (a fine 2&ndash;8&nbsp;&mu;m grid), <b>MERFISH</b> (imaging that counts a few hundred chosen genes molecule-by-molecule), and <b>PhenoCycler</b> (cyclic antibody imaging of many proteins) — trade breadth for resolution. Because position is kept, you can compute how any gene varies along the porto&ndash;central axis — i.e. build the zonation ruler.</li>
+<li><b>Single-nucleus RNA-seq (snRNA-seq)</b> dissolves the tissue first. Its flow: lyse the cells and release nuclei into a <b>suspension</b>; the nuclei, now floating in a tube, are pooled and shuffled; each is captured in its own droplet with a barcoded bead; reverse-transcribe, amplify, sequence. The catch is the suspension step: once nuclei are mixed in a tube, <b>which lobule or axis-position each came from is gone forever</b>. The pay-off is robustness — nuclei survive freezing and fibrosis that would destroy whole cells — which is the only reason late-stage, scarred disease tissue can be profiled at all.</li>
+</ul>
+<div class="box warn"><span class="lbl">Two different "losses" — keep them separate, they matter all the way through</span>
+(1) <b>Technical</b> loss of coordinates: snRNA-seq dissolves the tissue, so we no longer know where a cell sat. This is a limitation of the <em>instrument</em>. (2) <b>Biological</b> de-zonation: in disease the cell itself loses its zonal identity. This is the <em>phenomenon we study</em>. The whole project is: use a spatial reference to undo loss&nbsp;(1) just well enough to measure loss&nbsp;(2).</div>
+
+<h3>3.2 Paper 2 — the healthy ruler</h3>
+<p class="small">Yakubovsky, Bahar&nbsp;Halpern, Shir et&nbsp;al. (Itzkovitz lab). <i>A spatial atlas of the healthy human liver from live donors.</i> Nature (2026). doi:10.1038/s41586-026-10377-y.</p>
+<p>This paper supplies our ruler. Its key move was to obtain genuinely healthy human liver from <b>living</b> donors (ordinary "normal" references come from brain-dead organ donors, whose livers are metabolically disturbed), and to profile 16 samples with the full spatial battery above plus snRNA-seq. From the spatial data it reconstructed a quantitative porto&ndash;central <b>zone index</b> per spot and identified the genes that vary most cleanly along the axis.</p>
+<div class="box read"><span class="lbl">What to read &amp; extract from Paper 2</span>
+<b>Figure 2 is the one that matters</b> — it is the zonation reconstruction. Panel 2a shows Visium slides coloured by the spot zone index from portal to central; panel 2b is the ranked set of zonated genes. The paper reports ~<b>1,724 zonated hepatocyte genes</b>, each with a gene-zonation score (Fig.&nbsp;2b), and normalizes expression as z-scores of log<sub>10</sub> UMI-sum-normalized values — match that normalization so the signatures transfer. Read the Methods paragraph on <b>zonation reconstruction</b> / "axis spot annotation" (they seed the axis using landmark genes) to understand how the zone index is defined. Concretely, pull from this paper: (i) the <b>ranked zonated-gene table</b> &rarr; your pericentral/periportal signatures; (ii) the <b>landmark genes</b> anchoring each end (pericentral CYP2E1, CYP2C8, GLUL, CYP27A1; periportal ASS1, HAL, PCK2); (iii) the location of its <b>snRNA-seq</b> data and the script that assigns zonation to those nuclei (your classifier training set, &sect;6).</div>
+
+<h3>3.3 Paper 1 — the diseased cells</h3>
+<p class="small">Gribben, Galanakis, Calderwood et&nbsp;al. (Vallier, Mohorianu, Allison labs). <i>Acquisition of epithelial plasticity in human chronic liver disease.</i> Nature (2024). doi:10.1038/s41586-024-07465-2.</p>
+<p>This paper supplies the cells to test. It profiled <b>47 liver biopsies</b> by snRNA-seq across the entire spectrum — healthy (n=4), MASLD/NAFLD (n=7), MASH (n=27), cirrhosis (n=4), end-stage (n=5) — yielding ~100,000 QC-passing nuclei including <b>69,426 hepatocytes</b>. Its headline biology is transdifferentiation between hepatocytes and cholangiocytes, driven by PI3K&ndash;AKT&ndash;mTOR; for us, the relevant secondary observation is that hepatocytes lose zonation — but it reports this only qualitatively.</p>
+<div class="box read"><span class="lbl">What to read &amp; extract from Paper 1</span>
+<b>Figure 1c&ndash;e</b> defines the experiment and the cell-type annotation: the snRNA-seq workflow schematic (note nuclei were isolated by <i>tissue lysis and FACS sorting</i> from snap-frozen biopsies; 10x; CellRanger v5.0.0), the overall annotated UMAP (1d), and the marker bubble-plot (1e) you use to <b>confirm which cells are hepatocytes</b> (ALB). <b>Figure 2</b> is their zonation evidence — 2a is the hepatocyte UMAP split by stage, and 2b is a correlation of pericentral vs periportal marker expression across disease progression (Fig.&nbsp;2) — precisely the qualitative result we turn quantitative and continuous. Extract: (i) the <b>cell-type label</b> field and the <b>stage</b> field from the object's metadata; (ii) their pericentral (GLUL, AXIN2) and periportal (ASS1, HAL) markers; (iii) the <b>plasticity / biphenotypic markers</b> for our H3 (KRT7, KRT19, SOX9, plus SOX4, KRT23, NCAM1). One data caveat to honour: the GEO record notes samples GSM6112262 and GSM6112263 had swapped metadata (fixed June 2025) — use the corrected version.</div>
+
+<h3>3.4 The gap — they are mirror images nobody has joined</h3>
+<table>
+<tr><th></th><th>Paper 2 (the ruler)</th><th>Paper 1 (the cells)</th></tr>
+<tr><td><b>Spatial coordinates</b></td><td>Kept (Visium, MERFISH)</td><td>Destroyed (snRNA-seq)</td></tr>
+<tr><td><b>Disease coverage</b></td><td>Healthy + early steatosis only</td><td>Full spectrum, healthy &rarr; end-stage</td></tr>
+<tr><td><b>Zonation</b></td><td>Quantitative, per-spot ruler</td><td>Noted only qualitatively</td></tr>
+<tr><td><b>Scale</b></td><td>44,243 spots (+ snRNA-seq)</td><td>69,426 hepatocytes</td></tr>
+</table>
+<p>One paper has the <b>map</b> but no disease; the other has the <b>disease</b> but no map. Both are recent — Paper 1 (2024), Paper 2 (2026) — and each was built to answer its own question, so no one has yet used the healthy spatial ruler to decode the disease cohort. That untaken step is our project.</p>
+<div class="box key"><span class="lbl">"But Paper 1 already showed zonation loss" — qualitative vs quantitative vs continuous</span>
+Paper&nbsp;1's zonation evidence (their Fig.&nbsp;2) is a UMAP, a correlation of <em>two</em> marker genes, and <b>microscopy images</b> of a handful of marker proteins (GLUL, ASS1) in healthy vs end-stage tissue. That is <b>qualitative</b> (you look and see it's messier), <b>discrete</b> (two extremes: healthy vs end-stage), and <b>narrow</b> (a few markers). We add three things it lacks: (1) <b>quantitative</b> — a de-zonation <em>number</em> per stage with confidence intervals and a significance test, so we can say <em>how much</em> and <em>whether it's real</em>; (2) <b>continuous</b> — every one of the 69,426 hepatocytes gets a real-valued position on the portal&harr;central axis (not a portal/central bucket), and we track the metric across <em>all five</em> stages as a curve, not two snapshots; (3) <b>transcriptome-wide</b> — the position is read from the whole 1,724-gene zonation program via an external healthy reference, not 2&ndash;3 markers by eye. In one line: they showed <em>that</em> zonation is lost; we measure <em>how much, where on the axis, and with what significance</em>, across the entire disease course.</div>
+</section>
+
+<!-- 4 QUESTION -->
+<section class="pagebreak">
+<h2>4 &nbsp; The precise question</h2>
+<div class="box key"><span class="lbl">Research question</span>
+Using the healthy porto&ndash;central zonation ruler from Paper&nbsp;2, can we assign a quantitative pseudo-zonation coordinate to every spatially-blind hepatocyte in Paper&nbsp;1, and so measure <b>how, and how much, hepatocyte zonation degrades as MASLD advances from healthy to end-stage</b> — and is that degradation linked to the transdifferentiation Paper&nbsp;1 reported?</div>
+<p>Each hypothesis below is what we hope to show (the <em>alternative</em>); every statistical test silently compares it against its <b>null</b>, the boring "no-effect" world, and a p-value measures evidence against that null.</p>
+<table>
+<tr><th>Hypothesis (alternative)</th><th>Null (H0) we test against</th><th>Test</th></tr>
+<tr><td><b>H1 — monotonic erosion.</b> A de-zonation score rises Healthy&rarr;MASLD&rarr;MASH&rarr;cirrhosis&rarr;end-stage.</td><td>The score is flat across stages — no association with disease.</td><td>Ordered trend (Jonckheere&ndash;Terpstra / Spearman on stage rank)</td></tr>
+<tr><td><b>H2 — zone-specific vulnerability.</b> Particular programs (e.g. pericentral CYP detox) collapse earlier/faster.</td><td>A gene's expression does not change across stages within its zone.</td><td>Per-gene DE + BH-FDR</td></tr>
+<tr><td><b>H3 — plasticity link.</b> The most de-zonated hepatocytes are the ones gaining cholangiocyte identity.</td><td>De-zonation and plasticity scores are independent.</td><td>Correlation / Mann&ndash;Whitney</td></tr>
+</table>
+
+<h3>4.1 &nbsp; H1 — does zonation erode as disease advances?</h3>
+<p><b>Claim:</b> a single de-zonation score climbs steadily Healthy&rarr;NAFLD&rarr;NASH&rarr;cirrhosis&rarr;end-stage. The score is a <em>population</em> metric — e.g. the weakening of pericentral&ndash;periportal mutual exclusivity, or the narrowing of the coordinate's spread — <b>not</b> any single cell's position (see "Isn't this circular?", &sect;5.4). <b>Null (H0):</b> the score is flat — unrelated to stage.</p>
+<p><b>The test, plainly.</b> Our stages have a natural order, so we ask whether the score moves <em>monotonically</em> along it, with two rank-based tools. <b>Spearman correlation (&rho;)</b> measures whether two things rise or fall together by rank: &rho;=+1 perfectly increasing, &minus;1 perfectly decreasing, 0 no relationship — here, score vs stage-rank. The <b>Jonckheere&ndash;Terpstra</b> test is the dedicated significance test for an <em>ordered</em> trend across ordered groups; it returns one p-value for "the score increases step by step across the stages." (Spearman gives the strength; Jonckheere gives the formal yes/no.)</p>
+<p><b>What counts as a pass:</b> a significant trend (&rho;&gt;0, p&lt;0.05) that survives <b>donor-level</b> resampling, so it isn't driven by a single patient. <b>If it fails (still useful):</b> a flat score means zonation is surprisingly robust (and would gently contradict Paper&nbsp;1's by-eye impression); a rise-then-plateau means the damage saturates early.</p>
+
+<h3>4.2 &nbsp; H2 — which gene programs collapse, and where on the axis?</h3>
+<p><b>Claim:</b> the collapse is not uniform — specific programs (e.g. pericentral CYP detox genes) lose their zonal pattern earlier/faster. <b>Null (H0):</b> a given gene's expression does not change across stages within its zone.</p>
+<p><b>The test, plainly.</b> We bin cells into pseudo-zones (portal / mid / central) and, within a zone, test each gene for change across stages — <b>differential expression (DE)</b>. Testing ~20,000 genes at p&lt;0.05 would give ~1,000 false hits from noise alone, so we apply <b>Benjamini&ndash;Hochberg FDR</b>, which turns p-values into q-values that cap the expected fraction of false positives among the genes we call significant.</p>
+<p><b>What counts as a pass:</b> a coherent set of genes at q&lt;0.05 whose loss explains the collapse, ideally enriched for known zonated programs. <b>If it fails (still useful):</b> no significant genes means the collapse is diffuse rather than program-specific — itself a statement about <em>how</em> zonation breaks.</p>
+
+<h3>4.3 &nbsp; H3 — do the de-zonated cells become the plastic ones?</h3>
+<p><b>Claim:</b> the hepatocytes that have lost zonal identity are the same ones drifting toward cholangiocyte identity (gaining KRT7/KRT19). <b>Null (H0):</b> de-zonation and plasticity are independent.</p>
+<p><b>The test, plainly.</b> We score each hepatocyte for a plasticity signature, split cells into "de-zonated" vs "still-zonated," and ask whether the de-zonated group has higher plasticity. The <b>Mann&ndash;Whitney U</b> test (a.k.a. Wilcoxon rank-sum) compares two groups by pooling and ranking all values and seeing whether one group sits at the top — no bell-curve assumption. We also report a plain <b>correlation</b> between the de-zonation and plasticity scores across all cells.</p>
+<p><b>What counts as a pass:</b> de-zonated hepatocytes show significantly higher plasticity (p&lt;0.05) and the two scores correlate positively. <b>If it fails (still useful):</b> independence would mean losing zonal identity and gaining duct identity are separate processes — also worth knowing.</p>
+
+<div class="box key"><span class="lbl">Why the answer matters (the motivation — not "we filled a spatial gap")</span>
+The point is <em>not</em> that spatial-by-stage is unoccupied. Three things make the answer worth having, none made redundant by a future real-spatial study: (1) a reusable <b>reference-based decoder</b> — once validated, it reads zonal identity out of the many existing dissociated disease atlases that have no spatial data; (2) a <b>mechanistic ordering</b> — <em>which</em> zonal programs lose legibility <em>first</em> (H2) predicts the order in which liver functions fail; (3) a <b>principled failure analysis</b> — <em>when</em> and <em>how</em> the healthy program stops being legible (silenced vs identity-mixed; Step&nbsp;5b) quantifies how lobular identity disintegrates, and H3 ties that to the plasticity Paper&nbsp;1 links to disease severity. In short: we characterise the <em>disintegration of cell identity</em> in chronic disease, quantitatively — not merely note that zonation drops.</div>
+
+<p><b>Why this is not reproduction.</b> Neither paper computed a cross-dataset zonation coordinate for the disease cohort, a stage-resolved collapse curve, or the de-zonation&harr;plasticity link. We use Paper&nbsp;2 strictly as a <em>decoder</em> for Paper&nbsp;1. And a <b>negative result is still a result</b>: if the collapse is non-monotonic, or driven by only some programs, or if the ruler itself dissolves at a stage, each is a real, defensible finding — because the method and its controls are the deliverable.</p>
+</section>
+
+<!-- 5 COMPUTATIONAL LOGIC -->
+<section class="pagebreak">
+<h2>5 &nbsp; From data to a position-number: the computational logic</h2>
+<p><em>&sect;2 promised that position is written into expression. This section turns that promise into a procedure, building it one forced step at a time: each tool appears only because the previous step created a problem that demands it. Nothing here is a tool for its own sake.</em></p>
+
+<h3>5.1 Where we begin: the data table <span class="tagc tcourse">COURSE</span></h3>
+<p>After sequencing, the data is one giant table: a row per gene, a column per cell, each entry the number of molecules (<b>UMIs</b>) of that gene caught in that cell. Tens of thousands of each; everything downstream is arithmetic on this table. Reaching it is the alignment of Exercise&nbsp;1 (placing reads on the genome) and the molecule-counting of Exercise&nbsp;2 (deduplicating PCR copies into unique counts) — but the published datasets hand us the finished table, so that is our starting line.</p>
+
+<h3>5.2 The table lies — so first we clean it (QC + normalization) <span class="tagc tcourse">COURSE</span></h3>
+<p>Two flaws make the raw table unsafe. <b>First, not every column is a real cell.</b> Empty droplets, debris, and dying or leaky nuclei produce junk columns; if we keep them they later masquerade as "confused" cells and fake the very signal we hunt. So we discard them — filtering on too-few molecules, too-few detected genes, or too-high mitochondrial content (a dying-cell tell). This filtering is <b>quality control (QC)</b>. <b>Second, the surviving numbers aren't comparable:</b> a cell sequenced twice as deeply shows twice the counts for a purely technical reason. So we rescale every cell to a common depth, then take a logarithm — so that a <em>doubling</em> counts the same whether a gene goes 100&rarr;200 or 1,000&rarr;2,000, which is the multiplicative scale biology actually lives on (we use log(1+x), because log(0) is undefined and the table is full of zeros). This is <b>normalization</b>.</p>
+<div class="box recap"><span class="lbl">QC we inherit; normalization we redo — exactly why</span>
+Paper&nbsp;1's authors already cell-filtered their published object, so we <b>inherit their QC</b> (plus a one-line check that the kept cells are ALB-expressing hepatocytes); we do <em>not</em> re-filter from scratch. But we <b>re-normalize from the raw counts</b>, for three reasons. <b>(1) A cross-dataset transfer needs identical preprocessing.</b> We score Paper&nbsp;1 against signatures derived from Paper&nbsp;2, and apply a classifier trained on Paper&nbsp;2 — a score only means the same thing on both sides if both datasets went through the <em>same</em> normalization, so we run one pipeline over both, starting from counts. Their object carries Paper&nbsp;1's normalization; Paper&nbsp;2 carries its own — mixing them is apples vs oranges. <b>(2) Their processed matrix is gene-incomplete.</b> A Seurat object's scaled-data slot usually holds only the ~2,000 highly-variable genes (covariates regressed out), so several zonation signature genes may be absent or differently scaled there; the raw <span class="mono">counts</span> slot has every gene — which is why our R script pulled counts, not their processed values. <b>(3) Reproducibility.</b> A transparent CP10k&rarr;log&rarr;z-score we control can be described and defended in the report, instead of inheriting an undocumented, software-version-specific pipeline (which the course expects us to understand, not hide).</div>
+
+<h3>5.3 The zeros are a trap — and the trap dictates the method <span class="tagc tcourse">COURSE</span></h3>
+<p>Most of the table is zeros, and a zero is ambiguous: the gene may be genuinely off, or on-but-<em>missed</em>. Only a fraction of a cell's molecules are ever captured, so a gene present in a few copies frequently reads zero by pure chance — the same Poisson sampling you met modelling library complexity in Exercise&nbsp;2 (the probability of seeing none is e<sup>&minus;&lambda;</sup>, large when the expected count &lambda; is small). The missed-but-present zero is called <b>dropout</b>, and snRNA-seq is especially prone to it because a nucleus holds little RNA. The conclusion is decisive and shapes everything after it: <b>no single gene's value in a single cell can be trusted.</b></p>
+
+<h3>5.4 Therefore: read position from many genes at once (signature scoring) <span class="tagc tnew">NEW</span></h3>
+<p>Because one gene is unreliable but the zonation signal is spread across hundreds of genes (&sect;2.3), we read position from <em>many</em> genes pooled together. A <b>signature score</b> is the average (normalized, scaled, background-subtracted) expression of a curated gene set; pooling averages out the random dropout so the per-cell number is stable. We build a <b>pericentral</b> signature and a <b>periportal</b> signature from Paper&nbsp;2's ruler and define a single coordinate per cell:</p>
+<p style="text-align:center;" class="mono">zonation_coord = score(PERICENTRAL) &minus; score(PERIPORTAL)</p>
+<p>High = pericentral-like, low = periportal-like, middle/ambiguous = de-zonated. (Aside on the supporting cast: <b>PCA, UMAP and clustering</b> <span class="tagc tcourse">COURSE</span> are used only as scaffolding here — to isolate the hepatocytes and to draw a score-coloured map — because Paper&nbsp;1 already provides cell-type labels. The result comes from the coordinate, not the picture.)</p>
+<div class="box warn"><span class="lbl">Honesty guardrail</span>
+The ruler is a <b>1D</b> axis, so we recover a <b>pseudo-zonation coordinate</b>, never a physical (x,y) location. We say "reconstructed zonation coordinate," not "predicted spatial position."</div>
+<div class="box newc"><span class="lbl">What "de-zonation" means precisely — why it isn't circular, and what it can't see</span>
+We define de-zonation <b>operationally</b>, as the degradation of three properties of the cell <em>population</em> — not of any single cell's coordinate, which we never treat as a true position:
+<br>&bull; <b>(1) Mutual exclusivity.</b> In healthy liver a hepatocyte is high-pericentral <em>or</em> high-periportal, so the two scores are strongly <em>anti</em>-correlated across cells. De-zonation = cells expressing <em>both</em> at once &rarr; that anti-correlation weakens.
+<br>&bull; <b>(2) Spread.</b> Healthy hepatocytes span the whole axis, so the coordinate is <em>wide</em> (and may show two humps — bimodal — if sampled cells cluster at the ends); collapse bunches them toward the middle (narrow). We track variance/IQR, robust whether or not the healthy shape is strictly bimodal.
+<br>&bull; <b>(3) Internal coherence.</b> Do the pericentral genes still co-vary with <em>each other</em> — is the program still a coherent module? (Step&nbsp;5b.)
+<br><b>Why this isn't circular:</b> assigning each cell a coordinate from its expression does <em>not</em> predetermine any of (1)&ndash;(3) — a disease that preserved zonation would keep strong anti-correlation and wide spread, both fully allowed outcomes. The 1-D coordinate alone is ambiguous (a middle value = "expresses neither" <em>or</em> "expresses both"), which is exactly why the honest metrics are these structural ones.
+<br><b>What this can <u>not</u> see (honest scope):</b> we measure loss of the <em>expression</em> program, not physical re-arrangement. If diseased cells kept their gene-identity but were shuffled in space (a periportal-type cell sitting where pericentral cells belong), our method — like any dissociated snRNA method — would report <em>no</em> change, because the positions were never recorded. Architectural scrambling with intact expression is out of scope; detecting it needs spatial data on the diseased tissue (the very thing that does not yet exist).</div>
+
+<h3>5.5 A stronger reader: a zone classifier, and why its confusion is the signal <span class="tagc tnew">NEW</span></h3>
+<p>The signature score (&sect;5.4) is robust but blunt — it gives one number and no sense of how <em>sure</em> we are. A classifier adds exactly that. Built up from scratch:</p>
+<p><b>What a classifier is, here.</b> We show a model many hepatocytes whose zone is already <em>known</em> ("training"), and it learns the mapping from a cell's expression to its zone. Then, for a brand-new cell, it outputs not a single label but a <b>probability for each zone</b> — e.g. <span class="mono">[central 0.92, mid 0.06, portal 0.02]</span>.</p>
+<p><b>Why the probabilities are the whole point.</b> The <em>shape</em> of that probability vector measures confidence, and lost confidence <em>is</em> de-zonation. A healthy, clearly-zonated cell gives a <b>peaked</b> vector (the model is sure: 0.92 central). A de-zonated cell — now part-pericentral, part-periportal — gives a <b>flat</b> vector (0.4 / 0.35 / 0.25): the model genuinely can't tell, because the cell no longer commits to a zone. We compress "peaked vs flat" into one number, the <b>entropy</b> of the vector (low = confident, high = confused). The <b>mean entropy per disease stage is our headline de-zonation meter</b>, and watching each zone's confidence separately tests whether pericentral identity blurs before periportal (H2).</p>
+<div class="box newc"><span class="lbl">The catch — and the trick that fixes it</span>
+<b>The catch.</b> A classifier can "cheat" by latching onto <em>technical</em> quirks of whatever data it trained on instead of real biology. Paper&nbsp;2's main data are <b>Visium spots</b> — small multi-cell tissue patches, measured by a different technology. If we trained on those spots and then asked the model about Paper&nbsp;1's <b>single nuclei</b>, much of what it "learned" would be "Visium-vs-single-nucleus" technical difference, and its zone calls on Paper&nbsp;1 would be untrustworthy.<br><br>
+<b>The trick.</b> Paper&nbsp;2 <em>also</em> ran <b>snRNA-seq</b> — single nuclei, the <em>same</em> technology as Paper&nbsp;1. So we train on Paper&nbsp;2's <b>snRNA-seq nuclei</b> and apply to Paper&nbsp;1's <b>snRNA-seq nuclei</b>: the same measurement type on both sides, so the model can't win by reading the technology — what carries over is genuine zonation.<br><br>
+<b>The one missing piece</b> is a zone <em>label</em> for each Paper&nbsp;2 training nucleus. Paper&nbsp;2's spatial data define the zones, and its repository carries those zone assignments onto its snRNA nuclei (Step&nbsp;1). A quick fallback: label Paper&nbsp;2's nuclei by the same signature-tercile rule from &sect;5.4.</div>
+<p><b>A free sanity check.</b> Scoring and the classifier are two independent routes to the same answer. On <em>healthy</em> cells, where zonation is intact, they should agree — and that agreement is built-in evidence the signal is real biology, not an artefact of either method.</p>
+
+<h3>5.6 The honesty problem: when does the ruler stop being a ruler? <span class="tagc tnew">NEW</span></h3>
+<p>Here is the project's deepest risk. The ruler is calibrated on healthy tissue, but disease may corrupt the very genes it relies on. A coordinate collapsing to the middle could mean (a) genuine de-zonation, (b) the marker genes globally crashing for unrelated reasons, so the tick-marks fall off the ruler, or (c) the signature dissolving into noise. The raw number can't tell these apart — so we measure the <em>structure</em> of the signature per stage: do the pericentral genes still co-vary <em>with each other</em> (is the ruler intact)? does the pericentral&ndash;periportal anti-correlation across cells weaken (true de-zonation, robust to global shifts)? do two random halves of the gene set give the same coordinate (reproducibility)? and is a module switched <em>off</em> (program lost) versus still on but co-expressed with its opposite (positional restriction lost)? These diagnostics are Step&nbsp;5b, and they let us say which kind of breakdown we are seeing rather than assuming the convenient one.</p>
+
+<h3>5.7 Comparing stages without fooling ourselves (DE + FDR) <span class="tagc tcourse">COURSE</span></h3>
+<p>Once every hepatocyte has a coordinate, we bin cells into pseudo-zones and ask, within a zone, which genes change across disease stage — this is <b>differential expression</b>, and it produces the gene-level story behind the collapse (H2). The danger is volume: testing ~20,000 genes at p&lt;0.05 yields ~1,000 false hits from noise alone. So we control the <b>false discovery rate</b> with Benjamini&ndash;Hochberg (Lecture&nbsp;5): sort the p-values, find the largest rank k with p<sub>(k)</sub>&le;(k/m)&middot;q, and report q-values. Everything we call "significant" is at q&lt;0.05, never a raw p-value.</p>
+<div class="box key"><span class="lbl">The whole logic in one line</span>
+table &rarr; clean it (QC, normalize) &rarr; trust no single gene (dropout) &rarr; pool genes into a coordinate (signature) &rarr; sharpen with a same-platform classifier (entropy = blur) &rarr; check the ruler still holds &rarr; compare stages with FDR-controlled tests.</div>
+</section>
+
+<!-- 6 WORK PLAN -->
+<section class="pagebreak">
+<h2>6 &nbsp; The work plan, in detail</h2>
+
+<h3>6.1 The exact inputs</h3>
+<table>
+<tr><th>What</th><th>Source &amp; file</th><th>Size</th><th>Gives us</th></tr>
+<tr><td><b>Paper 1 object</b></td><td>GEO GSE202379 &rarr; <span class="mono">GSE202379_SeuratObject_AllCells.rds.gz</span></td><td>2.6 GB</td><td>All cells, annotated; hepatocyte subset + per-cell stage</td></tr>
+<tr><td><b>P2 zonation ruler</b></td><td>Zenodo 17735587 &rarr; <span class="mono">zon_struct_all_full.mat</span></td><td>204 MB</td><td>Zone index + per-gene zonation profiles &rarr; signatures</td></tr>
+<tr><td><b>P2 snRNA-seq</b></td><td>Zenodo 17735587 &rarr; <span class="mono">combined_scRNAseq_atlas_M5M6M7M8.mat</span></td><td>2.0 GB</td><td>Zone-labelled nuclei &rarr; classifier training set</td></tr>
+<tr><td><b>P2 code</b></td><td>GitHub <span class="mono">OranYak/Human-liver</span></td><td>small</td><td><span class="mono">parse_snRNAseq_combined_atlas.m</span> (zone-labels the nuclei); zonation scripts</td></tr>
+<tr><td><b>P2 gene table</b></td><td>Paper 2 Supplementary Tables (Nature site)</td><td>KB</td><td>The 1,724 zonated genes directly — signatures with no MATLAB</td></tr>
+</table>
+<div class="box warn"><span class="lbl">We work in Python — two one-time conversions get us there</span>
+The whole analysis is <b>Python</b>. Only two one-off conversions are needed, neither revisited afterwards. <b>(1) Paper&nbsp;1</b> ships as a Seurat <span class="mono">.rds</span>, so a single R script exports it once to plain <span class="mono">counts.mtx</span> + <span class="mono">cell_metadata.csv</span> (done) — then read in Python with <span class="mono">scipy.io.mmread</span>. <b>(2) Paper&nbsp;2</b> ships as MATLAB <span class="mono">.mat</span> (v7.3 = HDF5); read it once with <span class="mono">h5py</span> and re-save the parts we need (gene names, hepatocyte expression, zone labels) as a Python-native <span class="mono">.npz</span> (or an <span class="mono">.h5ad</span>). After these two steps the pipeline never touches R or MATLAB again. <b>Shortcut:</b> the baseline signatures need only the supplementary zonated-gene table (a plain CSV) — no <span class="mono">.mat</span> at all; the <span class="mono">.mat</span> is needed only to build the classifier's training cells.</div>
+
+<h3>6.2 Environment</h3>
+<p><b>Python, throughout.</b> <span class="mono">scanpy/anndata</span> (or plain <span class="mono">scipy.sparse</span>) for the single-cell handling; <span class="mono">numpy/scipy/pandas/scikit-learn</span> for normalization, the signature, the classifier and statistics; <span class="mono">statsmodels</span> for <span class="mono">multipletests(method='fdr_bh')</span>; <span class="mono">h5py</span> to read Paper&nbsp;2's <span class="mono">.mat</span> once; <span class="mono">matplotlib/seaborn</span> for figures. Where the course expects understanding (normalization, FDR, the classifier), we implement it explicitly rather than hide behind a one-liner.</p>
+
+<h3>6.3 The steps</h3>
+
+<div class="step">
+<h4>Step 1 — Build the ruler from Paper 2</h4>
+<p><b>Inputs:</b> Paper&nbsp;2 zonated-gene table (supplement) and/or <span class="mono">zon_struct_all_full.mat</span>; for 1c also <span class="mono">combined_scRNAseq_atlas_M5M6M7M8.mat</span> + <span class="mono">parse_snRNAseq_combined_atlas.m</span>.</p>
+<p><b>1a — signatures.</b> Load the zonated-gene table; keep genes passing the paper's own zonation q-value; rank by signed zonation score. Take the top ~50&ndash;100 pericentral and top ~50&ndash;100 periportal genes; intersect with genes present in Paper&nbsp;1 (record how many survive). Freeze as <span class="mono">pericentral.txt</span> / <span class="mono">periportal.txt</span>.<br>
+<b>1b — sanity-plot.</b> Plot the zonation profile of the top ~10 genes each end to confirm monotonic, opposite gradients (catches sign/mapping errors early).<br>
+<b>1c — classifier training set.</b> Run / port <span class="mono">parse_snRNAseq_combined_atlas.m</span> to attach a zone label (or zone index binned into 3&ndash;5 classes) to each Paper&nbsp;2 nucleus; export an <span class="mono">(expression, zone_label)</span> table.</p>
+<p><b>Decision:</b> if porting the MATLAB is slow, fall back to signatures only (1a&ndash;1b) for Day&nbsp;1 and add the classifier later.<br>
+<b>Artifact <span class="artifact" style="padding:1px 6px;">A1</span>:</b> signature lists + zonation-profile figure + zone-labelled training table.</p>
+</div>
+
+<div class="step">
+<h4>Step 2 — Load &amp; QC the Paper 1 hepatocytes</h4>
+<p><b>Input:</b> <span class="mono">GSE202379_SeuratObject_AllCells.rds</span>.</p>
+<p><b>2a — subset.</b> Read the object; pull <span class="mono">cell_type</span> and <span class="mono">stage</span> from metadata; keep cells labelled Hepatocyte; confirm they express ALB and form a coherent cluster (quick PCA/UMAP).<br>
+<b>2b — QC filters.</b> Remove nuclei with very low UMIs or genes, or high mitochondrial fraction, matching the paper's stress-marker exclusion; optionally flag doublets. Record counts removed.<br>
+<b>2c — normalize.</b> Library-size normalize &rarr; log1p &rarr; per-gene z-score (&sect;5.2), matching Paper&nbsp;2's units so signatures transfer.<br>
+<b>2d — bookkeeping.</b> Build a per-stage, per-donor cell-count table (you will need donor IDs for the bootstrap in Step&nbsp;6).</p>
+<p><b>Artifact <span class="artifact" style="padding:1px 6px;">A2</span>:</b> clean normalized hepatocyte matrix (~69k) + QC plots + per-stage/per-donor counts.</p>
+</div>
+
+<div class="step">
+<h4>Step 3 — Harmonize genes &amp; fix the batch axis</h4>
+<p><b>Inputs:</b> A1 + A2.</p>
+<p><b>3a — ID mapping.</b> Reconcile gene identifiers (symbol vs Ensembl, version drift) between the two datasets; report the mapping rate.<br>
+<b>3b — intersect.</b> Restrict signatures and classifier features to the shared gene set; report surviving signature sizes (if a signature shrinks badly, widen the top-N in Step&nbsp;1).<br>
+<b>3c — batch-robust features.</b> Use z-scored or rank-based features so the score measures portal-vs-central, not snRNA-vs-Visium (&sect;5.6).</p>
+<p><b>Artifact <span class="artifact" style="padding:1px 6px;">A3</span>:</b> harmonization report + final gene sets.</p>
+</div>
+
+<div class="step">
+<h4>Step 4 — Place every cell (score + classifier)</h4>
+<p><b>Inputs:</b> A2 + A3 (+ A1 training set for 4b).</p>
+<p><b>4a — signature scoring (baseline).</b> Compute pericentral and periportal scores (Scanpy <span class="mono">score_genes</span> / our own background-subtracted mean); define <span class="mono">zonation_coord = pericentral − periportal</span>.<br>
+<b>4b — classifier (headline).</b> Train on Paper&nbsp;2's zone-labelled nuclei (logistic regression or random forest), evaluate by held-out accuracy / confusion matrix <em>on Paper&nbsp;2 first</em>, then apply to Paper&nbsp;1; record predicted zone, full zone-probability vector, and entropy per cell.<br>
+<b>4c — agreement.</b> Check the scoring coordinate and the classifier's expected-zone agree on cells (especially healthy).</p>
+<p><b>Artifact <span class="artifact" style="padding:1px 6px;">A4</span>:</b> per-cell table <span class="mono">[cell_id, donor, stage, zonation_coord, zone_probs, entropy]</span> + score-coloured UMAP.</p>
+</div>
+
+<div class="step">
+<h4>Step 5 — Validate the placement (positive control)</h4>
+<p><b>Input:</b> A4 restricted to Paper&nbsp;1's healthy donors.</p>
+<p>In healthy liver zonation is intact, so the method must recover it: hepatocytes should spread along a clear axis; GLUL/CYP2E1 should rise with the coordinate and ASS1/HAL fall (quantify by Spearman correlation); the classifier should be confident (low entropy). If healthy cells do not separate, stop and fix scoring before touching disease data.</p>
+<p><b>Artifact <span class="artifact" style="padding:1px 6px;">A5</span>:</b> validation figure + correlation/concordance values.</p>
+</div>
+
+<div class="step">
+<h4>Step 5b — Is the ruler still a ruler? (the validity controls)</h4>
+<p><b>Input:</b> A4 across all stages.</p>
+<p>Per stage, run the four diagnostics of &sect;5.6: (i) <b>internal coherence</b> — mean pairwise correlation among pericentral genes (and among periportal genes); (ii) <b>cross-program anti-correlation</b> — correlation between the two module scores across cells; (iii) <b>split-half reproducibility</b> — correlate two coordinates from random half-signatures; (iv) <b>program-off vs restriction-lost</b> — track each module's mean magnitude alongside the co-expression rate. Together these say <em>whether</em> and <em>how</em> the ruler degrades, so the Step-6 collapse is interpreted correctly rather than conveniently.</p>
+<p><b>Artifact <span class="artifact" style="padding:1px 6px;">A5b</span>:</b> per-stage coherence / anti-correlation / split-half / decomposition plots.</p>
+</div>
+
+<div class="step">
+<h4>Step 6 — Quantify the collapse across stages (headline)</h4>
+<p><b>Inputs:</b> A4 (all stages) + A5/A5b (validated).</p>
+<p><b>6a — metrics per stage</b> (report several for robustness): the classifier <b>prediction-entropy</b> (headline); the <b>spread/bimodality</b> of the coordinate distribution; <b>axis separability</b> (silhouette of the two ends, or per-stage portal-vs-central AUC); and the <b>marker anti-correlation</b> from 5b.<br>
+<b>6b — trend test.</b> Test the ordered Healthy&rarr;end-stage trend (Jonckheere&ndash;Terpstra or Spearman on stage rank).<br>
+<b>6c — honest error bars.</b> Bootstrap over <em>donors</em> (not cells) for confidence intervals, so the trend is not an artefact of one patient (pseudoreplication guard).<br>
+<b>6d — negative control.</b> Shuffle stage labels; the trend must vanish.</p>
+<p><b>Artifact <span class="artifact" style="padding:1px 6px;">A6</span>:</b> the collapse curve + per-stage distributions + trend p-value (answers H1).</p>
+</div>
+
+<figure>
+<svg viewBox="0 0 460 200" xmlns="http://www.w3.org/2000/svg" width="460" height="200">
+  <line x1="55" y1="18" x2="55" y2="158" stroke="#3a4654" stroke-width="1.2"/><line x1="55" y1="158" x2="430" y2="158" stroke="#3a4654" stroke-width="1.2"/>
+  <text x="14" y="92" font-size="9" fill="#3a4654" font-family="Arial" transform="rotate(-90 14,92)">de-zonation score</text>
+  <polyline points="85,145 160,124 240,90 320,55 400,40" fill="none" stroke="#c05621" stroke-width="2.4"/>
+  <circle cx="85" cy="145" r="4" fill="#2f855a"/><circle cx="160" cy="124" r="4" fill="#2f855a"/><circle cx="240" cy="90" r="4" fill="#c05621"/><circle cx="320" cy="55" r="4" fill="#c05621"/><circle cx="400" cy="40" r="4" fill="#c53030"/>
+  <line x1="85" y1="137" x2="85" y2="153" stroke="#888"/><line x1="240" y1="82" x2="240" y2="98" stroke="#888"/><line x1="400" y1="32" x2="400" y2="48" stroke="#888"/>
+  <text x="72" y="173" font-size="8" fill="#3a4654" font-family="Arial">Healthy</text><text x="143" y="173" font-size="8" fill="#3a4654" font-family="Arial">MASLD</text><text x="227" y="173" font-size="8" fill="#3a4654" font-family="Arial">MASH</text><text x="300" y="173" font-size="8" fill="#3a4654" font-family="Arial">Cirrhosis</text><text x="376" y="173" font-size="8" fill="#3a4654" font-family="Arial">End-stage</text>
+  <text x="120" y="30" font-size="8.5" fill="#5a6472" font-family="Arial" font-style="italic">illustrative expected shape (H1)</text>
+</svg>
+<figcaption>Fig.&nbsp;2 — The headline deliverable (mock-up): a de-zonation metric rising monotonically across stages with donor-bootstrap CIs. Shape illustrative; the real curve is the result.</figcaption>
+</figure>
+
+<div class="step">
+<h4>Step 7 — Which genes drive it (zone-resolved DE, FDR-controlled)</h4>
+<p><b>Inputs:</b> A4 + A2.</p>
+<p>Bin hepatocytes into pseudo-zones (portal / mid / central terciles of the coordinate). Within a zone, test each gene across disease stages — a negative-binomial / Poisson GLM with stage as the predictor (the Exercise&nbsp;2 likelihood framework, maximally in-scope) or Wilcoxon as the field-standard fallback. Apply Benjamini&ndash;Hochberg across all genes; threshold q&lt;0.05; report effect sizes alongside q-values.</p>
+<p><b>Artifact <span class="artifact" style="padding:1px 6px;">A7</span>:</b> per-zone DE tables (gene, log-FC, p, q) + volcano plots + the shortlist of earliest/strongest collapsing programs (answers H2).</p>
+</div>
+
+<div class="step">
+<h4>Step 8 — Link de-zonation to plasticity</h4>
+<p><b>Inputs:</b> A4 + plasticity markers (KRT7, KRT19, SOX9; + Paper&nbsp;1 plasticity genes).</p>
+<p>Score each hepatocyte for a cholangiocyte/plasticity signature; test whether high-entropy (de-zonated) hepatocytes are enriched for it — correlation across cells, plus a zonated-vs-de-zonated group comparison (Mann&ndash;Whitney, FDR-corrected if several signatures).</p>
+<p><b>Artifact <span class="artifact" style="padding:1px 6px;">A8</span>:</b> figure + statistic linking lost zonal identity to gained plasticity (answers H3).</p>
+</div>
+
+<h3>6.4 &nbsp; Optional bonus (stretch) — does the collapse track inherited MASLD risk? (Paper&nbsp;3)</h3>
+<p>If the core results land early, a high-value extension brings in <b>Paper&nbsp;3</b> (Nat&nbsp;Genet 2026), which maps MASLD <b>genetic risk variants</b> to their cell-type regulatory elements and <b>target genes</b> (via snATAC-seq + a massively-parallel reporter assay). The question: <b>are the genes that drive our de-zonation collapse (the Step-7 hits) enriched for inherited-risk target genes?</b> If they are, the zonal breakdown is not merely a downstream consequence of disease — it is partly written into the genome, linking a cell-state phenomenon to inherited susceptibility.</p>
+<p><b>How.</b> Take the FDR-significant collapse-driver genes from Step&nbsp;7 and Paper&nbsp;3's published risk-variant target-gene list, and test their overlap with a <b>hypergeometric / Fisher test</b> against a matched background (BH-corrected). It is a pure gene-list intersection — light, no new heavy data. A second, lighter stretch: correlate the Step-6 collapse curve with a Paper&nbsp;4 immune-infiltration trajectory across matched stages.</p>
+<div class="box key"><span class="lbl">Why it's a strong bonus, not a dependency</span>
+It is genuinely additive (genetics &times; cell-state), cheap (a gene-set enrichment test you already know), and strictly <em>optional</em> — the project stands fully on H1&ndash;H3 without it, so it can never sink the timeline.</div>
+
+<h3>6.5 &nbsp; Splitting the work between two people</h3>
+<table>
+<tr><th>Phase</th><th>Person A — reference &amp; stats</th><th>Person B — disease data &amp; modelling</th></tr>
+<tr><td>Prep</td><td>Parse Paper 2; signatures + training set (Step 1)</td><td>Download + QC Paper 1 hepatocytes (Step 2)</td></tr>
+<tr><td>Day 1 AM</td><td>Harmonize, batch strategy (Step 3)</td><td>Scoring + classifier scaffold (Step 4)</td></tr>
+<tr><td>Day 1 PM</td><td>Validation + ruler diagnostics (5, 5b)</td><td>Place all cells (Step 4 finished)</td></tr>
+<tr><td>Day 2 AM</td><td>Collapse metrics + trend stats (Step 6)</td><td>Zone-binned DE + FDR (Step 7)</td></tr>
+<tr><td>Day 2 PM</td><td>Plasticity link (Step 8) + figures</td><td>Write-up, reproducibility, stretch</td></tr>
+</table>
+
+<h3>6.6 &nbsp; Risk register</h3>
+<table>
+<tr><th>Risk</th><th>Mitigation</th></tr>
+<tr><td>Platform batch dominates placement</td><td>Rank/z-scored features; train classifier on Paper 2's own snRNA-seq; validate on Paper 1 healthy cells (Step 5)</td></tr>
+<tr><td>Ruler dissolves in disease</td><td>Step 5b diagnostics decide interpretation before any claim</td></tr>
+<tr><td>.mat / .rds conversion eats time</td><td>Use the supplementary gene table for baseline signatures (no .mat); convert once to Python-native files then never revisit</td></tr>
+<tr><td>Gene-ID mismatch</td><td>Explicit mapping + reported rate (A3)</td></tr>
+<tr><td>Stage imbalance / pseudoreplication</td><td>Donor-level bootstrap; report per-donor as well as per-cell</td></tr>
+<tr><td>"Reproduction" perception</td><td>Foreground the cross-dataset coordinate, entropy collapse curve, and plasticity link</td></tr>
+</table>
+
+<h3>6.7 &nbsp; Statistical rigor checklist</h3>
+<ul>
+<li>Significance always at <b>BH-FDR q&lt;0.05</b>, never raw p.</li>
+<li>Stage effect via an <b>ordered</b> trend test, not pairwise only.</li>
+<li><b>Donor-level</b> resampling, never 69k cells treated as independent.</li>
+<li>A <b>positive control</b> (Step 5) and a <b>negative control</b> (shuffled labels).</li>
+<li>Classifier judged by held-out accuracy on Paper 2 before use on Paper 1.</li>
+<li>Effect sizes reported beside p/q.</li>
+</ul>
+
+<h3>6.8 &nbsp; What success looks like, and the artifacts</h3>
+<p>Success = a validated placement that recovers healthy zonation (A5), a monotonic collapse curve with honest CIs and a significant trend (A6), an FDR-controlled list of the programs that erode first (A7), and evidence that de-zonated hepatocytes are the plastic ones (A8) — with Step&nbsp;5b telling us, honestly, what kind of breakdown each stage shows.</p>
+<table>
+<tr><th>ID</th><th>Artifact</th><th>Answers</th></tr>
+<tr><td>A1</td><td>Signatures + zone-labelled training set + profile figure</td><td>reference</td></tr>
+<tr><td>A2</td><td>QC'd normalized hepatocyte matrix + QC plots + counts</td><td>input</td></tr>
+<tr><td>A3</td><td>Gene-harmonization report</td><td>batch control</td></tr>
+<tr><td>A4</td><td>Per-cell coordinate + zone probs + entropy + UMAP</td><td>core decode</td></tr>
+<tr><td>A5 / A5b</td><td>Healthy validation + ruler-validity diagnostics</td><td>method &amp; ruler valid?</td></tr>
+<tr><td>A6</td><td>Collapse curve + trend test</td><td>H1</td></tr>
+<tr><td>A7</td><td>Zone-resolved DE tables (q) + volcanoes</td><td>H2</td></tr>
+<tr><td>A8</td><td>De-zonation &harr; plasticity link</td><td>H3</td></tr>
+<tr><td>A9</td><td>Reproducible code repo + methods write-up</td><td>all</td></tr>
+</table>
+</section>
+
+<!-- 7 TIMELINE / 8 GLOSSARY / 9 REFS -->
+<section class="pagebreak">
+<h2>7 &nbsp; Timeline</h2>
+<table>
+<tr><th>When</th><th>Goal</th><th>Done when…</th></tr>
+<tr><td><b>Prep</b></td><td>Data downloaded + converted; signatures (A1) + QC'd hepatocytes (A2) ready</td><td>Both datasets load in one notebook</td></tr>
+<tr><td><b>Day 1</b></td><td>Harmonize (A3), place all cells (A4), validate (A5, A5b)</td><td>Method recovers zonation in healthy donors; score &amp; classifier agree</td></tr>
+<tr><td><b>Day 2</b></td><td>Collapse curve (A6), DE (A7), plasticity (A8), write-up (A9)</td><td>H1&ndash;H3 answered with controlled statistics</td></tr>
+</table>
+<div class="box key"><span class="lbl">Critical path</span>
+Step 5 must pass early. If the coordinate recovers healthy zonation by end of Day&nbsp;1, the rest is mechanical — do not start the collapse analysis until the positive control passes.</div>
+
+<h2 class="pagebreak">8 &nbsp; Glossary</h2>
+<table>
+<tr><th>Term</th><th>Meaning</th></tr>
+<tr><td>Hepatocyte / Cholangiocyte</td><td>Main metabolic liver cell / bile-duct cell (hepatocytes can drift toward this identity in disease)</td></tr>
+<tr><td>Lobule</td><td>Hexagonal liver unit (0.5&ndash;1 mm)</td></tr>
+<tr><td>Porto&ndash;central axis</td><td>Blood-flow gradient from portal inlet to central vein</td></tr>
+<tr><td>Zonation / De-zonation</td><td>Position-dependent division of labour / its loss in disease</td></tr>
+<tr><td>Periportal / Pericentral</td><td>Oxygen-rich (portal) / oxygen-poor (central) ends of the axis</td></tr>
+<tr><td>MASLD / MASH</td><td>Fatty liver disease / steatohepatitis (fat + inflammation)</td></tr>
+<tr><td>snRNA-seq</td><td>Single-nucleus RNA-seq; survives hard tissue, loses spatial coordinates, intron-heavy</td></tr>
+<tr><td>Spatial transcriptomics</td><td>Expression measured with position kept (Visium / Visium HD / MERFISH / PhenoCycler)</td></tr>
+<tr><td>UMI / Dropout</td><td>Counted unique molecule / a technical zero (gene on but missed)</td></tr>
+<tr><td>QC</td><td>Quality control: discarding junk/low-quality cells before analysis</td></tr>
+<tr><td>Signature score</td><td>Pooled expression of a curated gene set (robust to single-gene dropout)</td></tr>
+<tr><td>Zone classifier / entropy</td><td>Model predicting a cell's zone; flat (high-entropy) prediction = de-zonated</td></tr>
+<tr><td>Zonation coordinate</td><td>Reconstructed 1D portal&harr;central position (pseudo-spatial, not x,y)</td></tr>
+<tr><td>DE / FDR (Benjamini&ndash;Hochberg)</td><td>Testing which genes change / controlling false positives across many tests</td></tr>
+<tr><td>Pseudoreplication</td><td>Wrongly treating many cells from few donors as independent</td></tr>
+</table>
+
+<h2 class="pagebreak">9 &nbsp; References &amp; data</h2>
+<ol>
+<li><b>Paper 1.</b> Gribben C, Galanakis V, Calderwood A, et&nbsp;al. <i>Acquisition of epithelial plasticity in human chronic liver disease.</i> Nature (2024). doi:10.1038/s41586-024-07465-2. <b>Data:</b> GEO <b>GSE202379</b> (processed: <span class="mono">GSE202379_SeuratObject_AllCells.rds.gz</span>); code github.com/Core-Bioinformatics/MASLD-NASH.</li>
+<li><b>Paper 2.</b> Yakubovsky O, Bahar&nbsp;Halpern K, Shir S, et&nbsp;al. <i>A spatial atlas of the healthy human liver from live donors.</i> Nature (2026). doi:10.1038/s41586-026-10377-y. <b>Data:</b> Zenodo records <b>17735506 / 17735558 / 17735587</b> (the latter holds <span class="mono">zon_struct_all_full.mat</span> and <span class="mono">combined_scRNAseq_atlas_M5M6M7M8.mat</span>); code github.com/OranYak/Human-liver; browsable web app at shalevapps.weizmann.ac.il/liver_app. <span class="small">(Note: GSE248077/GSE223559/GSE240429 cited by this paper are <em>external comparison</em> datasets, not its own deposit.)</span></li>
+<li><b>Paper 3.</b> Zhu B, et&nbsp;al. <i>Integrative analyses … risk alleles for metabolic liver disease.</i> Nature Genetics (2026). doi:10.1038/s41588-026-02617-8.</li>
+<li><b>Paper 4.</b> Martin OP, et&nbsp;al. <i>Single-cell atlas of human liver and blood immune cells across fatty liver disease stages.</i> Nature Immunology (2025). doi:10.1038/s41590-025-02255-y.</li>
+<li>Benjamini Y, Hochberg Y. <i>Controlling the false discovery rate.</i> J. R. Statist. Soc. B (1995).</li>
+<li>Halpern KB, Itzkovitz S, et&nbsp;al. <i>Single-cell spatial reconstruction reveals global division of labour in the mammalian liver.</i> Nature (2017) — the zonation-reconstruction concept.</li>
+<li>Course materials, Computational Genomics 76553: Ex&nbsp;1 (alignment), Ex&nbsp;2 (library complexity), Lec&nbsp;5 (multiple testing/FDR), Lec&nbsp;15&ndash;16 (single-cell clustering).</li>
+</ol>
+<p class="small" style="margin-top:14px;">Planning + study aid for the hackathon. Paper figures/tables are pointed to, not reproduced; verify exact supplementary file names and accession contents at download time.</p>
+</section>
+
+</body>
+</html>
