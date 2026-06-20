@@ -1,59 +1,68 @@
 # signatures/
 
 Pericentral (PC) and periportal (PP) hepatocyte zonation gene sets. One gene symbol per
-line, no header. **Four families per zone** — the key distinction is **extracted vs derived**:
+line, no header. **The primary signature is `full` — the transcriptome-wide zonation
+program** — matching the project's core motivation: read each cell's position from the
+*whole* program, not from a handful of markers by eye.
 
-| File | What it is | Extracted or derived? | Size (PC / PP) |
+| File | What it is | Size (PC / PP) | Role |
 |---|---|---|---|
-| `*_paper2_landmark.txt` | **The EXACT Paper 2 hepatocyte landmark set** — the genes Paper 2 used to anchor the porto-central axis. **This is the pipeline's default baseline.** | **Extracted verbatim** from Paper 2 | 20 / 20 |
-| `*_core.txt` | Curated, biology-informed anchor set (canonical anchors added, inflammation genes dropped) | **Derived** (our edit) | 13 / 8 |
-| `*_expanded.txt` | Union of the landmark + core + the top ~80 ranked zonated genes from Paper 2's snRNA table | **Extracted** (ranked) ∪ derived | ~102 / ~91 |
-| `periportal_sensitivity.txt` | The periportal core with inflammation-linked `HAMP` removed | **Derived** (our edit) | — / 7 |
+| `*_full.txt` | **Transcriptome-wide program** — every significantly-zonated hepatocyte gene from Paper 2 (q<0.05, well-expressed), present in Paper 1 | **1273 / 364** | **PRIMARY (default)** |
+| `*_expanded.txt` | landmark ∪ core ∪ top-ranked | 102 / 91 | mid-size robustness |
+| `*_core.txt` | curated, biology-informed anchors | 13 / 8 | interpretable anchor set |
+| `*_paper2_landmark.txt` | the EXACT Paper 2 landmark set (verbatim) | 20 / 20 | sanity baseline |
+| `periportal_sensitivity.txt` | core PP minus inflammation gene (HAMP) | – / 7 | acute-phase robustness |
+| `plasticity.txt` | cholangiocyte / biphenotypic markers (KRT7, KRT19, SOX9…) | 6 | **different axis** (H3, not zonation) |
 
-> **Your question — "derived or extracted purely from the paper?"** The **baseline
-> (`paper2_landmark`) is extracted purely and verbatim from Paper 2.** `expanded` is also
-> built from Paper 2's data (its ranked table). Only `core` and `sensitivity` are *our* edits,
-> kept as alternatives — never the baseline.
->
-> **And yes — there are four families:** the exact Paper 2 set **plus** the previous three
-> (`core`, `expanded`, `sensitivity`). The earlier confusion was naming: what used to be
-> called `core` (the curated set) is `core` again; the exact Paper 2 set has its own explicit
-> name, `paper2_landmark`.
+## The default is the full program (this is the point of the project)
+`config.py` sets `DEFAULT_SET = "full"`, so the pipeline scores the coordinate — and trains
+the classifier — on the **~1,637-gene transcriptome-wide zonation program**, not on 20
+markers. This is the whole motivation ("transcriptome-wide, via an external healthy
+reference, not 2–3 markers by eye", primer §3.4). Switch sets in one place:
+```python
+import config
+pc, pp = config.signature_files("full")        # default; or "expanded" / "core" / "paper2_landmark"
+```
 
-## The baseline IS exactly Paper 2's set (deliberate, and the default)
-`pericentral_paper2_landmark.txt` / `periportal_paper2_landmark.txt` are byte-for-byte the
-contents of:
-- `data/raw/Human-liver/Matlab_scripts/Hepatocyte-PC-LM.csv`  (20 genes)
-- `data/raw/Human-liver/Matlab_scripts/Hepatocyte-PP-LM.csv`  (20 genes)
+> **Honest note on the earlier confusion.** When you asked to keep "the EXACT set Paper 2
+> used" as a baseline, I over-applied it and made the 20-gene landmark set the *default* —
+> which silently contradicted the transcriptome-wide motivation. That is corrected here: the
+> **full program is the default/primary**; the landmark set is retained only as a small
+> *sanity baseline* to report alongside.
 
-**`config.py` (`PC_GENES`/`PP_GENES`) points the pipeline at these by default**, so the
-primary analysis uses *exactly the set Paper 2 used* — the most defensible baseline. The
-other tiers are swapped in only for robustness.
+## How `*_full.txt` was built
+From `data/raw/2025-01-01424E-s1/supplementary_table_8.xlsx`, sheet **`Hepatocyte`** (Paper 2's
+single-nucleus, hepatocyte-specific zonation table — same platform as Paper 1). Keep genes with
+**`qValue < 0.05`** and `Max_expression ≥ 90th percentile` (drops snRNA dropout noise), present in
+Paper 1; assign each to a side by its **`Center_of_Mass`** along zones 1–8 (zone 1 = pericentral →
+low COM; zone 8 = periportal → high COM, verified via CYP2E1/GLUL low vs ASS1/HAL high); sort by
+zonation strength. Rebuild: `python src/prep/03_build_signatures.py`. (Table 2, the Visium Fig-2
+table, has the same columns — `pValue/qValue/Center_of_Mass` — and can be used instead; we use the
+snRNA Table 8 for platform match to Paper 1.)
 
-## How `*_expanded.txt` was built
-Ranked from `data/raw/2025-01-01424E-s1/supplementary_table_8.xlsx`, sheet **`Hepatocyte`**
-(Paper 2's **single-nucleus** zonation table — chosen over the Visium Table 2 because it is
-**hepatocyte-specific** and on the **same platform as Paper 1**, avoiding portal-tract stroma
-contamination). Zone 1 = pericentral, zone 8 = periportal (verified: CYP2E1/GLUL low
-center-of-mass, ASS1/HAL high). We scored each gene by center-of-mass, kept genes expressed
-above the 55th percentile **and present in Paper 1**, took the ~80 most polarized per end, and
-unioned with the landmark + core sets. Rebuild: `python src/prep/03_build_expanded_signatures.py`.
+## Decision: report BOTH as a comparison
+The analysis runs every result **both ways** — with the exact Paper 2 `paper2_landmark` set
+(faithful to the original landmark/marker-based plan) **and** the `full` transcriptome-wide set —
+and presents them side by side (`config.SETS_TO_COMPARE = ["paper2_landmark", "full"]`). Agreement
+between the faithful baseline and the transcriptome-wide program is itself evidence the de-zonation
+signal is robust, not an artefact of how many genes we chose.
 
-## Why a curated `core` exists
-The landmark **periportal** set is heavy on **secreted / acute-phase / complement /
-coagulation** genes (`HAMP, SERPINA1, HP, LBP, FGA/FGB/FGG, TF, HPX, C8G, CFHR3, APOA1, APOF,
-F9, FABP1, SERPINA11`) that can move with **inflammation/fibrosis** in MASLD, not only with
-zonal position. The landmark **pericentral** set is missing canonical anchors (`GLUL, CYP2C8,
-CYP27A1, PCK2, SLC2A2, AXIN2`). `core` addresses both — but it's an *opinion*, so it's an
-alternative, not the baseline.
+## Using the different sets (what the analysis should report)
+- **Primary results** use `full`.
+- **Robustness:** re-run H1/H2 with `expanded` and `core` and show the collapse is not an
+  artefact of the gene set; run H1 with `periportal_sensitivity.txt` to rule out an
+  acute-phase confound.
+- **Baseline:** `paper2_landmark` reproduces the analysis on exactly Paper 2's anchors.
+- The classifier (Step 4b) uses the **same `full` feature genes**; `paper2_train.npz`
+  currently stores only the 40 landmark features and must be rebuilt with the full feature
+  set for the transcriptome-wide classifier (see `src/prep/02_convert_paper2_mat.py`).
+- **H2 circularity / held-out genes:** because the coordinate is built from these genes, the
+  H2 "driver" test must use a **random held-out split** of the gene set, **repeated K≈20–50
+  times**, reporting the distribution of the result across splits (a robust signal holds
+  across most splits). With the full ~1,640-gene set this is meaningful; it would not be with
+  20 landmarks. See `src/IMPLEMENTATION_PLAN` Step 7.
 
 ## Human-specific note
-`PCK2` is **pericentral in humans** (Paper 2), not periportal; urea-cycle enzymes
-`ASL/OTC/NAGS` are pericentrally shifted in humans while `ASS1` stays periportal — kept **out**
-of the periportal lists accordingly.
-
-## Hackathon guidance
-- **Primary = `paper2_landmark` (exact Paper 2).** Report `core` (curated) and `expanded` as robustness.
-- Run H1 with `periportal_sensitivity.txt` to show the collapse isn't an acute-phase artefact.
-- For the H2 "driver" analysis use **held-out genes** — never test the same genes that built
-  the coordinate (circularity).
+`PCK2` is **pericentral in humans** (Paper 2); urea-cycle `ASL/OTC/NAGS` are pericentrally
+shifted while `ASS1` stays periportal — handled by the data-driven `full`/`expanded` sets and
+by the curated `core`.

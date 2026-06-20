@@ -77,8 +77,9 @@ PCK2 is placed **pericentrally** (human-specific, per Paper 2). `config.py` defa
 ## docs/  (deliverables)
 | File | What it is |
 |---|---|
-| `Spatial_Degradation_of_Hepatocyte_Zonation.pdf` | **the primer / proposal** — read first |
-| `zonation_v8.html` | current source of the primer (edit → re-render) |
+| `Zonation_Primer.pdf` / `.tex` | **THE primer / proposal — LaTeX, comprehensive (read first)**; edit the `.tex`, recompile with `pdflatex` |
+| `Spatial_Degradation_of_Hepatocyte_Zonation.pdf` | older HTML-rendered primer — **backup** |
+| `zonation_primer.html`, `zonation_v8.html` | HTML primer sources — **backups** |
 | `WORK_DIVISION.md` | who does what (Roee / Shira) |
 | `Zonation_Hackathon_Deck.pptx` (+ `.pdf`) | the slide deck |
 | `email_to_professor.md`, `research_question_options.md`, `ORIGINAL_PLAN_AND_CHANGES.md` | email + history |

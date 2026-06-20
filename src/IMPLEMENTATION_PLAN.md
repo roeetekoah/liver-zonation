@@ -168,8 +168,13 @@ ranks[d]= stage_rank[d]
 **Multiple testing:** `q = BH(p)` — sort p ascending; threshold `p(k) ≤ (k/m)·α`; largest such k;
 all below are significant; q-value = monotone-adjusted p. Report at `q<0.05`.
 **Circularity guards (mandatory):** flag `is_signature` genes; report significant counts BOTH
-including and EXCLUDING them; "driver" claims use non-signature genes; optionally a held-out gene
-split (define coordinate on half the zonation genes, test the other half).
+including and EXCLUDING them; "driver" claims use non-signature genes; and use a **held-out gene
+split** — randomly partition the zonation genes, build the coordinate on one part, test collapse on
+the disjoint other part. The split must be **random**, and because any single random partition could
+be lucky, **repeat it K times (e.g. K=20–50 random splits)** and report the *distribution* of the
+result across splits (e.g. median effect + the fraction of splits significant). A result that holds
+across most random splits is robust; one that depends on a particular partition is not. (Fix the RNG
+seed for reproducibility; optionally stratify the split so each part keeps both PC and PP genes.)
 **Output A7:** `de_portal.csv`, `de_central.csv` (`gene, effect, p, q, is_signature`) + volcano
 (`plot_a7_volcano`). **Acceptance:** significant set survives excluding signature genes.
 

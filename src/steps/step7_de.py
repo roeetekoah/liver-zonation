@@ -22,8 +22,11 @@ def de(M, genes, libsize, coord, stage, donor, sig_genes, min_donor_cells=20, mi
       2. PSEUDOBULK: per (donor, zone) mean log1p CP10k for donors with >= min_donor_cells.
       3. Keep genes detected in >= min_frac of donor pseudobulks.
       4. Test each gene's pseudobulk vs donor stage_rank (Spearman / linear); BH-FDR.
-      5. Circularity guards: exclude signature genes from the driver list; use a held-out
-         gene split; optionally fit interaction expr ~ coord + stage + coord×stage.
+      5. Circularity guards: exclude signature genes from the driver list; use a RANDOM
+         held-out gene split (build coord on one half, test the disjoint half) REPEATED
+         K~20-50 times, reporting the distribution across splits (median effect + fraction
+         significant) — meaningful with the full ~1,640-gene set, not 20 landmarks;
+         optionally fit interaction expr ~ coord + stage + coord×stage.
     Acceptance check
       A meaningful set of NON-signature genes is significant (q<0.05) after FDR.
     Stats notes

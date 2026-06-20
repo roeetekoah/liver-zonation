@@ -39,3 +39,39 @@ Plus the "why full marks" rationale: not a reproduction (Paper 2 decodes Paper 1
 - **Nothing core was dropped.** Steps A/B/C survive verbatim as Steps 1, 4a, and 7.
 - The **classifier you originally wanted is in** — it's the headline (Step 4b); the signature score was *added* as a robust baseline beside it, not a replacement.
 - Everything else is **additive**: controls (Steps 5, 5b), a second hypothesis (H3), honesty framing, and the optional bonus — i.e. the project got more rigorous and better-defended, not narrower.
+
+---
+
+## 5. Honest drift audit (the one real drift: signature breadth)
+
+A careful re-read of the original docs against the current state. The **science** is faithful;
+there was **one genuine drift, and it was about how many genes the signature uses.**
+
+**What the original actually said.** `research_question_options.md`, Option 1, in its own words:
+"Build a zonation-reconstruction model from P2's **landmark genes**" and method =
+"**marker-based gradient inference**." So the original plan was a **small landmark/marker set** —
+*not* transcriptome-wide.
+
+**The drift.** The primer (§3.4), written later, sells the project as **transcriptome-wide** —
+"read from the whole ~1,141-gene zonation program, not 2–3 markers by eye." That framing is a
+*strengthening I added*; it goes beyond the literal original "landmark genes." Then the
+**code** defaulted to a 20-gene landmark set (faithful to the original wording) — which
+**contradicted the primer's own transcriptome-wide claim.** That primer-vs-code inconsistency is
+the real mistake.
+
+**Resolution (current).** The default is now the **full transcriptome-wide set**
+(`signatures/*_full.txt`, ~1,640 genes), with landmark / core / expanded kept as baselines. This
+makes the code consistent with the primer's stated motivation. It is a *deliberate strengthening*
+of the original landmark plan — worth being explicit that the literal original was landmark-based.
+
+**Everything else checks out, including things that look like additions but were in the original:**
+- The **plasticity link (H3)** is in the original Option 1 verbatim ("does the most de-zonated
+  fraction coincide with the transdifferentiating cholangiocyte-marker⁺ cells").
+- The **classifier** was the original "AI model" intent.
+- Trend test, FDR, permutation/LRT are all named in the original method line.
+- Validation gate (5), ruler diagnostics (5b), donor-level inference, pseudobulk — **rigor added**,
+  not a change of question.
+
+**Net:** no scientific drift; one signature-breadth inconsistency (primer said transcriptome-wide,
+code did landmark), now reconciled to transcriptome-wide. If we ever prefer to hew to the literal
+original (landmark/marker-based as primary), it's a one-line `config.DEFAULT_SET` change.

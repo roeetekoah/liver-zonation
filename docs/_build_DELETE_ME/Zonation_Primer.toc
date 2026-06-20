@@ -1,0 +1,38 @@
+\contentsline {section}{\numberline {1}Introduction \& motivation}{3}{section.1}%
+\contentsline {subsection}{\numberline {1.1}What is already built, so the work is execution, not setup}{3}{subsection.1.1}%
+\contentsline {section}{\numberline {2}Background: the biology, from the ground up}{5}{section.2}%
+\contentsline {subsection}{\numberline {2.1}What the liver does, and the two cell types that do it}{5}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}The lobule, the gradient, and zonation}{5}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}The disease that degrades it: the MASLD spectrum}{6}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}The two ways identity breaks --- and why keeping them apart is the whole point}{7}{subsection.2.4}%
+\contentsline {section}{\numberline {3}The data \& the gap}{9}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Two ways to measure a tissue: keep the map, or dissolve it}{9}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Paper\nobreakspace {}2 --- the healthy ruler}{10}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Paper\nobreakspace {}1 --- the diseased cells}{10}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}The gap --- mirror images neither paper has joined}{11}{subsection.3.4}%
+\contentsline {section}{\numberline {4}Research question \& hypotheses}{12}{section.4}%
+\contentsline {subsection}{\numberline {4.1}H1 --- does zonation erode as disease advances?}{12}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}H2 --- which gene programs collapse, and where on the axis?}{12}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}H3 --- do the de-zonated cells become the plastic ones?}{13}{subsection.4.3}%
+\contentsline {section}{\numberline {5}Methods: from data to a position-number}{14}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Where we begin: the count table}{14}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}The table lies --- so first we clean it (QC \& normalization)}{14}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}The zeros are a trap --- and the trap dictates the method}{15}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Therefore: read position from many genes at once (signature scoring)}{15}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}A stronger reader: a zone classifier, and why its confusion is the signal}{16}{subsection.5.5}%
+\contentsline {subsection}{\numberline {5.6}Validity: the positive control on healthy liver}{18}{subsection.5.6}%
+\contentsline {subsection}{\numberline {5.7}De-zonation is a population property}{19}{subsection.5.7}%
+\contentsline {subsection}{\numberline {5.8}Comparing stages without fooling ourselves (the statistics)}{19}{subsection.5.8}%
+\contentsline {paragraph}{H1 --- the ordered-trend tests.}{20}{section*.14}%
+\contentsline {paragraph}{H3 --- association, with the stage confound removed.}{20}{section*.15}%
+\contentsline {paragraph}{H2 --- differential expression with FDR.}{21}{section*.16}%
+\contentsline {subsection}{\numberline {5.9}When does the ruler stop being a ruler? (validity controls, Step\nobreakspace {}5b)}{21}{subsection.5.9}%
+\contentsline {section}{\numberline {6}Work plan}{23}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Inputs and environment}{23}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}The live hackathon steps (1--9)}{23}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Work division, risk register, and success criteria}{25}{subsection.6.3}%
+\contentsline {section}{\numberline {7}Limitations \& honest scope}{26}{section.7}%
+\contentsline {section}{\numberline {8}Optional bonus: does the collapse track inherited MASLD risk? (Paper\nobreakspace {}3)}{26}{section.8}%
+\contentsline {section}{\numberline {9}Timeline \& work division}{28}{section.9}%
+\contentsline {section}{\numberline {10}Glossary}{29}{section.10}%
+\contentsline {section}{\numberline {11}References}{29}{section.11}%
