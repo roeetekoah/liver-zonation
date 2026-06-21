@@ -62,3 +62,32 @@ def _is_na(v):
     """True where a donor/stage string is missing-like ('nan','NA','None','')."""
     s = pd.Series(v).astype(str).str.strip()
     return s.isin(["", "nan", "NaN", "NA", "None", "<NA>"])
+
+
+def jonckheere_terpstra(values, groups, n_perm=2000, seed=0):
+    """Jonckheere-Terpstra ordered-trend test (the primer's dedicated H1 test). `values` are the
+    per-donor metric, `groups` the ordered stage rank. Returns (z, perm_p): z>0 => values tend to
+    INCREASE with stage; z<0 => decrease. p is a two-sided donor-label permutation p-value (robust
+    to the heavy ties / small n here). J = sum over ordered stage pairs (a<b) of #{x_b > x_a}."""
+    v = np.asarray(values, float); g = np.asarray(groups)
+    uniq = np.unique(g)
+
+    def Jstat(vals):
+        J = 0.0
+        for ia in range(len(uniq)):
+            a = vals[g == uniq[ia]]
+            for ib in range(ia + 1, len(uniq)):
+                b = vals[g == uniq[ib]]
+                d = b[:, None] - a[None, :]
+                J += (d > 0).sum() + 0.5 * (d == 0).sum()
+        return J
+
+    J = Jstat(v)
+    N = len(v); ns = np.array([(g == u).sum() for u in uniq], float)
+    muJ = (N ** 2 - (ns ** 2).sum()) / 4.0
+    s2 = (N ** 2 * (2 * N + 3) - (ns ** 2 * (2 * ns + 3)).sum()) / 72.0
+    z = (J - muJ) / np.sqrt(s2) if s2 > 0 else 0.0
+    rng = np.random.RandomState(seed)
+    null = np.array([Jstat(v[rng.permutation(N)]) for _ in range(n_perm)])
+    p = (np.sum(np.abs(null - muJ) >= abs(J - muJ)) + 1) / (n_perm + 1)
+    return float(z), float(p)

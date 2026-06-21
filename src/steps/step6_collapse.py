@@ -9,7 +9,7 @@ import numpy as np, pandas as pd
 from scipy.stats import spearmanr
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # src/
 import config
-from steps.common import log, OUT, SHORT, S2R, _is_na, set_dir
+from steps.common import log, OUT, SHORT, S2R, _is_na, set_dir, jonckheere_terpstra
 from plotting import artefacts
 
 
@@ -71,11 +71,13 @@ def collapse(coord, pc, pp, stage, donor, entropy=None, bars=None,
         lo, hi = np.nanpercentile(bs, [2.5, 97.5])
         null = [abs(spearmanr(rng.permutation(x), y).statistic) for _ in range(n_boot)]
         pperm = (np.sum(np.array(null) >= abs(rho)) + 1) / (len(null) + 1)
+        jt_z, jt_p = jonckheere_terpstra(y, x)            # primer's dedicated ordered-trend test
         trows.append({"signature_set": which, "metric": metric, "n_donors": len(dd),
                       "rho_vs_stage": rho, "ci_lo": lo, "ci_hi": hi,
-                      "p_spearman": p, "perm_p": pperm, "expected_direction": direction})
+                      "p_spearman": p, "perm_p": pperm, "jt_z": jt_z, "jt_perm_p": jt_p,
+                      "expected_direction": direction})
         log(f"  {metric:14s} vs stage: rho={rho:+.3f} (95%CI {lo:+.2f},{hi:+.2f}) "
-            f"p={p:.3g} perm_p={pperm:.3g}  [expect {direction}]")
+            f"p={p:.3g} perm_p={pperm:.3g}  JT z={jt_z:+.2f} p={jt_p:.3g}  [expect {direction}]")
     pd.DataFrame(trows).to_csv(os.path.join(sd, "collapse_trends.csv"), index=False)
     # H1 figure via the shared plotting layer (plotting/artefacts.py). Entropy is AUXILIARY -> in
     # the CSV but NOT plotted (figure shows only the coordinate-based collapse metrics).

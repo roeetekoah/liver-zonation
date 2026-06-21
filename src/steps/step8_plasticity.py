@@ -24,16 +24,24 @@ def plasticity(coord, plast, stage, donor, which="", min_cells=30, seed=0):
     log(f"Step 8: H3 de-zonation vs plasticity [set={which}] — DONOR-LEVEL headline")
     if np.allclose(np.nanstd(plast), 0):
         log("  (no plasticity markers present — skipping)"); return None
+    from scipy.stats import mannwhitneyu
     dez = -np.abs((coord - np.median(coord)) / (np.std(coord) + 1e-9))
     rows = []
     for d in np.unique(donor):
         m = donor == d
         if _is_na([d]).iat[0] or m.sum() < min_cells or plast[m].std() == 0: continue
         st = pd.Series(stage[m]).mode().iat[0]
-        r = spearmanr(dez[m], plast[m])
+        dz, pl = dez[m], plast[m]
+        r = spearmanr(dz, pl)
+        # within-donor Mann-Whitney: do more de-zonated cells (dez above donor median) have higher
+        # plasticity? AUC = P(plast higher in de-zonated than zonated cell); 0.5 = no effect.
+        hi = dz >= np.median(dz); lo = ~hi; auc = np.nan
+        if hi.sum() and lo.sum() and (pl[hi].std() + pl[lo].std()) > 0:
+            u = mannwhitneyu(pl[hi], pl[lo], alternative="two-sided").statistic
+            auc = u / (hi.sum() * lo.sum())
         rows.append({"signature_set": which, "donor": d, "stage": st,
                      "stage_rank": S2R.get(st, -1), "n_cells": int(m.sum()),
-                     "rho_dez_plast": float(r.statistic)})
+                     "rho_dez_plast": float(r.statistic), "auc_dez_plast": auc})
     dd = pd.DataFrame(rows)
     dd.to_csv(os.path.join(set_dir(which), "per_donor_plasticity.csv"), index=False)
     rs = dd["rho_dez_plast"].values
@@ -47,8 +55,25 @@ def plasticity(coord, plast, stage, donor, which="", min_cells=30, seed=0):
     rng = np.random.RandomState(seed)
     bs = [np.nanmean(rs[rng.randint(0, n, n)]) for _ in range(2000)] if n else []
     lo, hi = (np.nanpercentile(bs, [2.5, 97.5]) if bs else (np.nan, np.nan))
+    # Wilcoxon signed-rank on per-donor rhos (uses magnitudes, upgrade over the sign test)
+    try:
+        from scipy.stats import wilcoxon
+        wil_p = wilcoxon(rs).pvalue if (n >= 6 and np.any(rs != 0)) else np.nan
+    except Exception:
+        wil_p = np.nan
+    aucs = dd["auc_dez_plast"].values
+    mean_auc = float(np.nanmean(aucs)); n_auc = int(np.isfinite(aucs).sum())
+    n_auc_pos = int(np.nansum(aucs > 0.5))
     log(f"  PRIMARY: per-donor rho(de-zonation, plasticity): mean={np.nanmean(rs):+.3f} "
-        f"(95%CI {lo:+.2f},{hi:+.2f}); >0 in {n_pos}/{n} donors, sign-test p={sign_p:.3g}")
+        f"(95%CI {lo:+.2f},{hi:+.2f}); >0 in {n_pos}/{n} donors, sign-test p={sign_p:.3g}, "
+        f"Wilcoxon signed-rank p={wil_p:.3g}")
+    log(f"  (H3 MWU) within-donor de-zonated-vs-zonated plasticity AUC: mean={mean_auc:.3f} "
+        f"(0.5=no effect); >0.5 in {n_auc_pos}/{n_auc} donors")
+    pd.DataFrame([{"signature_set": which, "n_donors": n, "mean_rho": float(np.nanmean(rs)),
+                   "frac_donors_pos": n_pos / n if n else np.nan, "sign_test_p": sign_p,
+                   "wilcoxon_signed_rank_p": wil_p, "mean_auc_dez_plast": mean_auc,
+                   "frac_donors_auc_gt_0p5": (n_auc_pos / n_auc if n_auc else np.nan)}]
+                 ).to_csv(os.path.join(set_dir(which), "h3_summary.csv"), index=False)
     # H3 figure via the shared plotting layer (plotting/artefacts.py)
     artefacts.plot_h3_per_donor(dd, os.path.join(str(config.FIGURES), f"plasticity_{which}.png"), short=SHORT,
                                 title=f"H3 [{which}]: mean={np.nanmean(rs):+.3f}, {n_pos}/{n}>0, p={sign_p:.2g}")
