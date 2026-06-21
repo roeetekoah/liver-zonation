@@ -68,6 +68,11 @@ def main():
         summ = summ.sort_values("q", ascending=False)
     prog = rd("paper2_full/h2_program_summary.csv")
     axiseval = rd("unsupervised_axis_eval.csv")
+    tw = rd("expanded_curated/h2_transcriptome_wide_summary.csv")
+    tw_n = tw_frac = tw_sig = "n/a"
+    if tw is not None and len(tw):
+        r = tw.iloc[0]; tw_n = str(int(r["n_tested"])); tw_frac = f"{r['frac_weakening']*100:.0f}"
+        tw_sig = str(int(r["n_q05_weakening"]))
 
     lm_s, lm_p = h1("paper2_landmark"); un_s, un_p = h1("unsupervised")
     ex_s, ex_p = h1("expanded_curated"); fl_s, fl_p = h1("paper2_full")
@@ -138,6 +143,16 @@ $\sim$2000 weakly-zonated genes lets a shared technical/expression factor domina
 ``full'' coordinate is \emph{not} a zonation axis at all. This is why a transcriptome-wide
 \emph{unweighted} mean fails while a \emph{weighted} or selected ruler succeeds.
 
+\subsection{Ruler ranking and selection (healthy metrics ONLY)}
+Every ruler is scored on \textbf{healthy} quality alone --- a quality score of
+(split-half reproducibility) $+\,\max(0,-$healthy PC--PP anticorrelation$)$ --- and the table below
+is \textbf{ordered by it}. Disease-collapse strength is deliberately \emph{excluded} from selection:
+using the test cohort to choose the instrument would be leakage. The frozen primary is the
+top-ranked \emph{published-signature} set; learned rulers are shown for comparison but do not compete
+in the auto-selection. We keep the whole spectrum (curated, data-ranked, learned PCA, regularized,
+supervised) because agreement of \emph{independent construction mechanisms} is the robustness
+evidence --- not because any one is cherry-picked.
+
 %(summary_table)s
 
 \subsection{Which ruler we selected, and why it is not the strongest-on-disease one}
@@ -154,6 +169,15 @@ PCA axis $\rho=%(un_s)s$ (perm $p=%(un_p)s$). The broken ``full'' ruler is null 
 exactly as its healthy diagnostics predicted. The agreement of the published-signature ruler and a
 \emph{label-free} ruler is the key point: the collapse is a property of the data, not of any one
 gene list.
+
+\paragraph{Early disease is the noisy part (stated honestly).} The decline is \emph{not} strictly
+monotonic from Healthy: at NAFLD the coordinate is often as zonated as (or slightly more than)
+Healthy, and the Healthy$\to$NAFLD \emph{direction flips across rulers} (up for landmark/expanded,
+down for the dense PCA axis) --- exactly the instability expected where the signal is weakest and $n$
+smallest (Healthy $n=4$, NAFLD $n=7$). All rulers nonetheless \emph{agree} on the strong
+NASH$\to$end-stage decline. So the defensible claim is an ordered collapse \emph{across the disease
+course, driven by NASH$\to$end-stage}, with early steatosis leaving zonation largely intact ---
+consistent with steatosis beginning pericentrally before inflammation and fibrosis dissolve the axis.
 
 \subsection{Leakage control --- the unsupervised axis is clean}
 A fair concern: was the learned axis trained on disease cells? No. It was learned on healthy cells
@@ -175,6 +199,13 @@ Biologically this is coherent: loss of the pericentral Wnt identity is the earli
 de-zonation, while acute-phase genes change with disease \emph{globally} (not zonally), so their
 zonal slope does not collapse. Note H2 (loss of spatial restriction) is distinct from classic DE
 (change in level); the cross-table \texttt{h2\_slopeloss\_vs\_DE.csv} reports both per gene.
+
+\paragraph{H2c --- transcriptome-wide (every gene, donor-level).} Taking H2 forward: assign every
+cell the frozen ruler coordinate and test \emph{all} %(tw_n)s genes' donor-level zonal slope.
+%(tw_frac)s\,\% weaken directionally, but only %(tw_sig)s survive BH-FDR at $q<0.05$ (all non-ruler
+genes). So the collapse is \emph{broad and diffuse} --- most genes lose a little zonation rather than
+a few master genes losing a lot --- which is why the powered read-outs are the program-level (H2b)
+and held-out ruler-gene tests, not per-gene FDR at $n=47$ donors.
 
 \subsection{H3 --- de-zonation couples weakly to plasticity}
 Within donors, de-zonation correlates positively with plasticity-marker expression
@@ -221,7 +252,7 @@ per-set \texttt{results/tables/<set>/}.
         "lm_s": lm_s, "lm_p": lm_p, "ex_s": ex_s, "ex_p": ex_p,
         "un_s": un_s, "un_p": un_p, "fl_s": fl_s,
         "agree": agree or "the unsupervised and signature rulers agree",
-        "prog_table": prog_tex,
+        "prog_table": prog_tex, "tw_n": tw_n, "tw_frac": tw_frac, "tw_sig": tw_sig,
     }
     for k, v in M.items():
         tex = tex.replace("%(" + k + ")s", str(v))

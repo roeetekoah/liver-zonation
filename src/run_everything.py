@@ -128,6 +128,7 @@ def main():
     _py("make_panel_figure.py")
     for s in ("paper2_full", "unsupervised"):
         _py("h2_program_analysis.py", s)
+    _py("h2_transcriptome_wide.py", "expanded_curated")   # H2c: every gene, donor-level
     _py("unsupervised_axis_eval.py")
     _py("make_latex_report.py")        # per-set results dossier
     _py("make_narrative_report.py")    # narrative analysis report
