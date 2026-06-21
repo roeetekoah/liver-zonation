@@ -1,37 +1,38 @@
 # Work division — Roee & Shira
 
-Two people, two days. The split below is deliberately **uneven**: Roee owns the
-statistical/methodological spine (the parts that are hardest to get right and that the
-grade hinges on); Shira owns the data-wrangling, the baseline coordinate, validation,
-and the figure/write-up production. Everything maps to a numbered step, its stub file
+Two people, two days. We split the project into two complementary tracks that run in
+parallel and meet at the per-cell coordinate table (`A4`). Each track owns essential,
+substantive parts of the result — the project only works if both land. The split follows
+who's picking up which area, and keeps the two sets of files mostly separate so we can work
+without stepping on each other. Everything maps to a numbered step, its stub file
 (`src/steps/…`), and its acceptance check (`src/CODING_PLAN.md`).
 
-> Principle: the **donor-level statistics** and the **interpretation guards** (circularity,
-> calibration, ruler-validity) are the project's risk — those go to Roee. Shira owns a
-> clean, well-validated pipeline up to the coordinate, plus all the deliverable polish,
-> so the two halves meet at the per-cell coordinate table (`A4`).
+> How we split it: one track carries the data → coordinate → validation foundation that
+> every downstream result is built on; the other carries the donor-level statistics, the
+> classifier, and the interpretation guards. The two halves meet at the `A4` coordinate
+> table — agree its exact columns early.
 
 ---
 
 ## Ownership at a glance
 
-| Step | Artefact | Owner | Why |
+| Step | Artefact | Owner | Area |
 |---|---|---|---|
-| 2 Load + QC sanity | A2 | **Shira** | data wrangling; inherits QC, re-normalizes, builds per-donor counts |
+| 2 Load + QC sanity | A2 | **Shira** | data ingest, QC, per-donor counts |
 | 3 Harmonize genes | A3 | **Shira** | gene-ID mapping, shared-gene set, batch-robust features |
-| 4a Signature scoring | A4 | **Shira** | baseline coordinate = mean_z(PC) − mean_z(PP) |
-| 4b Zone classifier + entropy | A4 | **Roee** | ML; calibration, OOD handling, entropy meter |
-| 5 Healthy validation | A5 | **Shira** | positive control (marker correlations) — the go/no-go gate |
-| 5b Ruler-validity battery | A5b | **Roee** | the subtle "is the ruler still a ruler" diagnostics |
+| 4a Signature scoring | A4 | **Shira** | the coordinate itself — mean_z(PC) − mean_z(PP) |
+| 4b Zone classifier + entropy | A4 | **Roee** | ML: calibration, OOD handling, entropy meter |
+| 5 Healthy validation | A5 | **Shira** | positive control — the go/no-go gate the whole result rests on |
+| 5b Ruler-validity battery | A5b | **Roee** | "is the ruler still a ruler" diagnostics |
 | 6 Collapse curve (H1) | A6 | **Roee** | donor-level inference, bootstrap, permutation null — headline |
-| 7 Zone-resolved DE (H2) | A7 | **Roee** | pseudobulk + interaction model + circularity guards (hardest stats) |
-| 8 Plasticity link (H3) | A8 | **Shira** (model design with Roee) | scoring + within-donor test; Roee reviews the confound control |
+| 7 Zone-resolved DE (H2) | A7 | **Roee** | pseudobulk + interaction model + circularity guards |
+| 8 Plasticity link (H3) | A8 | **Shira** (model design with Roee) | scoring + within-donor test; confound control reviewed together |
 | 9 Bonus enrichment | A9 | **Roee** (if time) | hypergeometric test + background model |
-| Integration / `run_all` / reproducibility / stats sign-off | A9 | **Roee** | owns that the numbers are defensible end-to-end |
-| Figures (`src/plotting`), tables, deck, write-up | A9 | **Shira** | turns artefacts into the deliverables |
+| Integration / `run_all` / reproducibility | — | **Roee** | end-to-end reproducibility of every number |
+| Figures (`src/plotting`), tables, deck, write-up | — | **Shira** | turns the artefacts into the deliverables |
 
-The two tracks are mostly **separate files** (Shira: steps 2,3,4a,5,8 + plotting; Roee:
-steps 4b,5b,6,7,9 + pipeline integration), so git conflicts are rare. They join at the
+The two tracks are mostly **separate files** (Shira: steps 2, 3, 4a, 5, 8 + plotting; Roee:
+steps 4b, 5b, 6, 7, 9 + pipeline integration), so git conflicts are rare. They join at the
 `A4` coordinate table — agree its exact columns early (`cell_id, donor, stage,
 zonation_coord, pc, pp, plasticity, zone_probs…, entropy`).
 
@@ -57,21 +58,21 @@ positive control validated. See the primer's "What we've already built" page.
 - Shira: begin figures from A5/A5b/A6 via `src/plotting`; assemble the methods write-up skeleton.
 
 **Day 2 — PM**
-- Roee: finish Step 7 pseudobulk DE + interaction + circularity guards → **H2**; review Shira's Step 8 confound control; Step 9 bonus if time; final reproducibility + stats sign-off (`run_all`).
+- Roee: finish Step 7 pseudobulk DE + interaction + circularity guards → **H2**; review Step 8 confound control with Shira; Step 9 bonus if time; final reproducibility (`run_all`).
 - Shira: Step 8 plasticity (within-donor / stage-stratified) → **H3**; final figures, tables, deck, presentation.
 
 ---
 
 ## Definition of done (per owner)
 
+**Shira** — `A4` coordinate table is complete and documented; the healthy positive control
+passes and is plotted; every artefact has a figure from `src/plotting`; the report and deck
+carry the real A6/A7/A8 figures with correct captions.
+
 **Roee** — each statistical claim is donor-level, has a CI and a negative control, and
 survives the circularity guard (signature genes excluded / held-out split / interaction
-test); classifier entropy is calibrated and cross-checked against QC; `run_all`
-reproduces every figure from `data/processed` on a clean checkout.
-
-**Shira** — `A4` coordinate table is complete and documented; the healthy positive
-control passes and is plotted; every artefact has a figure from `src/plotting`; the
-report and deck carry the real A6/A7/A8 figures with correct captions.
+test); classifier entropy is calibrated and cross-checked against QC; `run_all` reproduces
+every figure from `data/processed` on a clean checkout.
 
 ---
 
