@@ -1,0 +1,2 @@
+signature_set,n_donors,mean_rho,frac_donors_pos,sign_test_p,wilcoxon_signed_rank_p,mean_auc_dez_plast,frac_donors_auc_gt_0p5
+unsupervised_p2,47,-0.00912573174474605,0.48936170212765956,1.0,0.49172961037194796,0.49699197083224955,0.46808510638297873

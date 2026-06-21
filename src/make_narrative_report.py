@@ -66,7 +66,7 @@ def main():
                                (0 if pd.isna(r["healthy_splithalf_rho_mean"]) else r["healthy_splithalf_rho_mean"])
                                + max(0.0, -(0 if pd.isna(r["healthy_pc_pp_anticorr"]) else r["healthy_pc_pp_anticorr"]))), axis=1)
         summ = summ.sort_values("q", ascending=False)
-    prog = rd("paper2_full/h2_program_summary.csv")
+    prog = rd("expanded_curated/h2_program_summary.csv")   # H2b on the VALID ruler
     axiseval = rd("unsupervised_axis_eval.csv")
     tw = rd("expanded_curated/h2_transcriptome_wide_summary.csv")
     tw_n = tw_frac = tw_sig = "n/a"
@@ -77,12 +77,19 @@ def main():
     lm_s, lm_p = h1("paper2_landmark"); un_s, un_p = h1("unsupervised")
     ex_s, ex_p = h1("expanded_curated"); fl_s, fl_p = h1("paper2_full")
 
-    prog_tex = ""
+    prog_tex = ""; wnt_q = "n/a"
     if prog is not None:
         prog = prog.sort_values("median_trend_rho")
-        prog_tex = "\\begin{tabular}{l r r}\n\\hline\nprogram & median slope-trend $\\rho$ & \\% weaken \\\\\n\\hline\n"
+        has_q = "q_bh" in prog.columns
+        prog_tex = ("\\begin{tabular}{l r r r}\n\\hline\nprogram & $n$ & median $\\rho$ & "
+                    "MWU $q$ vs background \\\\\n\\hline\n")
         for _, r in prog.iterrows():
-            prog_tex += f"{str(r['program']).replace('_', chr(92)+'_')} & {r['median_trend_rho']:+.2f} & {r['frac_weakening']*100:.0f}\\% \\\\\n"
+            nm = str(r["program"]).replace("_", chr(92) + "_")
+            q = r["q_bh"] if has_q and pd.notna(r.get("q_bh", np.nan)) else np.nan
+            qs = "--" if pd.isna(q) else (f"{q:.1e}" if q < 0.01 else f"{q:.2f}")
+            prog_tex += f"{nm} & {int(r['n_genes'])} & {r['median_trend_rho']:+.2f} & {qs} \\\\\n"
+            if r["program"] == "wnt_pericentral_identity" and pd.notna(q):
+                wnt_q = f"{q:.0e}"
         prog_tex += "\\hline\n\\end{tabular}"
 
     agree = ""
@@ -131,6 +138,29 @@ $-$), the healthy PC--PP anti-correlation (a real axis has the two arms mutually
 split-half reproducibility. The best healthy ruler is \emph{frozen} and only \emph{then} applied to
 the disease cohort. Disease H1/H2/H3 are the \emph{test}; they are never used to choose a ruler.
 Choosing by disease strength would be circular (leakage).
+
+\subsection{Statistical tests --- what each checks, and how}
+Every test follows the donor rule: collapse each donor's cells to one number, then test on the
+$\approx$47 donor values (resampling/permuting donors, never cells). Tests are rank-based by default
+(ordinal stages, skewed scores, small $n$); effect sizes are reported beside every $p$; BH-FDR
+controls multiple testing.
+
+\begin{tabular}{l l l}
+\hline
+test & what it checks & how \\
+\hline
+Spearman $\rho$ & monotone trend of a metric vs stage & rank correlation; donor-level \\
+Jonckheere--Terpstra & ordered-groups trend (dedicated) & $J=\sum_{a<b}U_{ab}$, permutation $p$ \\
+Donor bootstrap CI & how big / how sure the trend is & resample donors $B{=}2000$, 2.5/97.5 pct \\
+Label-shuffle perm. & is the pipeline finding noise? & shuffle stage labels, recompute \\
+Held-out gene split & H2 without circularity & build coord on half genes, test other half, $K{=}20$ \\
+Mann--Whitney $U$ (H2b) & does a program weaken $>$ background? & $U$ of program vs rest, rank-biserial, BH-$q$ \\
+Per-gene FDR (H2c) & which individual genes lose slope & Spearman per gene, BH over $\sim$30k \\
+Within-donor corr (H3) & dez$\leftrightarrow$plast, stage-free & $\rho_d$ per donor; sign test \& Wilcoxon vs 0 \\
+Mann--Whitney AUC (H3) & dez vs zonated plasticity & within-donor AUC, aggregate \\
+OLS + C(stage)+C(donor) & partial dez effect (descriptive) & coefficient on dez (cell-level SE) \\
+\hline
+\end{tabular}
 
 \section{Results and analysis}
 
@@ -187,25 +217,37 @@ Paper~2 healthy atlas} (zero Paper~1 cells in fitting) and transferred it: the c
 signature-formula artefact, and the result is not a variance-maximization artefact.
 
 \subsection{H2 --- which programs lose zonation, and fastest}
-\textbf{H2a (global):} most zonated genes lose their donor-level zonal slope with disease
-(held-out split; e.g.\ 96/100 genes weaken for the unsupervised ruler). \textbf{H2b (differential
-vulnerability):} grouping genes into programs reveals a clear order --- pericentral Wnt/identity
-genes de-zonate first, then nitrogen/urea and xenobiotic metabolism, whereas acute-phase/secreted
-and bile-acid programs are spared or even strengthen:
+\textbf{H2a (held-out slope-loss).} Building the coordinate from one random half of the ruler genes
+and testing the other half (repeated $K{=}20\times$), most held-out genes lose their donor-level
+zonal slope with disease (e.g.\ 96/100 weaken for the unsupervised ruler) --- a non-circular
+confirmation that the genes defining zonation flatten with disease.
+
+\textbf{H2c (transcriptome-wide, per gene).} Taking it further: assign every cell the frozen ruler
+coordinate and test \emph{all} %(tw_n)s genes' donor-level zonal slope. %(tw_frac)s\,\% lean toward
+weakening (a real directional bias --- pure noise would give 50\%), \emph{but only %(tw_sig)s survive
+BH-FDR} at $q<0.05$. Why so few? Each gene's slope is estimated per donor from a handful of zone
+bins, and with only $n{=}47$ donors the per-gene test is weak; correcting across $\sim$30k genes,
+almost no single gene is individually a stand-out. So the collapse is \textbf{broad and diffuse} ---
+most genes lose a \emph{little} zonation rather than a few master genes losing a lot.
+
+\textbf{H2b (program-level --- where the power and the structure are).} Diffuse does \emph{not} mean
+uniform. Grouping genes into programs and aggregating recovers the power that per-gene FDR throws
+away: for each program we test, by Mann--Whitney $U$, whether its genes weaken \emph{more than the
+genome background} (background median $\rho=-0.06$, %(tw_frac)s\,\% weakening), with a rank-biserial
+effect and BH across programs. The programs weaken at \emph{significantly different rates}:
 
 %(prog_table)s
 
-Biologically this is coherent: loss of the pericentral Wnt identity is the earliest and strongest
-de-zonation, while acute-phase genes change with disease \emph{globally} (not zonally), so their
-zonal slope does not collapse. Note H2 (loss of spatial restriction) is distinct from classic DE
-(change in level); the cross-table \texttt{h2\_slopeloss\_vs\_DE.csv} reports both per gene.
-
-\paragraph{H2c --- transcriptome-wide (every gene, donor-level).} Taking H2 forward: assign every
-cell the frozen ruler coordinate and test \emph{all} %(tw_n)s genes' donor-level zonal slope.
-%(tw_frac)s\,\% weaken directionally, but only %(tw_sig)s survive BH-FDR at $q<0.05$ (all non-ruler
-genes). So the collapse is \emph{broad and diffuse} --- most genes lose a little zonation rather than
-a few master genes losing a lot --- which is why the powered read-outs are the program-level (H2b)
-and held-out ruler-gene tests, not per-gene FDR at $n=47$ donors.
+Pericentral Wnt/identity genes de-zonate first and hardest (median $\rho=-0.40$, MWU $q\approx
+%(wnt_q)s$, rank-biserial $-0.82$), followed by urea/nitrogen, xenobiotic CYP and lipid metabolism
+(all $q<0.05$ more negative than background); acute-phase/secreted and bile-acid programs are
+\emph{spared} (not different from, or less negative than, background). This is the resolution of the
+apparent paradox: per-gene FDR (H2c) flags few individuals because each is noisy, yet the
+\emph{between-program} contrast (H2b) is highly significant because averaging within a program and
+comparing against the rest is far better powered. Biologically coherent --- loss of pericentral Wnt
+identity leads, while acute-phase genes change \emph{globally} (not zonally) so their zonal slope is
+untouched. (H2 = loss of spatial restriction, distinct from classic level-DE; cross-tabulated per
+gene in \texttt{h2\_slopeloss\_vs\_DE.csv}.)
 
 \subsection{H3 --- de-zonation couples weakly to plasticity}
 Within donors, de-zonation correlates positively with plasticity-marker expression
@@ -252,7 +294,7 @@ per-set \texttt{results/tables/<set>/}.
         "lm_s": lm_s, "lm_p": lm_p, "ex_s": ex_s, "ex_p": ex_p,
         "un_s": un_s, "un_p": un_p, "fl_s": fl_s,
         "agree": agree or "the unsupervised and signature rulers agree",
-        "prog_table": prog_tex, "tw_n": tw_n, "tw_frac": tw_frac, "tw_sig": tw_sig,
+        "prog_table": prog_tex, "tw_n": tw_n, "tw_frac": tw_frac, "tw_sig": tw_sig, "wnt_q": wnt_q,
     }
     for k, v in M.items():
         tex = tex.replace("%(" + k + ")s", str(v))

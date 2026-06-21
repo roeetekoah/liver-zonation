@@ -126,9 +126,8 @@ def main():
     log("\n--- summarize + panel + program-analysis + reports ---")
     _py("summarize_signature_battery.py")
     _py("make_panel_figure.py")
-    for s in ("paper2_full", "unsupervised"):
-        _py("h2_program_analysis.py", s)
-    _py("h2_transcriptome_wide.py", "expanded_curated")   # H2c: every gene, donor-level
+    _py("h2_transcriptome_wide.py", "expanded_curated")   # H2c: every gene on a VALID ruler
+    _py("h2_program_analysis.py", "expanded_curated")     # H2b: programs, reads the H2c table
     _py("unsupervised_axis_eval.py")
     _py("make_latex_report.py")        # per-set results dossier
     _py("make_narrative_report.py")    # narrative analysis report

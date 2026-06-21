@@ -1,17 +1,23 @@
 #!/usr/bin/env python3
-"""H2b — program-level differential vulnerability: which biological programs lose their zonal
-restriction fastest? Groups the H2 slope-loss genes into curated programs and compares the
-distribution of donor-level slope-trend rho (more negative = weakens faster). Also emits a
-ranked outlier table and (if available) a classic-DE cross (does the gene also change level?).
+"""H2b — program-level differential vulnerability, done rigorously.
 
-Run:  python src/h2_program_analysis.py [set_name]   (default: unsupervised)
+Input is the TRANSCRIPTOME-WIDE per-gene slope-trend table (h2_transcriptome_wide.csv), which is
+computed on a VALID, frozen ruler coordinate (default expanded_curated) over ALL ~30k genes. We
+group genes into curated programs and, for each program, formally test whether its genes' zonal
+slopes weaken MORE than the genome background (Mann-Whitney U, one-sided 'more negative', with a
+rank-biserial effect size), BH-corrected across programs. This is what makes the "Wnt de-zonates
+first" claim a test, not just a median; and it explains why H2b finds structure even though
+per-gene FDR (H2c) flags few individual genes: aggregation within a program + contrast against
+background recovers the power that per-gene testing throws away.
+
+Run:  python src/h2_program_analysis.py [ruler]   (default expanded_curated)
 """
 import os, sys
 import numpy as np, pandas as pd
+from scipy.stats import mannwhitneyu
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # src/
 import config
-
-T = config.TABLES
+from steps.common import log, bh, OUT
 
 PROGRAMS = {
     "cyp_xenobiotic": "CYP2E1 CYP1A2 CYP3A4 CYP2C8 CYP2C18 CYP2C19 CYP2C9 CYP27A1 CYP2A6 CYP2A7 "
@@ -32,56 +38,43 @@ for prog, s in PROGRAMS.items():
         GENE2PROG.setdefault(g, prog)
 
 
-def main(which="unsupervised"):
-    sd = os.path.join(T, which)
-    h2p = os.path.join(sd, "h2_slope_loss.csv")
-    if not os.path.exists(h2p):
-        print(f"no {h2p} — run the battery/pipeline for '{which}' first"); return
-    df = pd.read_csv(h2p)
+def main(ruler="expanded_curated"):
+    twp = os.path.join(OUT, ruler, "h2_transcriptome_wide.csv")
+    if not os.path.exists(twp):
+        print(f"need {twp} — run h2_transcriptome_wide.py {ruler} first"); return
+    df = pd.read_csv(twp).dropna(subset=["slope_trend_rho"])
     df["program"] = df["gene"].map(lambda g: GENE2PROG.get(g, "other"))
+    bg = df["slope_trend_rho"].values                       # genome background
 
-    # ---- program-level summary (H2b) ----
     rows = []
-    for prog, gg in df.groupby("program"):
-        tr = gg["mean_slope_trend_rho"].values
-        rows.append({"signature_set": which, "program": prog, "n_genes": len(gg),
-                     "median_trend_rho": float(np.nanmedian(tr)),
-                     "frac_weakening": float(np.mean(tr < 0)),
-                     "n_q05_weakening": int(((gg.get("q_trend", 1) < 0.05) & (tr < 0)).sum())})
-    prog_df = pd.DataFrame(rows).sort_values("median_trend_rho")
-    prog_df.to_csv(os.path.join(sd, "h2_program_summary.csv"), index=False)
+    for prog in list(PROGRAMS) + ["other"]:
+        gg = df[df["program"] == prog]
+        tr = gg["slope_trend_rho"].values
+        if len(tr) == 0:
+            continue
+        p = rbis = np.nan
+        if prog != "other" and len(tr) >= 3:
+            other = df[df["program"] != prog]["slope_trend_rho"].values
+            u = mannwhitneyu(tr, other, alternative="less")     # program MORE negative than rest?
+            p = float(u.pvalue); auc = u.statistic / (len(tr) * len(other)); rbis = 2 * auc - 1
+        rows.append({"signature_set": ruler, "program": prog, "n_genes": int(len(tr)),
+                     "median_trend_rho": float(np.nanmedian(tr)), "frac_weakening": float(np.mean(tr < 0)),
+                     "mwu_p_more_negative_than_background": p, "rank_biserial_vs_background": rbis})
+    out = pd.DataFrame(rows)
+    prog_mask = out["program"] != "other"
+    out.loc[prog_mask, "q_bh"] = bh(out.loc[prog_mask, "mwu_p_more_negative_than_background"].values)
+    out = out.sort_values("median_trend_rho")
+    out.to_csv(os.path.join(OUT, ruler, "h2_program_summary.csv"), index=False)
 
-    # ---- ranked outliers ----
-    s = df.sort_values("mean_slope_trend_rho")
-    out = pd.concat([s.head(15).assign(group="strongest_weakening"),
-                     s.tail(15).assign(group="weakest_or_strengthening")])
-    out[["signature_set" if "signature_set" in out else "gene"]] if False else None
-    out = out[["gene", "direction", "program", "mean_slope_trend_rho",
-               "frac_splits_weakening", "q_trend", "group"]]
-    out.insert(0, "signature_set", which)
-    out.to_csv(os.path.join(sd, "h2_outliers.csv"), index=False)
-
-    # ---- classic-DE cross (does a de-zonating gene also change level?) ----
-    de_note = "no DE table found"
-    de_pieces = []
-    for z in ("central", "portal"):
-        dep = os.path.join(T, "paper2_full", f"de_{z}.csv")
-        if os.path.exists(dep):
-            d = pd.read_csv(dep)[["gene", "rho_vs_stage", "q"]].rename(
-                columns={"rho_vs_stage": f"level_rho_{z}", "q": f"level_q_{z}"})
-            de_pieces.append(d)
-    if de_pieces:
-        merged = df[["gene", "program", "mean_slope_trend_rho", "q_trend"]].copy()
-        for d in de_pieces:
-            merged = merged.merge(d, on="gene", how="left")
-        merged.insert(0, "signature_set", which)
-        merged.to_csv(os.path.join(sd, "h2_slopeloss_vs_DE.csv"), index=False)
-        de_note = "wrote h2_slopeloss_vs_DE.csv (slope-loss x classic level-DE)"
-
-    print(f"[{which}] program-level slope-trend (most negative = weakens fastest):")
-    print(prog_df.to_string(index=False))
-    print(f"\nwrote {sd}/h2_program_summary.csv, h2_outliers.csv  ({de_note})")
+    log(f"H2b program-level vulnerability [coordinate = valid '{ruler}' ruler; background median "
+        f"rho={np.nanmedian(bg):+.3f}, {np.mean(bg<0)*100:.0f}% of all genes weaken]:")
+    for _, r in out.iterrows():
+        extra = "" if r["program"] == "other" else (f"  MWU vs bg p={r['mwu_p_more_negative_than_background']:.2g}"
+                                                    f" q={r.get('q_bh', np.nan):.2g} rbis={r['rank_biserial_vs_background']:+.2f}")
+        log(f"  {r['program']:24s} n={int(r['n_genes']):4d} median={r['median_trend_rho']:+.3f} "
+            f"weak={r['frac_weakening']*100:3.0f}%{extra}")
+    log(f"  wrote {os.path.join(OUT, ruler, 'h2_program_summary.csv')}")
 
 
 if __name__ == "__main__":
-    main(sys.argv[1] if len(sys.argv) > 1 else "unsupervised")
+    main(sys.argv[1] if len(sys.argv) > 1 else "expanded_curated")
