@@ -1,0 +1,61 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.85in]{geometry}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{parskip}
+\usepackage{titlesec}
+\definecolor{ink}{HTML}{1F2733}
+\definecolor{accent}{HTML}{C05621}
+\definecolor{teal}{HTML}{16545C}
+\titleformat{\section}{\large\bfseries\color{teal}}{}{0em}{}
+\titlespacing{\section}{0pt}{8pt}{2pt}
+\setlist[enumerate]{leftmargin=1.4em,itemsep=3pt,topsep=2pt}
+\color{ink}
+\pagestyle{empty}
+
+\begin{document}
+
+{\LARGE\bfseries Pre-Hackathon Consultation --- Agenda}\\[2pt]
+{\color{accent}\rule{\textwidth}{1.2pt}}\\[4pt]
+\textbf{Project:} Spatial Degradation of Hepatocyte Zonation \quad\textbf{Team:} Roee \& Shira
+\hfill \textbf{Course:} Comp.\ Genomics 76553
+
+\smallskip
+\noindent\textit{One line:} use Paper~2's healthy human-liver zonation atlas as a quantitative
+``ruler'' to give Paper~1's spatially-blind disease hepatocytes a pseudo-zonation coordinate, then
+measure how zonation collapses across MASLD stages (H1), which gene programs collapse (H2), and
+whether de-zonated cells turn plastic (H3).
+
+\section{1. Methodology (the calls that could change direction)}
+\begin{enumerate}
+  \item \textbf{Transcriptome-wide vs.\ landmark signature.} Our stance: the \emph{full}
+  $\sim$1{,}600-gene program is the primary result; the canonical 13+8 landmark set is a
+  reported \emph{audit}; the validation battery picks which leads. Is this appropriately novel
+  without over-reaching?
+  \item \textbf{Cross-dataset ruler-validity (our central risk).} We apply a \emph{healthy} Paper~2
+  ruler to \emph{disease} Paper~1 cells across platforms. What would convince you the transfer is
+  valid? Concerns about batch/platform confounds beyond our coherence / anti-correlation /
+  split-half checks?
+  \item \textbf{Classifier ground-truth labels.} We currently use a tercile-of-coordinate
+  \emph{fallback} label. Paper~2 has Visium-mapped zonation that could give \emph{true} labels ---
+  worth porting for a defensible classifier, or is the fallback acceptable?
+  \item \textbf{H2 circularity.} The coordinate is built from genes, then we ask which genes lose
+  zonation. We guard with a repeated held-out gene split. Does that satisfy you, or do you prefer the
+  per-gene interaction model (expression $\sim$ coord $+$ stage $+$ coord$\times$stage)?
+\end{enumerate}
+
+\section{2. Scope \& expectations}
+\begin{enumerate}
+  \item \textbf{Core deliverable for two days.} Would you rather see \textbf{H1} done rigorously, or
+  \textbf{H1--H3} done lightly? Where should we spend the time?
+  \item \textbf{Small $n$ at the extremes.} Cirrhosis ($n{=}4$) and end-stage ($n{=}5$) rest on few
+  donors. Acceptable as a stated limitation with donor-level confidence intervals, or a problem you'd
+  want handled differently?
+\end{enumerate}
+
+\vfill
+{\color{teal}\rule{\textwidth}{0.4pt}}\\[2pt]
+\footnotesize Unit of inference throughout: the \textbf{donor} ($\approx$47 patients), never the cell
+($\approx$69k) --- to avoid pseudoreplication.
+
+\end{document}

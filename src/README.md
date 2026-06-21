@@ -1,18 +1,20 @@
 # src/ — code
 
-All analysis code. Paths are centralised in **`config.py`** (import it, don't hard-code).
-For a verbose, plain-English walkthrough of every step see **`STEPS.md`**; for the build
-order + acceptance checks see **`CODING_PLAN.md`**; for the **full implementation spec**
-(exact inputs, algorithms, formulas, data shapes per step) see **`IMPLEMENTATION_PLAN.md`**.
+All analysis code (code only — planning prose now lives in **`docs/plan/`**). Paths are
+centralised in **`config.py`** (import it, don't hard-code). For the **full implementation
+spec** (exact inputs, algorithms, formulas, data shapes, acceptance checks per step) see
+**`docs/plan/IMPLEMENTATION_PLAN.pdf`** (source: the `.tex` beside it); the plain-English
+walkthrough and build order are **`docs/plan/STEPS.md`** and **`docs/plan/CODING_PLAN.md`**.
 
 ## Layout
 ```
 src/
 ├── config.py            central paths (data/, signatures/, results/)
 ├── prep/                one-time conversions (raw → processed)  ── "Step 1"
+│   ├── 00_mtx_to_npz.py                     counts.mtx → counts.npz (fast/low-memory load)
 │   ├── 01_extract_paper1_hepatocytes.R     .rds → data/processed/paper1/
-│   ├── 02_convert_paper2_mat.py            .mat → data/processed/paper2_train.npz
-│   └── 03_build_expanded_signatures.py     supp table → signatures/*_expanded.txt
+│   ├── 02_convert_paper2_mat.py            .mat → data/processed/paper2_train.npz (union of all tiers)
+│   └── 03_build_signatures.py              supp table → signatures/*_full.txt, *_expanded.txt
 ├── pipeline.py          integrated donor-level analysis, Steps 2–8 (the reference impl)
 ├── classifier.py        Step 4b: zone classifier → entropy
 ├── steps/               per-step stubs (step2…step9) — the modular hackathon scaffold
@@ -45,8 +47,9 @@ validated method to the *disease cohort*.
 ```bash
 # Step 1 (prep) — once per machine, needs raw data:
 Rscript src/prep/01_extract_paper1_hepatocytes.R
+python  src/prep/00_mtx_to_npz.py           # counts.mtx -> counts.npz (fast loads)
 python  src/prep/02_convert_paper2_mat.py
-python  src/prep/03_build_expanded_signatures.py
+python  src/prep/03_build_signatures.py
 # method positive control — once:
 python  src/run_p2_validation.py            # -> results/figures/p2_validation.png
 # the analysis (hackathon):
@@ -60,9 +63,10 @@ pip install numpy scipy pandas scikit-learn statsmodels matplotlib h5py openpyxl
 R side: `Seurat`, `Matrix`.
 
 ## Memory / runtime
-- `pipeline.py` loads the full `counts.mtx` (~8–12 GB RAM for the real file). Steps 2–6 are
-  fast; **Step 7 (pseudobulk DE) is the heavy part** (a few minutes).
-- `classifier.py` restricts to the shared landmark feature genes, so it stays light.
+- The text `counts.mtx` is RAM-heavy to parse (several GB, ~8–12 GB on the real file). Run
+  `prep/00_mtx_to_npz.py` once → `counts.npz`; `pipeline.load()` prefers it (fast, low peak
+  memory). Steps 2–6 are fast; **Step 7 (pseudobulk DE) is the heavy part** (a few minutes).
+- `classifier.py` uses the chosen signature tier's feature genes (`full` by default).
 
 ## Validation status
 `pipeline.py` was smoke-tested end-to-end on synthetic donor data (donor-level collapse,

@@ -31,6 +31,14 @@ __pycache__/
 .~lock*#
 .Rhistory
 
+# ---- LaTeX build artifacts (disposable; keep .tex + .pdf) ----
+*.aux
+*.log
+*.out
+*.toc
+*.dvi
+*.synctex.gz
+
 # ============================================================
 #  KEPT in the repo: all code (src/**: *.py, *.R, *.js),
 #  the signatures (signatures/*.txt + README.md),

@@ -11,9 +11,12 @@ invalid here. So:
   * H3 plasticity: test WITHIN stage/donor (or regress out stage+donor), never pooled.
 
 Inputs: data/processed/paper1/{counts.mtx, genes.txt, barcodes.txt, cell_metadata.csv,
-        metadata_all_cells.csv}, signatures/{pericentral,periportal}_core.txt
-Outputs: results/tables/{coordinates.csv, collapse_per_donor.csv, de_*.csv},
-         results/figures/*.png
+        metadata_all_cells.csv}, signatures/{pericentral,periportal}_<set>.txt
+Signature sets: runs EVERY set in config.SETS_TO_COMPARE (default ["paper2_landmark","full"]);
+        'full' is the transcriptome-wide primary, 'paper2_landmark' the audit. The validation
+        gate (Step 5) is computed per set so the data — not an a-priori choice — picks the leader.
+Outputs: results/tables/{coordinates_<set>.csv, collapse_per_donor_<set>.csv, de_*.csv},
+         results/figures/collapse_<set>.png
 Memory: scipy.io.mmread loads the full sparse matrix (~8-12 GB for the real file).
 Run from the src/ folder:  python pipeline.py
 """
@@ -22,6 +25,11 @@ from scipy.stats import spearmanr, rankdata
 import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import config
+# Windows consoles default to cp1252 and crash on non-ASCII log output (arrows, em-dashes).
+# Force UTF-8 so the pipeline never dies mid-run on a print() during the live event.
+for _s in (sys.stdout, sys.stderr):
+    try: _s.reconfigure(encoding="utf-8")
+    except Exception: pass
 try:
     from statsmodels.stats.multitest import multipletests
     import statsmodels.formula.api as smf
@@ -48,7 +56,14 @@ def bh(p):
 # ---------- Step 2: load (now also reads DONOR) ----------
 def load():
     log("Step 2: load Paper 1 hepatocytes ...")
-    M = scipy.io.mmread(os.path.join(P1, "counts.mtx")).tocsc()
+    # Prefer the compact binary cache (prep/00_mtx_to_npz.py) — fast load, low peak memory.
+    # Fall back to the text .mtx (re-parses each run; RAM-heavy on the real file).
+    npz = os.path.join(P1, "counts.npz")
+    if os.path.exists(npz):
+        M = sp.load_npz(npz).tocsc()
+    else:
+        log("  (counts.npz not found — parsing counts.mtx; run prep/00_mtx_to_npz.py to speed this up)")
+        M = scipy.io.mmread(os.path.join(P1, "counts.mtx")).tocsc()
     genes = np.array([g.strip() for g in open(os.path.join(P1, "genes.txt"))])
     bars  = np.array([b.strip() for b in open(os.path.join(P1, "barcodes.txt"))])
     meta  = pd.read_csv(os.path.join(P1, "cell_metadata.csv")).set_index("cell_id").reindex(bars)
@@ -69,13 +84,20 @@ def zrows(M, genes, libsize, wanted):
     return out
 
 # ---------- Steps 3-4a: score ----------
-def score(M, genes, libsize):
-    log("Steps 3-4a: signature scoring ...")
-    PC = [g.strip() for g in open(str(config.PC_GENES)) if g.strip()]
-    PP = [g.strip() for g in open(str(config.PP_GENES)) if g.strip()]
+def score(M, genes, libsize, which=config.DEFAULT_SET):
+    """Signature score for a named set ('full' default, 'paper2_landmark', 'expanded', 'core')."""
+    log(f"Steps 3-4a: signature scoring [set={which}] ...")
+    pc_path, pp_path = config.signature_files(which)
+    PC = [g.strip() for g in open(str(pc_path)) if g.strip()]
+    PP = [g.strip() for g in open(str(pp_path)) if g.strip()]
     col = zrows(M, genes, libsize, set(PC+PP+PLAST+VAL["pericentral"]+VAL["periportal"]))
     pc = np.mean([col[g] for g in PC if g in col], axis=0)
     pp = np.mean([col[g] for g in PP if g in col], axis=0)
+    # Per-arm standardization: equalises the two arms despite the PC/PP gene-count imbalance
+    # (e.g. full = 1273 PC vs 364 PP). Each arm is already a MEAN (so no magnitude bias), but
+    # the smaller arm is noisier; unit-variance scaling each side before subtracting fixes that.
+    pc = (pc - pc.mean())/(pc.std()+1e-9)
+    pp = (pp - pp.mean())/(pp.std()+1e-9)
     coord = pc-pp
     plast = np.mean([col[g] for g in PLAST if g in col], axis=0) if any(g in col for g in PLAST) else np.zeros_like(coord)
     return coord, pc, pp, plast, col, set(PC+PP)
@@ -91,7 +113,7 @@ def validate(coord, col, stage):
             if g in col: log(f"  healthy rho(coord,{g:6s})={spearmanr(coord[h],col[g][h]).statistic:+.3f} {ZTAG[z]}")
 
 # ---------- Step 6: DONOR-LEVEL collapse ----------
-def collapse(coord, pc, pp, stage, donor):
+def collapse(coord, pc, pp, stage, donor, tag=""):
     log("Step 6: collapse — metrics PER DONOR, then trend across stages")
     rows = []
     for d in np.unique(donor):
@@ -102,7 +124,7 @@ def collapse(coord, pc, pp, stage, donor):
         rows.append({"donor": d, "stage": st, "stage_rank": S2R[st], "n": int(m.sum()),
                      "spread": float(np.nanstd(coord[m])),
                      "anticorr": float(spearmanr(pc[m], pp[m]).statistic)})
-    dd = pd.DataFrame(rows); dd.to_csv(os.path.join(OUT,"collapse_per_donor.csv"), index=False)
+    dd = pd.DataFrame(rows); dd.to_csv(os.path.join(OUT,f"collapse_per_donor{tag}.csv"), index=False)
     log(f"  {len(dd)} donors usable")
     for metric, direction in [("spread","down"),("anticorr","up→0")]:
         rho, p = spearmanr(dd["stage_rank"], dd[metric])
@@ -120,7 +142,7 @@ def collapse(coord, pc, pp, stage, donor):
         mean = dd.groupby("stage_rank")[metric].mean()
         ax[i].plot(mean.index, mean.values, "o-", color="#c05621", lw=2)
         ax[i].set_xticks(range(5)); ax[i].set_xticklabels(SHORT, rotation=20); ax[i].set_title(t)
-    plt.tight_layout(); plt.savefig(os.path.join(str(config.FIGURES),"collapse.png"), dpi=130)
+    plt.tight_layout(); plt.savefig(os.path.join(str(config.FIGURES),f"collapse{tag}.png"), dpi=130)
     return dd
 
 # ---------- Step 7: PSEUDOBULK donor x zone DE ----------
@@ -183,14 +205,24 @@ def plasticity(coord, plast, stage, donor):
 
 def main():
     M, genes, bars, stage, donor, libsize = load()
-    coord, pc, pp, plast, col, sig = score(M, genes, libsize)
-    pd.DataFrame({"cell_id":bars,"donor":donor,"stage":stage,"coord":coord,"pc":pc,"pp":pp,
-                  "plasticity":plast}).to_csv(os.path.join(OUT,"coordinates.csv"), index=False)
-    validate(coord, col, stage)
-    collapse(coord, pc, pp, stage, donor)
-    de(M, genes, libsize, coord, stage, donor, sig)
-    plasticity(coord, plast, stage, donor)
-    log(f"\nDone. Outputs in {OUT}")
+    # Run EVERY set in config.SETS_TO_COMPARE (e.g. ["paper2_landmark","full"]). The coordinate,
+    # the healthy-validation gate (Step 5) and the H1 collapse (Step 6) are computed for each set,
+    # so the ruler battery — not an a-priori choice — decides which set leads (see signatures/README).
+    sets = getattr(config, "SETS_TO_COMPARE", [config.DEFAULT_SET])
+    for which in sets:
+        tag = f"_{which}"
+        log(f"\n================  SIGNATURE SET: {which}  ================")
+        coord, pc, pp, plast, col, sig = score(M, genes, libsize, which)
+        pd.DataFrame({"cell_id":bars,"donor":donor,"stage":stage,"coord":coord,"pc":pc,"pp":pp,
+                      "plasticity":plast}).to_csv(os.path.join(OUT,f"coordinates{tag}.csv"), index=False)
+        validate(coord, col, stage)
+        collapse(coord, pc, pp, stage, donor, tag=tag)
+        plasticity(coord, plast, stage, donor)
+        # H2 zone-DE (held-out gene split) is only meaningful with the large transcriptome-wide
+        # set, so run it for 'full' only.
+        if which == "full":
+            de(M, genes, libsize, coord, stage, donor, sig)
+    log(f"\nDone. Outputs in {OUT}  (one coordinates_/collapse_ set per signature tier)")
 
 if __name__ == "__main__":
     main()

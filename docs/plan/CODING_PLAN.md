@@ -2,7 +2,7 @@
 
 A step-by-step build order. Each phase lists: **inputs** (with shapes), **what to code**, **outputs**,
 the **artefact** it produces (A1–A9 from the primer), and an **acceptance check** (how you know it's right).
-Most of this is already scaffolded in `pipeline.py` and `classifier_step.py`; this plan says exactly what to
+Most of this is already scaffolded in `pipeline.py` and `classifier.py`; this plan says exactly what to
 flesh out and in what order. Two people: **A = reference + stats**, **B = disease data + modelling**.
 
 Data-flow in one line:
@@ -26,7 +26,7 @@ Data-flow in one line:
 **What to code**
 1. `load_signatures()` — read the PC/PP gene lists; (optional) extend to top ~50–100 per end by |zone score| from the supplementary table; write `pericentral_genes.txt` / `periportal_genes.txt`. *(done: 20+20 present.)*
 2. `plot_reference_profiles()` — for top ~10 genes/end, plot mean expression vs zone index from Paper 2 → confirm opposite monotone gradients.
-3. `make_training_labels(paper2_hep)` — assign each Paper 2 nucleus a zone label: either propagate Paper 2's zone index (their repo) **or** the signature-tercile fallback (`derive_labels()` in `classifier_step.py`). Save `paper2_train.npz = {expr, zone_label}`.
+3. `make_training_labels(paper2_hep)` — assign each Paper 2 nucleus a zone label: either propagate Paper 2's zone index (their repo) **or** the signature-tercile fallback (`derive_labels()` in `classifier.py`). Save `paper2_train.npz = {expr, zone_label}`.
 **Output / Artefact A1:** signature lists + profile figure + `paper2_train.npz`.
 **Acceptance:** PC and PP gene sets disjoint; profile plot shows PC rising / PP falling along zone; ≥3 zone classes present with reasonable counts.
 
@@ -58,7 +58,7 @@ Data-flow in one line:
 **Inputs:** A2 matrix + A3 gene sets (+ `paper2_train.npz` for 4b).
 **What to code**
 - **4a scoring** (`score()` in `pipeline.py`): `pc = mean_z(PC)`, `pp = mean_z(PP)`, `zonation_coord = pc − pp`. Also compute `plasticity = mean_z(KRT7,KRT19,SOX9,…)`.
-- **4b classifier** (`classifier_step.py`): `StandardScaler` → `LogisticRegression(multinomial)` trained on `paper2_train`; **evaluate on a held-out Paper 2 split first** (confusion matrix); then `predict_proba` on Paper 1 → per-cell `zone_probs` + `entropy = −Σ p·log p`.
+- **4b classifier** (`classifier.py`): `StandardScaler` → `LogisticRegression(multinomial)` trained on `paper2_train`; **evaluate on a held-out Paper 2 split first** (confusion matrix); then `predict_proba` on Paper 1 → per-cell `zone_probs` + `entropy = −Σ p·log p`.
 - **4c agreement:** correlate the scoring coordinate with the classifier's expected-zone on Paper 1.
 **Output / Artefact A4:** `coordinates.csv = [cell_id, donor, stage, zonation_coord, pc, pp, plasticity, zone_probs…, entropy]` + a UMAP coloured by coordinate.
 **Acceptance:** Paper 2 held-out classifier accuracy clearly > chance; scoring vs classifier agree (Spearman > ~0.5) on Paper 1.

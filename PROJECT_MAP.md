@@ -8,24 +8,31 @@ The index to this folder: what we have (data, code, signatures, results, deliver
 
 ```
 Hackathon/
-├── PROJECT_MAP.md       ← this file (the index)
-├── GIT_SETUP.md         ← uni↔home + 2-person git workflow
-├── papers/              ← the two source paper PDFs
+├── PROJECT_MAP.md         ← this file (the index)
+├── CLAUDE.md              ← agent context (conventions, read-order)
+├── FEASIBILITY_AND_PREP.md← 2-day feasibility + advance-prep checklist
+├── ORGANIZATION_REVIEW.md ← repo-structure review (this reorg)
+├── CLAUDE_CODE_PREP_PROMPT.md ← paste-into-Claude-Code prep prompt
+├── GIT_SETUP.md           ← uni↔home + 2-person git workflow
+├── papers/                ← the two source paper PDFs
 ├── data/
-│   ├── raw/             ← original downloads (.rds, .mat, supp tables, P2 repo) — large, git-ignored
-│   └── processed/       ← Python-native conversions the pipeline actually reads
-├── signatures/          ← pericentral/periportal gene lists (core / expanded / sensitivity) + README
-├── src/                 ← ALL code (was "analysis/")
-│   ├── prep/            ← one-time conversions (R + .mat→.npz)
-│   ├── steps/           ← per-step stubs (step2…step9) — the hackathon scaffold
-│   ├── plotting/        ← plotting machinery, one function per artefact
-│   ├── pipeline.py      ← integrated donor-level reference (smoke-tested)
+│   ├── raw/               ← original downloads (.rds, .mat, supp tables, P2 repo) — large, git-ignored
+│   └── processed/         ← Python-native conversions the pipeline reads (counts.mtx + counts.npz cache)
+├── signatures/            ← pericentral/periportal gene lists (full / expanded / core / landmark) + README
+├── src/                   ← CODE ONLY
+│   ├── prep/              ← one-time conversions (00 mtx→npz, 01 R, 02 mat→npz, 03 signatures)
+│   ├── steps/             ← per-step stubs (step2…step9) — the hackathon scaffold
+│   ├── plotting/          ← plotting machinery, one function per artefact
+│   ├── pipeline.py        ← integrated donor-level reference (multi-set; smoke-tested)
 │   ├── classifier.py, run_all.py, run_p2_validation.py, config.py
-│   └── CODING_PLAN.md, README.md, build_deck_final.js
-├── results/             ← figures/ + tables/ (pipeline output target) + feasibility logs
-├── docs/                ← deliverables & write-ups (primer, proposal deck, email, work-division)
-├── presentation/        ← final-talk plan + starter .pptx + figure assets
-└── _archive_DELETE_ME/  ← junk — safe to delete (OneDrive blocks deletion from outside)
+│   └── README.md          ← thin code-usage readme (planning prose now in docs/plan/)
+├── results/               ← figures/ + tables/ (pipeline output target)
+├── docs/
+│   ├── plan/              ← IMPLEMENTATION_PLAN (.tex/.pdf), CODING_PLAN, STEPS, WORK_DIVISION, ORIGINAL_PLAN
+│   ├── Zonation_Primer.{tex,pdf} + primers/  ← canonical primer + the 3 method primers
+│   └── research_question_options.md, email…
+├── presentation/          ← final deck (Zonation_Final_Presentation) + assets + PRESENTATION_PLAN.md
+└── archive/               ← superseded renders (old deck, primer HTMLs, retired IMPLEMENTATION_PLAN.md)
 ```
 
 > Why the rename: `analysis/` had become a "god directory" (code + data + results mixed).
@@ -63,15 +70,18 @@ PCK2 is placed **pericentrally** (human-specific, per Paper 2). `config.py` defa
 | Path | Purpose | Status |
 |---|---|---|
 | `config.py` | central paths (data/processed, signatures, results) | ✅ |
+| `prep/00_mtx_to_npz.py` | `counts.mtx` → `counts.npz` (fast/low-memory load) | ✅ ready (run once) |
 | `prep/01_extract_paper1_hepatocytes.R` | Seurat `.rds` → `data/processed/paper1/` | ✅ run |
-| `prep/02_convert_paper2_mat.py` | Paper 2 `.mat` → `paper2_train.npz` | ✅ ready (run once) |
-| `pipeline.py` | integrated Steps 2–8, donor-level | ✅ smoke-tested |
+| `prep/02_convert_paper2_mat.py` | Paper 2 `.mat` → `paper2_train.npz` (union of all tiers) | ✅ ready (run once) |
+| `pipeline.py` | integrated Steps 2–8, donor-level, multi-set | ✅ smoke-tested |
 | `classifier.py` | Step 4b zone classifier → entropy | scaffold |
 | `steps/step2…step9_*.py` | per-step stubs (signature + algorithm + acceptance) | scaffold |
 | `plotting/artefacts.py` | one plotting fn per artefact (A1,A4,A5,A5b,A6,A7,A8) | scaffold |
 | `run_all.py` | driver (Steps 2–8 + classifier) | ✅ ready |
 | `run_p2_validation.py` | Paper-2 positive control | ✅ run |
-| `CODING_PLAN.md` | build order, Phases 0–10, acceptance checks | — |
+| `README.md` | thin code-usage readme | — |
+
+(Build/planning prose moved to **`docs/plan/`**: `IMPLEMENTATION_PLAN.{tex,pdf}`, `CODING_PLAN.md`, `STEPS.md`, `WORK_DIVISION.md`, `ORIGINAL_PLAN_AND_CHANGES.md`.)
 
 ## results/
 `figures/` (`p2_validation.png` = positive control, `feasibility_fig.png`), `tables/` (pipeline output target), `RESULTS.txt`, `meta_preview.txt`.
@@ -80,11 +90,13 @@ PCK2 is placed **pericentrally** (human-specific, per Paper 2). `config.py` defa
 | File | What it is |
 |---|---|
 | `Zonation_Primer.pdf` / `.tex` | **THE primer / proposal — LaTeX, comprehensive (read first)**; edit the `.tex`, recompile with `pdflatex` |
-| `Spatial_Degradation_of_Hepatocyte_Zonation.pdf` | older HTML-rendered primer — **backup** |
-| `zonation_primer.html`, `zonation_v8.html` | HTML primer sources — **backups** |
-| `WORK_DIVISION.md` | who does what (Roee / Shira) |
-| `Zonation_Hackathon_Deck.pptx` (+ `.pdf`) | the slide deck |
-| `email_to_professor.md`, `research_question_options.md`, `ORIGINAL_PLAN_AND_CHANGES.md` | email + history |
+| `primers/Primer_*.{tex,pdf}` | the 3 method primers (stats H1/H3, DE+FDR, spatial genomics) |
+| `plan/IMPLEMENTATION_PLAN.{tex,pdf}` | **full implementation spec** (the `.tex` is the source) |
+| `plan/CODING_PLAN.md`, `plan/STEPS.md` | build order + plain-English walkthrough |
+| `plan/WORK_DIVISION.md` | who does what (Roee / Shira) |
+| `plan/ORIGINAL_PLAN_AND_CHANGES.md`, `research_question_options.md` | provenance + early options |
+
+Superseded renders (old deck, primer HTMLs, retired `IMPLEMENTATION_PLAN.md`) are under **`archive/`**.
 
 ## presentation/  (the final ~15-min talk)
 | File | What it is |

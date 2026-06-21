@@ -1,8 +1,9 @@
 # Final presentation — plan & build map
 
 Target: **~15 min**, ~14 main slides (~1 min each) + backup. Audience: course staff + peers (technical).
-This is a **results** talk, different from the proposal deck (`docs/Zonation_Hackathon_Deck.pptx`),
-but that deck + the primer are the source of all the pre-made material.
+This is a **results** talk, different from the old proposal deck (`archive/Zonation_Hackathon_Deck.pptx`);
+the current deck is `presentation/Zonation_Final_Presentation.pptx`, and that + the primer are the
+source of all the pre-made material.
 
 Status code:
 - 🟢 **Pre-made now** — stable regardless of results.

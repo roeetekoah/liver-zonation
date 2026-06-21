@@ -201,7 +201,7 @@ profile plot \code{src/plotting/artefacts.py:plot\_a1\_reference\_profiles}.
         do not delete.
 \end{enumerate}
 
-\subsection{Normalization (used by scoring; the \code{zrows()} helper)}
+\subsection{Normalization (used by scoring; the \code{zrows()} helper)}\label{sec:norm}
 For a gene row $x$, first CP10k then $\log 1p$:
 \begin{align}
   v   &= \log\!\Big(1 + \frac{x}{\text{libsize}} \cdot 10^4\Big), \\
@@ -245,7 +245,15 @@ frozen gene sets. \textbf{Acceptance:} $\ge 80\%$ of signature genes survive the
 
 \subsection{Step 4a --- Signature scoring}
 For a gene set $S$, use the \textbf{background-subtracted score} (Scanpy \code{score\_genes}
-style). Let $Y$ be the z-scored $\log 1p$-CP10k expression (genes $\times$ cells). For cell $c$,
+style). $Y$ is the z-scored $\log 1p$-CP10k expression: for gene $g$, cell $c$ with raw count
+$x_{gc}$ and library size $\ell_c=\sum_{g'} x_{g'c}$,
+\[
+  v_{gc}=\log\!\Big(1+10^{4}\,\tfrac{x_{gc}}{\ell_c}\Big),
+  \qquad
+  Y_{gc}=\frac{v_{gc}-\operatorname{mean}_{c'} v_{gc'}}{\operatorname{std}_{c'} v_{gc'}}
+\]
+(CP10k $\to \log 1p \to$ per-gene z-score across cells; the same normalization as Step~2,
+\S\ref{sec:norm}). Then for cell $c$,
 \[
   \text{score}_S[c] \;=\; \frac{1}{|S|}\sum_{g \in S} Y[g,c]
                        \;-\; \frac{1}{|B|}\sum_{g \in B} Y[g,c],
@@ -253,16 +261,16 @@ style). Let $Y$ be the z-scored $\log 1p$-CP10k expression (genes $\times$ cells
 where $B$ is a control set drawn to match the expression-bin distribution of $S$. Subtracting $B$
 removes each cell's overall expression / depth baseline, so the score reflects $S$ specifically.
 
-Then:
+Then, with each arm standardised to unit variance across cells (so the PC/PP gene-count
+imbalance does not tilt the axis; Section~\ref{sec:sigsets}):
 \begin{align}
-  \text{pc} &= \text{score(PERICENTRAL)}, \qquad \text{pp} = \text{score(PERIPORTAL)}, \\
-  \coordc   &= \text{pc} - \text{pp}
-               \qquad (\text{signed; } >0 \text{ pericentral, } <0 \text{ periportal}), \\
-  \text{plasticity} &= \text{score(PLASTICITY)}
-               \qquad (\text{\code{signatures/plasticity.txt}: KRT7, KRT19, SOX9, SOX4, KRT23, NCAM1}).
+  \text{pc} &= \text{score(PERICENTRAL)}, & \text{pp} &= \text{score(PERIPORTAL)}, \\
+  \coordc   &= \text{pc} - \text{pp}\ \ (>0\text{ pericentral}), & \text{plast} &= \text{score(PLASTICITY)}.
 \end{align}
-
-The default gene sets are the \code{full} program (Section~\ref{sec:sigsets}). The simpler
+The plasticity set is \code{signatures/plasticity.txt} (\code{KRT7, KRT19, SOX9, SOX4, KRT23,
+NCAM1}). \textbf{Run this for every set in \code{config.SETS\_TO\_COMPARE}} --- the coordinate is
+produced for \code{full} \emph{and} \code{paper2\_landmark}, so Step~5 can pick the leader from the
+data. The default gene set is the \code{full} program (Section~\ref{sec:sigsets}). The simpler
 \code{src/pipeline.py:score} uses the mean of z-scored signature genes \emph{without} an explicit
 control set; the \code{score\_genes} background form above is the upgrade.
 
@@ -314,6 +322,17 @@ Input: A4 restricted to Paper 1 healthy donors. For each validation marker,
 \textbf{Output A5:} a bar of $\rho$ per marker plus the values. \textbf{Acceptance / GATE:}
 pericentral $\rho>0$ and periportal $\rho<0$. \emph{Do not start Step 6 until this passes.} If it
 fails: widen to \code{expanded} signatures, use rank features, revisit normalization.
+
+\paragraph{Run the gate for \emph{both} sets --- and let it pick the leader.} Compute Step~5 (and
+the Step~5b ruler battery) for \code{full} \emph{and} \code{paper2\_landmark}. This is where the
+``\code{full} vs landmark'' choice is actually settled, \emph{by evidence rather than by assertion}:
+lead with whichever set validates more cleanly on the healthy positive control (marker $\rho$ signs
+$+$ magnitudes, low entropy, strong PC--PP anti-correlation, high split-half reproducibility), and
+report the other alongside as the control. Honest expectation: \code{full} usually wins on resolution
+and is required for H2's held-out test; \code{paper2\_landmark} may transfer more cleanly across the
+snRNA$\rightarrow$Visium platform gap (fewer, canonical, high-expression genes carry less
+cross-dataset technical variance). If the two \emph{disagree} on the collapse, that disagreement is a
+finding, not a nuisance --- it flags the ruler as disease/platform-sensitive and must be reported.
 
 \medskip
 \noindent\textbf{Code:} \code{src/steps/step5\_validate.py} (ref \code{src/pipeline.py:validate});

@@ -16,11 +16,11 @@ Prep is done; the hackathon executes the pipeline live.
 
 ## Read order (canonical docs)
 1. `PROJECT_MAP.md` — the index: folder layout, what's done vs left.
-2. `src/IMPLEMENTATION_PLAN.md` — step-by-step build order + acceptance checks.
+2. `docs/plan/IMPLEMENTATION_PLAN.pdf` — full implementation spec (source: the `.tex` beside it).
 3. `src/config.py` — paths + signature-set config.
 4. `signatures/README.md` — which gene sets, and why `full` is the default.
 5. `docs/primers/*.pdf` — 4 method primers (stats H1/H3, DE+FDR, spatial genomics).
-6. `docs/WORK_DIVISION.md` — who does what (Roee / Shira).
+6. `docs/plan/WORK_DIVISION.md` — who does what (Roee / Shira).
 
 ## Non-negotiable conventions
 - **Donor is the unit of inference**, never the cell. ~47 donors (`Patient.ID`) vs ~69k

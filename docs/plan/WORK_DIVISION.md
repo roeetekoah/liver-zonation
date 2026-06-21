@@ -5,7 +5,7 @@ parallel and meet at the per-cell coordinate table (`A4`). Each track owns essen
 substantive parts of the result — the project only works if both land. The split follows
 who's picking up which area, and keeps the two sets of files mostly separate so we can work
 without stepping on each other. Everything maps to a numbered step, its stub file
-(`src/steps/…`), and its acceptance check (`src/CODING_PLAN.md`).
+(`src/steps/…`), and its acceptance check (`docs/plan/CODING_PLAN.md`).
 
 > How we split it: one track carries the data → coordinate → validation foundation that
 > every downstream result is built on; the other carries the donor-level statistics, the
