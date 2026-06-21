@@ -101,8 +101,8 @@ Smaller sets are kept as robustness and baseline checks, each selectable via
 \midrule
 \code{full}            & $1273 / 364$ & primary, transcriptome-wide (default) \\
 \code{expanded}        & $\sim 102 / 91$ & ranked top genes, $\sim\!100$ each \\
-\code{core}            & $13 / 8$ & curated canonical markers \\
-\code{paper2\_landmark} & $13 / 8$ exact & Paper 2 landmark baseline \\
+\code{core}            & $13 / 8$ & hand-curated canonical markers \\
+\code{paper2\_landmark} & $20 / 20$ & EXACT Paper 2 hepatocyte landmark genes (verbatim, \code{Hepatocyte-*-LM.csv}) \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -115,8 +115,9 @@ a \emph{mean} of z-scored genes, so disease-corruption of any single marker is d
 \code{CYP2E1}, canonical pericentral, is induced in NASH for non-spatial reasons and could swing a
 13-gene ruler, but is 1-of-$\sim$1{,}600 here); and (iii)~only a large set makes the H2 ``which
 programs collapse'' question and its non-circular held-out-gene test (Step~7) meaningful.
-\code{paper2\_landmark} is the \emph{credibility control}: a canonical, Paper-2-faithful, fully
-interpretable 13$+$8 ruler. If it shows the \emph{same} collapse, the signal is not an artefact of
+\code{paper2\_landmark} is the \emph{credibility control}: the exact 20$+$20 hepatocyte landmark genes
+Paper 2 itself uses to assign zonation (verbatim from \code{Hepatocyte-*-LM.csv}), canonical and fully
+interpretable. If it shows the \emph{same} collapse, the signal is not an artefact of
 gene-set size; if the two \emph{disagree}, that is itself a finding (a warning the ruler may be
 disease-sensitive). \textbf{Per hypothesis:} H1 (collapse) $+$ ruler/classifier $\to$ \code{full}
 primary, \code{paper2\_landmark} control; H2 $\to$ \code{full} with the held-out repeated split;

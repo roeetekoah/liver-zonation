@@ -33,12 +33,28 @@ it now).
    from `src/`. Record Python + package versions in a new `PREP_LOG.md`.
 
 3. **Build the data caches** (needs the raw files in `data/raw/` — download per `data/README.md`
-   first if absent):
+   first if absent). FIRST run `python src/prep/audit_data.py` to confirm grounding (47 donors/0
+   missing, 69,426 hepatocytes, 5 stages, signature overlap). Then:
    - `Rscript src/prep/01_extract_paper1_hepatocytes.R`  → `data/processed/paper1/` (if absent)
    - `python src/prep/00_mtx_to_npz.py`                  → `counts.npz` (fast/low-memory loads)
    - `python src/prep/02_convert_paper2_mat.py`          → `paper2_train.npz` (union ~1,700 feats)
    *Acceptance:* `counts.npz` and `paper2_train.npz` exist; the npz step prints ~1,700 features and
    3 reasonably-balanced zone classes.
+   **NOTE:** `paper2_train.npz` may already exist but be **stale** (built by the old `02_convert`) —
+   always rebuild it here; don't trust the existing file.
+
+   **Classifier ground-truth labels — already fixed in code; just verify on run.** `02_convert` now
+   computes `zone_label` by **Paper 2's exact snRNA method** (from `parse_snRNAseq_combined_atlas.m`):
+   `eta = sum_pp / (sum_pp + sum_pc)` over the 20+20 hepatocyte landmark genes
+   (`Hepatocyte-{PC,PP}-LM.csv`, now in `signatures/*_paper2_landmark.txt`), binned into zones — NOT the
+   old circular tercile-of-our-coordinate fallback. When you run it, sanity-check the printed zone-class
+   balance and that pericentral markers (CYP2E1) fall in the central class. (Open question for the
+   professor: 3-class vs Paper 2's 8 bins, and whether to label from landmark-eta or project onto the
+   Visium-HD zonation in `zon_struct_all_full.mat` — agenda item.)
+   **Anti-circularity for the classifier (Step 4b, live):** because the labels are computed from the
+   20+20 landmark genes, **exclude those 40 genes from the classifier's feature set** (train on the
+   other zonated genes / HVGs shared with Paper 1), or at minimum run that exclusion as a sensitivity
+   check — otherwise the classifier just relearns the landmark score.
 
 4. **Subset smoke test — "does it RUN," not "what does it find."** Run `pipeline.py` on a small
    subset (cap to ~20 donors or the first ~20k cells) end-to-end for BOTH sets. The ONLY goal is that

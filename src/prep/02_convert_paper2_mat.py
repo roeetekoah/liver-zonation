@@ -13,8 +13,8 @@ Writes:
   X spans the UNION of every signature tier, so one cache serves all sets — downstream
   selects a tier by slicing the columns of `feats` that belong to it (no re-run per set).
 
-Zone labels (Option A): tercile of the PC-PP signature coordinate on Paper 2's own
-hepatocytes. Swap in Paper 2's Visium-HD zonation mapping later for ground-truth labels.
+Zone labels: Paper 2's exact snRNA method (parse_snRNAseq_combined_atlas.m) --
+eta = sum_pp/(sum_pp+sum_pc) over the 20+20 hepatocyte landmark genes, binned into zones.
 
 Run from the src/prep/ folder:   python 02_convert_paper2_mat.py
 Memory-safe: reads the sparse matrix in chunks; keeps only the feature genes.
@@ -31,8 +31,6 @@ for _name, (_pcp, _ppp) in config.SIGNATURE_SETS.items():
     PC += _read(_pcp); PP += _read(_ppp)
 PC = list(dict.fromkeys(PC))        # de-dup, preserve order
 PP = list(dict.fromkeys(PP))
-# Zone-label coordinate uses the PRIMARY 'full' set only (not the union).
-PC_FULL, PP_FULL = (_read(p) for p in config.signature_files("full"))
 P1G  = set(g.strip() for g in open(str(config.PAPER1 / "genes.txt")))
 OUT  = str(config.PAPER2_TRAIN)
 
@@ -67,12 +65,20 @@ def main():
             if hk.any():
                 X[cellpos[c[hk]], gpos[irc[loc[hk]]]] = dat[s:e][loc[hk]]
 
-    # Option-A zone labels: tercile of PC-PP signature coordinate
+    # Zone labels — Paper 2's EXACT snRNA method (parse_snRNAseq_combined_atlas.m):
+    #   eta = sum_pp / (sum_pp + sum_pc) over the 20+20 hepatocyte LANDMARK genes,
+    #   then bin eta into zones. (high eta = periportal, low eta = pericentral.)
+    # This is how Paper 2 assigned zones to build the snRNA zonation table — NOT a tercile of
+    # our own full-set coordinate (which would be circular with the classifier features).
     fi = {g: j for j, g in enumerate(feats)}
-    z = lambda gl: np.mean([(X[:, fi[g]] - X[:, fi[g]].mean()) / (X[:, fi[g]].std() + 1e-9)
-                            for g in gl if g in fi], axis=0)
-    coord = z(PC_FULL) - z(PP_FULL); t1, t2 = np.quantile(coord, [1/3, 2/3])
-    y = np.where(coord <= t1, 0, np.where(coord >= t2, 2, 1)).astype(int)
+    LM_PC = [g for g in (l.strip() for l in open(str(config.signature_files("paper2_landmark")[0]))) if g in fi]
+    LM_PP = [g for g in (l.strip() for l in open(str(config.signature_files("paper2_landmark")[1]))) if g in fi]
+    sum_pc = np.sum([X[:, fi[g]] for g in LM_PC], axis=0)
+    sum_pp = np.sum([X[:, fi[g]] for g in LM_PP], axis=0)
+    eta = sum_pp / (sum_pp + sum_pc + 1e-9)
+    e1, e2 = np.quantile(eta, [1/3, 2/3])      # 3-class binning (Paper 2 uses 8; we collapse to 3)
+    y = np.where(eta >= e2, 0, np.where(eta <= e1, 2, 1)).astype(int)  # 0 portal / 1 mid / 2 central
+    print(f"  zone labels via eta over {len(LM_PC)} PC + {len(LM_PP)} PP landmark genes")
 
     np.savez(OUT, X=X, feats=np.array(feats), zone_label=y, donor=donor)
     print(f"wrote {OUT}  (X={X.shape}, zone counts: "

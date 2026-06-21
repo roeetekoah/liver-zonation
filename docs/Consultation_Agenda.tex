@@ -1,5 +1,6 @@
 \documentclass[11pt]{article}
 \usepackage[margin=0.85in]{geometry}
+\usepackage{amsmath}
 \usepackage{enumitem}
 \usepackage{xcolor}
 \usepackage{parskip}
@@ -26,31 +27,49 @@
 measure how zonation collapses across MASLD stages (H1), which gene programs collapse (H2), and
 whether de-zonated cells turn plastic (H3).
 
-\section{1. Methodology (the calls that could change direction)}
+\smallskip
+\noindent\fbox{\parbox{0.97\textwidth}{\footnotesize
+\textbf{Background for the questions.} The ruler is a per-cell coordinate
+$=\operatorname{mean}_z(\text{pericentral genes})-\operatorname{mean}_z(\text{periportal genes})$,
+with the gene sets taken from \textbf{Paper~2's healthy zonation tables} (genes scored as
+significantly zonated, assigned to a zone by their center-of-mass). We have four nested sets, all
+from Paper~2: \textbf{full} ($\sim$1{,}600 transcriptome-wide zonated genes), \textbf{expanded}
+($\sim$100 top-ranked), \textbf{core} ($\sim$13/8 hand-curated), and the \textbf{landmark} set ---
+Paper 2's exact 20+20 hepatocyte landmark genes (from its published \texttt{-LM} lists), which Paper 2
+itself uses to assign snRNA zonation. The \textbf{``validation battery''} $=$ the checks that the coordinate truly measures
+position: recovery of canonical markers on healthy cells (positive control), within-cell
+pericentral--periportal anti-correlation, internal coherence of each module, and split-half
+reproducibility.}}
+
+\section{1. Methodology \& biology (calls that could change direction)}
 \begin{enumerate}
-  \item \textbf{Transcriptome-wide vs.\ landmark signature.} Our stance: the \emph{full}
-  $\sim$1{,}600-gene program is the primary result; the canonical 13+8 landmark set is a
-  reported \emph{audit}; the validation battery picks which leads. Is this appropriately novel
-  without over-reaching?
-  \item \textbf{Cross-dataset ruler-validity (our central risk).} We apply a \emph{healthy} Paper~2
-  ruler to \emph{disease} Paper~1 cells across platforms. What would convince you the transfer is
-  valid? Concerns about batch/platform confounds beyond our coherence / anti-correlation /
-  split-half checks?
-  \item \textbf{Classifier ground-truth labels.} We currently use a tercile-of-coordinate
-  \emph{fallback} label. Paper~2 has Visium-mapped zonation that could give \emph{true} labels ---
-  worth porting for a defensible classifier, or is the fallback acceptable?
-  \item \textbf{H2 circularity.} The coordinate is built from genes, then we ask which genes lose
-  zonation. We guard with a repeated held-out gene split. Does that satisfy you, or do you prefer the
-  per-gene interaction model (expression $\sim$ coord $+$ stage $+$ coord$\times$stage)?
+  \item \textbf{Signature strategy.} We lead with the \emph{full} transcriptome-wide program (the
+  novelty: read position from the whole program, not a few markers), and report the smaller
+  canonical sets as an audit/robustness check; the validation battery decides which leads. Is this
+  appropriately novel without over-reaching?
+  \item \textbf{Classifier ground truth.} We will train the zone classifier on Paper~2's
+  \emph{true Visium-mapped} zonation labels (not a coordinate-derived label), so its per-cell entropy
+  is an \emph{independent} de-zonation signal. Is that the right ground truth, and any pitfalls in the
+  Visium\,$\rightarrow$\,snRNA label transfer?
+  \item \textbf{Biological prior on the collapse.} Is there a known \emph{directional} pattern (e.g.\
+  pericentral injury earlier in MASH) we should test as a specific hypothesis, rather than only a
+  generic monotonic decline?
+  \item \textbf{Is our metric ``de-zonation''?} We quantify it per donor as: coordinate spread
+  narrowing, pericentral--periportal anti-correlation weakening toward~0, and classifier entropy
+  rising. Do these capture ``loss of zonation'' as you would define it?
+  \item \textbf{Plasticity axis (H3).} Are cholangiocyte / ductular-reaction markers
+  (\textit{KRT7, KRT19, SOX9}) the right readout for hepatocyte plasticity in MASLD, or is there a
+  more established de-differentiation signature?
 \end{enumerate}
 
 \section{2. Scope \& expectations}
 \begin{enumerate}
-  \item \textbf{Core deliverable for two days.} Would you rather see \textbf{H1} done rigorously, or
-  \textbf{H1--H3} done lightly? Where should we spend the time?
+  \item \textbf{What does top-mark work look like?} We aim to deliver \emph{all} of H1--H3 (plus a
+  bonus enrichment) in two days. Given that, what most distinguishes an excellent project here ---
+  depth, breadth, rigor of controls, or the write-up / talk?
   \item \textbf{Small $n$ at the extremes.} Cirrhosis ($n{=}4$) and end-stage ($n{=}5$) rest on few
-  donors. Acceptable as a stated limitation with donor-level confidence intervals, or a problem you'd
-  want handled differently?
+  donors. Acceptable as a stated limitation with donor-level confidence intervals, or would you
+  handle it differently?
 \end{enumerate}
 
 \vfill

@@ -135,7 +135,7 @@ Data converted & Paper~1 Seurat \code{.rds} $\to$ \code{counts.mtx} (30{,}117 ge
 hepatocytes) + metadata; Paper~2 \code{.mat} $\to$ \code{paper2\_train.npz} (zone-labelled nuclei). No
 R/MATLAB needed again. & \code{data/processed/}\\
 Signatures built & Both schemes frozen: the transcriptome-wide program ($\approx$1{,}640 genes,
-$q<0.05$; the default) \emph{and} the exact Paper~2 landmark set; plus \code{expanded}, \code{core},
+$q<0.05$; the default) \emph{and} the exact Paper~2 hepatocyte landmark set (20$+$20); plus \code{expanded}, \code{core},
 \code{sensitivity}. & \code{signatures/} (+ README)\\
 Pipeline written & Full donor-level analysis coded and smoke-tested end-to-end on synthetic donor data
 --- runs and produces the right shapes. & \code{src/pipeline.py}\\
@@ -679,13 +679,15 @@ marker is diluted (e.g.\ \gene{CYP2E1}, canonical pericentral, is induced in NAS
 reasons and could swing a 13-gene ruler, but is 1-of-$\sim$1{,}600 here); and only a large set makes the
 non-circular held-out-gene test (\S\ref{sec:workplan}, Step~7) and the ``which programs collapse'' (H2)
 question meaningful.
-\textbf{(b)~The exact Paper~2 landmark set (13$+$8) is the credibility control} --- the verbatim,
-canonical, biologically-named genes Paper~2 used to seed its axis. Its job is to rebut ``did you just
-engineer this with enough genes?'': if a maximally-different small ruler shows the \emph{same} collapse,
-the signal is not a gene-set artefact; if the two \emph{disagree}, that is itself a finding (a warning
-the ruler may be disease-sensitive). It is also faithful and fully interpretable. Two further sets are an
-optional robustness gradient --- a $\sim$100-gene \code{expanded} (landmark $\cup$ core $\cup$ top-ranked)
-and a curated 13/8 \code{core}.
+\textbf{(b)~The landmark set (20$+$20) is the credibility control} --- the \emph{exact} hepatocyte
+landmark genes Paper~2 uses to assign zonation (verbatim from its \code{Hepatocyte-PC-LM.csv} /
+\code{Hepatocyte-PP-LM.csv}; these define $\eta = \text{sum}_{pp}/(\text{sum}_{pp}+\text{sum}_{pc})$).
+Its job is to rebut ``did you
+just engineer this with enough genes?'': if a maximally-different small ruler shows the \emph{same}
+collapse, the signal is not a gene-set artefact; if the two \emph{disagree}, that is itself a finding (a
+warning the ruler may be disease-sensitive). It is also fully interpretable. Two further sets are an
+optional robustness gradient --- a $\sim$100-gene \code{expanded} (top-ranked $\cup$ landmark $\cup$ core)
+and a hand-curated 13/8 \code{core}.
 \textbf{Why the original plan said ``landmark.''} Marker-based reconstruction is the field-standard,
 validated method --- exactly what Paper~2 and the foundational liver-zonation work (Halpern et al.\ 2017)
 did. Landmark was the conservative starting point; \code{full} is the deliberate upgrade, not a

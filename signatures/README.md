@@ -9,8 +9,8 @@ program** — matching the project's core motivation: read each cell's position 
 |---|---|---|---|
 | `*_full.txt` | **Transcriptome-wide program** — every significantly-zonated hepatocyte gene from Paper 2 (q<0.05, well-expressed), present in Paper 1 | **1273 / 364** | **PRIMARY (default)** |
 | `*_expanded.txt` | landmark ∪ core ∪ top-ranked | 102 / 91 | mid-size robustness |
-| `*_core.txt` | curated, biology-informed anchors | 13 / 8 | interpretable anchor set |
-| `*_paper2_landmark.txt` | the EXACT Paper 2 landmark set (verbatim) | 13 / 8 | sanity baseline |
+| `*_core.txt` | curated, biology-informed anchors (hand-picked) | 13 / 8 | interpretable anchor set |
+| `*_paper2_landmark.txt` | the **EXACT** Paper 2 hepatocyte landmark genes, verbatim from `Hepatocyte-{PC,PP}-LM.csv` (the genes Paper 2 uses to assign snRNA zonation) | 20 / 20 | audit baseline |
 | `periportal_sensitivity.txt` | core PP minus inflammation gene (HAMP) | – / 7 | acute-phase robustness |
 | `plasticity.txt` | cholangiocyte / biphenotypic markers (KRT7, KRT19, SOX9…) | 6 | **different axis** (H3, not zonation) |
 

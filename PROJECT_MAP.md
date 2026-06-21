@@ -59,8 +59,8 @@ Hackathon/
 ## signatures/  (artifact A1)
 Four families per zone (see `signatures/README.md`):
 - `*_full.txt` — **transcriptome-wide zonation program (1273 PC / 364 PP) → the pipeline's default/primary.**
-- `*_paper2_landmark.txt` — the EXACT Paper 2 landmark set (verbatim, 13 PC / 8 PP) → the credibility audit, reported alongside `full`.
-- `*_core.txt` — curated, biology-informed anchors (derived, 13 / 8).
+- `*_paper2_landmark.txt` — the **exact** Paper 2 hepatocyte landmark genes (verbatim, 20 PC / 20 PP, from `Hepatocyte-{PC,PP}-LM.csv`) → the credibility audit, reported alongside `full`.
+- `*_core.txt` — curated, biology-informed anchors (hand-picked, 13 / 8).
 - `*_expanded.txt` — landmark ∪ core ∪ top-ranked genes from Paper 2's snRNA table (≈100).
 - `periportal_sensitivity.txt` — inflammation-linked genes removed (H1 robustness check).
 PCK2 is placed **pericentrally** (human-specific, per Paper 2). `config.py` defaults to `full`;

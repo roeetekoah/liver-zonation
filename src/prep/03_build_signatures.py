@@ -2,15 +2,17 @@
 """Build the data-driven signature sets from Paper 2's hepatocyte zonation table.
 
 Produces:
-  signatures/{pericentral,periportal}_full.txt      transcriptome-wide PRIMARY (q<0.05, expressed)
-  signatures/{pericentral,periportal}_expanded.txt  landmark + core + top-ranked (mid-size)
+  signatures/{pericentral,periportal}_full.txt           transcriptome-wide PRIMARY (q<0.05, expressed)
+  signatures/{pericentral,periportal}_expanded.txt       mid-size: top-ranked + landmark + core
+  signatures/{pericentral,periportal}_paper2_landmark.txt the EXACT Paper 2 hepatocyte landmark genes
 
-Source: data/raw/2025-01-01424E-s1/supplementary_table_8.xlsx, sheet 'Hepatocyte'
-        (Paper 2 single-nucleus, hepatocyte-specific zonation; same platform as Paper 1).
-        Columns used: Gene_Name, qValue, Center_of_Mass, Max_expression.
-Axis orientation (verified): zone 1 = pericentral (low Center_of_Mass), zone 8 = periportal.
-
-The 'core' and 'paper2_landmark' sets are committed by hand and not built here.
+Sources:
+  - full/expanded: data/raw/2025-01-01424E-s1/supplementary_table_8.xlsx, sheet 'Hepatocyte'
+    (Paper 2 single-nucleus hepatocyte zonation; same platform as Paper 1). Columns:
+    Gene_Name, qValue, Center_of_Mass, Max_expression. Axis: zone 1 = pericentral (low COM).
+  - paper2_landmark: data/raw/Human-liver/Matlab_scripts/Hepatocyte-{PC,PP}-LM.csv — the actual
+    20+20 landmark genes Paper 2 uses to assign snRNA zonation (eta = sum_pp/(sum_pp+sum_pc)).
+    'core' remains a small hand-curated interpretability set.
 Run:  python src/prep/03_build_signatures.py
 """
 import os, sys, numpy as np, openpyxl
@@ -54,9 +56,19 @@ def main():
     (config.SIGNATURES / "periportal_full.txt").write_text("\n".join(pp) + "\n")
     print(f"full: pericentral {len(pc)} + periportal {len(pp)} = {len(pc)+len(pp)}")
 
+    # ---- PAPER2_LANDMARK: the EXACT Paper 2 hepatocyte landmark genes, verbatim from the
+    #      Human-liver repo. These 20 PC + 20 PP genes are what Paper 2 uses to assign snRNA
+    #      zonation (eta = sum_pp / (sum_pp + sum_pc); see 02_convert / parse_snRNAseq...). ----
+    lmdir = config.DATA_RAW / "Human-liver" / "Matlab_scripts"
+    rd = lambda side: [l.strip() for l in open(lmdir / f"Hepatocyte-{side}-LM.csv") if l.strip()]
+    lm_pc, lm_pp = rd("PC"), rd("PP")
+    (config.SIGNATURES / "pericentral_paper2_landmark.txt").write_text("\n".join(lm_pc) + "\n")
+    (config.SIGNATURES / "periportal_paper2_landmark.txt").write_text("\n".join(lm_pp) + "\n")
+    in_p1 = sum(g in p1 for g in lm_pc) + sum(g in p1 for g in lm_pp)
+    print(f"paper2_landmark (EXACT, verbatim from Hepatocyte-*-LM.csv): {len(lm_pc)} + {len(lm_pp)}"
+          f"  ({in_p1}/{len(lm_pc)+len(lm_pp)} present in Paper 1)")
+
     # ---- EXPANDED: landmark + core + top-ranked ----
-    lm_pc = readlist(config.SIGNATURES / "pericentral_paper2_landmark.txt")
-    lm_pp = readlist(config.SIGNATURES / "periportal_paper2_landmark.txt")
     co_pc = readlist(config.SIGNATURES / "pericentral_core.txt")
     co_pp = readlist(config.SIGNATURES / "periportal_core.txt")
     exp_pc = list(dict.fromkeys(lm_pc + co_pc + pc[:N_EXPANDED]))
