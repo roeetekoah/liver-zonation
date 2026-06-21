@@ -13,8 +13,12 @@ Writes:
   X spans the UNION of every signature tier, so one cache serves all sets — downstream
   selects a tier by slicing the columns of `feats` that belong to it (no re-run per set).
 
-Zone labels: Paper 2's exact snRNA method (parse_snRNAseq_combined_atlas.m) --
-eta = sum_pp/(sum_pp+sum_pc) over the 20+20 hepatocyte landmark genes, binned into zones.
+Zone labels: Paper 2's OWN per-cell snRNA method (parse_snRNAseq_combined_atlas.m):
+eta = sum_pp/(sum_pp+sum_pc) over the 20+20 landmark genes (landmarks from their spatial zonation
+reconstruction), binned -- we use 3 terciles, Paper 2 uses 8. Labels come from landmark
+EXPRESSION, so for the classifier EXCLUDE those 40 genes from the features (else it just relearns
+eta); entropy stays AUXILIARY. The same eta-bins yield the 8-layer gene profiles
+(qValue/Center_of_Mass) in zon_struct_all_full.mat / supplementary_table_8.xlsx.
 
 Run from the src/prep/ folder:   python 02_convert_paper2_mat.py
 Memory-safe: reads the sparse matrix in chunks; keeps only the feature genes.
@@ -65,11 +69,12 @@ def main():
             if hk.any():
                 X[cellpos[c[hk]], gpos[irc[loc[hk]]]] = dat[s:e][loc[hk]]
 
-    # Zone labels — Paper 2's EXACT snRNA method (parse_snRNAseq_combined_atlas.m):
+    # Zone labels — Paper 2's OWN per-cell snRNA method (parse_snRNAseq_combined_atlas.m):
     #   eta = sum_pp / (sum_pp + sum_pc) over the 20+20 hepatocyte LANDMARK genes,
-    #   then bin eta into zones. (high eta = periportal, low eta = pericentral.)
-    # This is how Paper 2 assigned zones to build the snRNA zonation table — NOT a tercile of
-    # our own full-set coordinate (which would be circular with the classifier features).
+    #   then bin eta into terciles. (high eta = periportal, low eta = pericentral.)
+    # Landmarks come from Paper 2's spatial reconstruction; labels come from landmark EXPRESSION,
+    # so the classifier must EXCLUDE the landmark genes from its features (else it relearns eta),
+    # and entropy stays AUXILIARY. The same eta-bins yield the 8-layer profiles in zon_struct.
     fi = {g: j for j, g in enumerate(feats)}
     LM_PC = [g for g in (l.strip() for l in open(str(config.signature_files("paper2_landmark")[0]))) if g in fi]
     LM_PP = [g for g in (l.strip() for l in open(str(config.signature_files("paper2_landmark")[1]))) if g in fi]

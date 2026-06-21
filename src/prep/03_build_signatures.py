@@ -10,8 +10,10 @@ Sources:
   - full/expanded: data/raw/2025-01-01424E-s1/supplementary_table_8.xlsx, sheet 'Hepatocyte'
     (Paper 2 single-nucleus hepatocyte zonation; same platform as Paper 1). Columns:
     Gene_Name, qValue, Center_of_Mass, Max_expression. Axis: zone 1 = pericentral (low COM).
-  - paper2_landmark: data/raw/Human-liver/Matlab_scripts/Hepatocyte-{PC,PP}-LM.csv — the actual
-    20+20 landmark genes Paper 2 uses to assign snRNA zonation (eta = sum_pp/(sum_pp+sum_pc)).
+  - paper2_landmark: data/raw/Human-liver/Matlab_scripts/Hepatocyte-{PC,PP}-LM.csv — the 20+20
+    landmark genes Paper 2 uses to assign per-cell snRNA zonation (parse_snRNAseq_combined_atlas.m:
+    eta = sum_pp/(sum_pp+sum_pc), binned). Landmarks come from their spatial reconstruction; the
+    same bins yield the 8-layer gene profiles in zon_struct_all_full.mat / supplementary_table_8.xlsx.
     'core' remains a small hand-curated interpretability set.
 Run:  python src/prep/03_build_signatures.py
 """

@@ -1,0 +1,48 @@
+signature_set,donor,stage,stage_rank,n_cells,rho_dez_plast
+paper2_full,11,NASH w/o cirrhosis,2,989,0.004292103946573364
+paper2_full,12,NASH with cirrhosis,3,568,0.01302294626260263
+paper2_full,15,NASH w/o cirrhosis,2,976,0.015298580358628853
+paper2_full,16,NASH w/o cirrhosis,2,2149,0.02064825317714061
+paper2_full,19,NASH w/o cirrhosis,2,1387,-0.032951248188947034
+paper2_full,20,NASH w/o cirrhosis,2,2811,-0.01140047126272464
+paper2_full,21,NASH w/o cirrhosis,2,2847,-0.019227659882520124
+paper2_full,22,NASH with cirrhosis,3,2073,-0.0027689122320272005
+paper2_full,3,NASH w/o cirrhosis,2,1441,0.022462347550886295
+paper2_full,30,Healthy control,0,964,0.014209859017528048
+paper2_full,48,NASH w/o cirrhosis,2,803,-0.0420774899869408
+paper2_full,49,NASH w/o cirrhosis,2,1775,0.03417191893755262
+paper2_full,50,NASH w/o cirrhosis,2,789,-0.049560836582971945
+paper2_full,51,NAFLD,1,786,0.049233896585130645
+paper2_full,52,NASH w/o cirrhosis,2,148,0.06716052909621874
+paper2_full,53,NASH w/o cirrhosis,2,105,0.04706699742788692
+paper2_full,54,NASH w/o cirrhosis,2,838,-0.03792609975301101
+paper2_full,55,NAFLD,1,646,0.015460550815651387
+paper2_full,56,NAFLD,1,505,0.019839401638923924
+paper2_full,57,NASH w/o cirrhosis,2,470,0.05887574947492448
+paper2_full,6,NAFLD,1,2811,0.0016888848389242498
+paper2_full,60,NAFLD,1,903,-0.010775453743046398
+paper2_full,62,NASH w/o cirrhosis,2,408,-0.07656492816978983
+paper2_full,64,NASH w/o cirrhosis,2,750,-0.027514940867772602
+paper2_full,67,NASH w/o cirrhosis,2,1496,-0.0235837673977652
+paper2_full,68,NASH with cirrhosis,3,518,0.0006858316787503006
+paper2_full,7,NASH w/o cirrhosis,2,2096,0.006178051874081357
+paper2_full,70,NASH w/o cirrhosis,2,243,-0.004688314502665165
+paper2_full,71,NASH w/o cirrhosis,2,137,0.11720496996680616
+paper2_full,72,NASH w/o cirrhosis,2,676,-0.10822300326247249
+paper2_full,73,NASH w/o cirrhosis,2,1071,-0.016432355411788207
+paper2_full,75,NASH with cirrhosis,3,444,0.03230439363430712
+paper2_full,76,NASH w/o cirrhosis,2,718,0.053451467548281034
+paper2_full,77,NASH w/o cirrhosis,2,762,0.04917672461129434
+paper2_full,78,NAFLD,1,1121,0.03508206483537726
+paper2_full,8,NASH w/o cirrhosis,2,2876,-0.0007258189656277129
+paper2_full,83,NASH w/o cirrhosis,2,225,-0.03281929937193809
+paper2_full,84,NAFLD,1,301,-0.041566813350410806
+paper2_full,9,NASH w/o cirrhosis,2,2917,-0.0359365664160669
+paper2_full,98,Healthy control,0,297,-0.05653048901010294
+paper2_full,CL103,end stage,4,2065,-0.038576298532093475
+paper2_full,CL104,end stage,4,1960,-0.041286961029586865
+paper2_full,CL16,end stage,4,6117,0.020905778742734825
+paper2_full,CL17,end stage,4,4305,0.02376700818242873
+paper2_full,CL18,end stage,4,8650,0.010769076873382561
+paper2_full,HL1,Healthy control,0,1640,-0.015285202985778653
+paper2_full,HL2,Healthy control,0,849,0.007941449873658725

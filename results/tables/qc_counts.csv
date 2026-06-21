@@ -1,0 +1,48 @@
+stage,donor,n_cells
+Healthy control,30,964
+Healthy control,98,297
+Healthy control,HL1,1640
+Healthy control,HL2,849
+NAFLD,51,786
+NAFLD,55,646
+NAFLD,56,505
+NAFLD,6,2811
+NAFLD,60,903
+NAFLD,78,1121
+NAFLD,84,301
+NASH w/o cirrhosis,11,989
+NASH w/o cirrhosis,15,976
+NASH w/o cirrhosis,16,2149
+NASH w/o cirrhosis,19,1387
+NASH w/o cirrhosis,20,2811
+NASH w/o cirrhosis,21,2847
+NASH w/o cirrhosis,3,1441
+NASH w/o cirrhosis,48,803
+NASH w/o cirrhosis,49,1775
+NASH w/o cirrhosis,50,789
+NASH w/o cirrhosis,52,148
+NASH w/o cirrhosis,53,105
+NASH w/o cirrhosis,54,838
+NASH w/o cirrhosis,57,470
+NASH w/o cirrhosis,62,408
+NASH w/o cirrhosis,64,750
+NASH w/o cirrhosis,67,1496
+NASH w/o cirrhosis,7,2096
+NASH w/o cirrhosis,70,243
+NASH w/o cirrhosis,71,137
+NASH w/o cirrhosis,72,676
+NASH w/o cirrhosis,73,1071
+NASH w/o cirrhosis,76,718
+NASH w/o cirrhosis,77,762
+NASH w/o cirrhosis,8,2876
+NASH w/o cirrhosis,83,225
+NASH w/o cirrhosis,9,2917
+NASH with cirrhosis,12,568
+NASH with cirrhosis,22,2073
+NASH with cirrhosis,68,518
+NASH with cirrhosis,75,444
+end stage,CL103,2065
+end stage,CL104,1960
+end stage,CL16,6117
+end stage,CL17,4305
+end stage,CL18,8650

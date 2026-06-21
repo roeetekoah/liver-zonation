@@ -1,0 +1,2 @@
+label_source,calibration,n_features,n_train,n_test,accuracy,majority_class_chance,beats_chance,macro_f1,features_exclude_landmarks,n_landmarks_excluded
+paper2_eta_landmark,calibrated_sigmoid,1599,38234,12745,0.755433503334641,0.33338564142801097,True,0.744165146826597,True,40

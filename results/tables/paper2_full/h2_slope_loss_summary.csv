@@ -1,0 +1,2 @@
+signature_set,mode,K,n_genes_tested,frac_weakening,median_trend_rho,sign_test_p_2sided,n_genes_q05_weakening,n_donors_basis
+paper2_full,held_out_split,20,2035,0.4122850122850123,0.03685879925769648,2.5395052557560042e-15,607,47

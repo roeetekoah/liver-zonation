@@ -155,6 +155,55 @@ def plot_a6_collapse(per_donor_df, out="results/figures/a6_collapse.png"):
     return _save(fig, out)
 
 
+def plot_collapse_metrics(per_donor_df, metrics, out, short=None, title=None):
+    """H1 figure: per-donor scatter + per-stage mean, one panel per metric (A6, generalized)."""
+    short = short or SHORT_STAGES
+    dd = per_donor_df
+    fig, ax = plt.subplots(1, len(metrics), figsize=(4 * len(metrics), 3.8), squeeze=False)
+    rng = np.random.default_rng(0)
+    for i, m in enumerate(metrics):
+        a = ax[0][i]
+        a.scatter(dd["stage_rank"] + rng.uniform(-0.08, 0.08, len(dd)), dd[m], s=22, color=PC_COLOR, alpha=0.7)
+        mean = dd.groupby("stage_rank")[m].mean()
+        a.plot(mean.index, mean.values, "o-", color=PP_COLOR, lw=2)
+        a.set_xticks(range(len(short))); a.set_xticklabels(short, rotation=20)
+        a.set_title(f"{m} (per donor)")
+    if title:
+        fig.suptitle(title)
+    return _save(fig, out)
+
+
+def plot_h2_histogram(trend_values, out, title=None):
+    """H2 figure: distribution of per-gene zonal-slope trend (negative = weakening)."""
+    tr = np.asarray(trend_values, float)
+    fig, a = plt.subplots(figsize=(5, 3.8))
+    a.hist(tr, bins=40, color=PC_COLOR, alpha=0.85)
+    a.axvline(0, color=PP_COLOR, lw=2)
+    a.axvline(np.nanmedian(tr), color="#222", lw=1.5, ls="--")
+    a.set_xlabel("per-gene zonal-slope trend rho  (<0 = weakening)")
+    a.set_ylabel("genes")
+    if title:
+        a.set_title(title)
+    return _save(fig, out)
+
+
+def plot_h3_per_donor(per_donor_df, out, short=None, title=None, col="rho_dez_plast"):
+    """H3 figure: per-donor rho(de-zonation, plasticity) vs stage + per-stage mean."""
+    short = short or SHORT_STAGES
+    dd = per_donor_df
+    fig, a = plt.subplots(figsize=(5, 3.8))
+    rng = np.random.default_rng(0)
+    a.axhline(0, color="#888", ls="--", lw=1)
+    a.scatter(dd["stage_rank"] + rng.uniform(-0.08, 0.08, len(dd)), dd[col], s=24, color="#7a4ea8", alpha=0.75)
+    mean = dd.groupby("stage_rank")[col].mean()
+    a.plot(mean.index, mean.values, "o-", color=PP_COLOR, lw=2)
+    a.set_xticks(range(len(short))); a.set_xticklabels(short, rotation=20)
+    a.set_ylabel("per-donor rho(de-zonation, plasticity)")
+    if title:
+        a.set_title(title)
+    return _save(fig, out)
+
+
 def plot_a7_volcano(de_df, out="results/figures/a7_volcano.png"):
     """Volcano: effect (x) vs -log10(q) (y); signature genes flagged.
 

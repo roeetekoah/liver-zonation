@@ -1,0 +1,9 @@
+signature_set,program,n_genes,median_trend_rho,frac_weakening,n_q05_weakening
+paper2_full,wnt_pericentral_identity,5,-0.4363772527502108,1.0,5
+paper2_full,urea_nitrogen,12,-0.2854843058424797,0.5833333333333334,7
+paper2_full,cyp_xenobiotic,23,-0.2368811497166033,0.782608695652174,16
+paper2_full,lipid_metabolism,16,-0.0340322940698646,0.5,8
+paper2_full,other,1946,0.038023648346663455,0.40544707091469684,562
+paper2_full,bile_acid_transport,9,0.0412083953239456,0.4444444444444444,3
+paper2_full,cholangiocyte_plasticity,2,0.056304638884389545,0.5,0
+paper2_full,acute_phase_secreted,22,0.09036608019933806,0.3181818181818182,6

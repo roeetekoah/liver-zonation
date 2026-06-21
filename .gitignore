@@ -16,6 +16,12 @@ results/figures/*.png
 *.h5ad
 *.zip
 
+# large per-cell outputs (regenerable by the pipeline; keep the repo lean — only the
+# small donor-level / per-gene summary tables and the report PDFs are committed):
+results/tables/**/coordinates.csv
+results/tables/coordinates_*.csv
+results/tables/classifier_entropy.csv
+
 # keep the small committed bits inside the ignored trees:
 !data/README.md
 !results/figures/

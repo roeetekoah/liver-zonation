@@ -1,0 +1,9 @@
+signature_set,marker,zone,expected_sign,rho,p,present,pass,n_healthy_cells
+selected_frozen,CYP2E1,pericentral,+,0.3332655906847245,5.92675062492923e-98,True,True,3750
+selected_frozen,CYP1A2,pericentral,+,0.4602305686641295,5.441314236581761e-196,True,True,3750
+selected_frozen,GLUL,pericentral,+,0.23739010340839423,3.3871735535318317e-49,True,True,3750
+selected_frozen,PCK2,pericentral,+,0.31391372335012746,1.531676712620758e-86,True,True,3750
+selected_frozen,ASS1,periportal,-,-0.26165033291308565,9.518552710826071e-60,True,True,3750
+selected_frozen,ALDOB,periportal,-,-0.1640873759697165,4.811933519426072e-24,True,True,3750
+selected_frozen,PCK1,periportal,-,-0.18273295914671703,1.6206399808140716e-29,True,True,3750
+selected_frozen,HAL,periportal,-,-0.52460864862787,2.677724576019762e-264,True,True,3750

@@ -1,37 +1,53 @@
-"""Step 4 — signature scoring: zonation coordinate + plasticity score (Artefact A4).
-
-Reference implementation already exists in src/pipeline.py:score; this module is the
-modular scaffold.
-"""
+"""Step 4 — signature scoring: zonation coordinate + plasticity score (Artefact A4)."""
 from __future__ import annotations
+import os, sys
+import numpy as np
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # src/
+import config
+from steps.common import log, PLAST, VAL
 
 
-def score(M, genes, libsize, pc_genes, pp_genes, plast_genes):
-    """Compute the per-cell zonation coordinate and a plasticity score.
+def load_signature_set(which=config.DEFAULT_SET):
+    """Return (PC_genes, PP_genes) lists for a named signature set (config.SIGNATURE_SETS)."""
+    pc_path, pp_path = config.signature_files(which)
+    PC = [g.strip() for g in open(str(pc_path)) if g.strip()]
+    PP = [g.strip() for g in open(str(pp_path)) if g.strip()]
+    return PC, PP
+
+
+def zrows(M, genes, libsize, wanted):
+    """gene -> per-cell z-scored log1p-CP10k vector, for each requested gene present in `genes`."""
+    gi = {g: i for i, g in enumerate(genes)}; out = {}
+    for g in wanted:
+        if g in gi:
+            v = np.log1p(np.asarray(M.getrow(gi[g]).todense()).ravel().astype(float) / libsize * 1e4)
+            sd = v.std(); out[g] = (v - v.mean()) / sd if sd > 0 else v * 0
+    return out
+
+
+def score(M, genes, libsize, pc_genes, pp_genes, plast_genes=tuple(PLAST), which=""):
+    """Compute the per-cell zonation coordinate (mean_z(PC) - mean_z(PP)) and a plasticity score.
 
     Inputs
       M, genes, libsize : Paper 1 counts (genes x cells), gene symbols, library sizes.
-      pc_genes, pp_genes: pericentral / periportal signatures (core | expanded | sensitivity).
-      plast_genes       : ductal/progenitor plasticity markers (KRT7/19, SOX9/4, ...).
+      pc_genes, pp_genes: pericentral / periportal signature lists (from load_signature_set).
+      plast_genes       : ductal/progenitor plasticity markers.
     Outputs
-      coord[]  : zonation coordinate = mean_z(PC) − mean_z(PP) per cell.
-      pc[], pp[]: the two module z-score means (kept for Step 6 anti-correlation).
-      plast[]  : mean_z(plast_genes) per cell.
-      col{}    : gene -> per-cell z-scored vector (reused by validation).
-    Artefact ID
-      A4 — coordinates table (results/tables/coordinates.csv) with coord/pc/pp/plasticity.
-    Algorithm
-      1. For each signature gene: v = log1p(counts/libsize*1e4); z = (v−mean)/sd.
-      2. pc = mean z over PC genes present; pp = mean z over PP genes present.
-      3. coord = pc − pp.   plast = mean z over plasticity markers present.
-    Acceptance check
-      coord spans both signs; pc and pp are anti-correlated in healthy cells.
-    Stats notes
-      Run with the CORE signatures for the primary coordinate, then re-run with EXPANDED
-      (robustness) and periportal SENSITIVITY (HAMP removed) to show the result is not an
-      acute-phase artefact. Never mix tiers within one coordinate.
+      coord[], pc[], pp[], plast[], col{gene -> z-vector}.
+    Notes
+      Per-arm standardization equalises the two arms despite the PC/PP gene-count imbalance
+      (e.g. full = 1273 PC vs 364 PP): each arm is a mean, but the smaller arm is noisier, so
+      unit-variance scaling each side before subtracting fixes that.
     """
-    raise NotImplementedError(
-        "Step 4 scaffold. Reference: src/pipeline.py:score. Return coord, pc, pp, plast, col "
-        "for the chosen signature tier (core/expanded/sensitivity)."
-    )
+    log(f"Steps 3-4a: signature scoring [set={which}] ...")
+    want = set(list(pc_genes) + list(pp_genes) + list(plast_genes)
+               + VAL["pericentral"] + VAL["periportal"])
+    col = zrows(M, genes, libsize, want)
+    pc = np.mean([col[g] for g in pc_genes if g in col], axis=0)
+    pp = np.mean([col[g] for g in pp_genes if g in col], axis=0)
+    pc = (pc - pc.mean()) / (pc.std() + 1e-9)
+    pp = (pp - pp.mean()) / (pp.std() + 1e-9)
+    coord = pc - pp
+    plast = (np.mean([col[g] for g in plast_genes if g in col], axis=0)
+             if any(g in col for g in plast_genes) else np.zeros_like(coord))
+    return coord, pc, pp, plast, col

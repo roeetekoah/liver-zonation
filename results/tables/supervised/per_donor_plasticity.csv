@@ -1,0 +1,48 @@
+signature_set,donor,stage,stage_rank,n_cells,rho_dez_plast
+supervised,11,NASH w/o cirrhosis,2,989,-0.007553374528092224
+supervised,12,NASH with cirrhosis,3,568,-0.006104071937225953
+supervised,15,NASH w/o cirrhosis,2,976,-0.004656657027167647
+supervised,16,NASH w/o cirrhosis,2,2149,0.01731437726087174
+supervised,19,NASH w/o cirrhosis,2,1387,-0.03586230548436157
+supervised,20,NASH w/o cirrhosis,2,2811,0.017104980529828007
+supervised,21,NASH w/o cirrhosis,2,2847,-0.0029834117621069783
+supervised,22,NASH with cirrhosis,3,2073,0.012976000200917718
+supervised,3,NASH w/o cirrhosis,2,1441,0.0206612315490728
+supervised,30,Healthy control,0,964,0.08222038182333721
+supervised,48,NASH w/o cirrhosis,2,803,0.003052687813826429
+supervised,49,NASH w/o cirrhosis,2,1775,-0.03324141706374912
+supervised,50,NASH w/o cirrhosis,2,789,0.010429290962387467
+supervised,51,NAFLD,1,786,-0.016404251742488572
+supervised,52,NASH w/o cirrhosis,2,148,-0.058676938920208734
+supervised,53,NASH w/o cirrhosis,2,105,0.059222350816464674
+supervised,54,NASH w/o cirrhosis,2,838,0.007264913268732624
+supervised,55,NAFLD,1,646,0.039909966607307876
+supervised,56,NAFLD,1,505,0.015044952574231801
+supervised,57,NASH w/o cirrhosis,2,470,0.14200931000132228
+supervised,6,NAFLD,1,2811,0.02473791842494246
+supervised,60,NAFLD,1,903,0.018366050588508803
+supervised,62,NASH w/o cirrhosis,2,408,-0.14112262252434304
+supervised,64,NASH w/o cirrhosis,2,750,-0.00701073768624368
+supervised,67,NASH w/o cirrhosis,2,1496,-0.012238754640934485
+supervised,68,NASH with cirrhosis,3,518,0.019707048919167653
+supervised,7,NASH w/o cirrhosis,2,2096,0.014080170957839632
+supervised,70,NASH w/o cirrhosis,2,243,0.0523388745584489
+supervised,71,NASH w/o cirrhosis,2,137,0.01073946635807333
+supervised,72,NASH w/o cirrhosis,2,676,0.011191722255415261
+supervised,73,NASH w/o cirrhosis,2,1071,0.02685362665180137
+supervised,75,NASH with cirrhosis,3,444,-0.08720419319834784
+supervised,76,NASH w/o cirrhosis,2,718,-0.017350154028253836
+supervised,77,NASH w/o cirrhosis,2,762,0.027527628753001868
+supervised,78,NAFLD,1,1121,0.0016633047467284512
+supervised,8,NASH w/o cirrhosis,2,2876,0.01229711179924543
+supervised,83,NASH w/o cirrhosis,2,225,-0.020011735357528912
+supervised,84,NAFLD,1,301,0.017128033514726193
+supervised,9,NASH w/o cirrhosis,2,2917,-0.004710607394683153
+supervised,98,Healthy control,0,297,0.06124259226566404
+supervised,CL103,end stage,4,2065,-0.05191188847527122
+supervised,CL104,end stage,4,1960,0.020220321726137358
+supervised,CL16,end stage,4,6117,-0.0033496469109284156
+supervised,CL17,end stage,4,4305,-0.0364303599818509
+supervised,CL18,end stage,4,8650,-0.0448134827486505
+supervised,HL1,Healthy control,0,1640,0.0068901451451152925
+supervised,HL2,Healthy control,0,849,-0.011245583072349226

@@ -1,0 +1,10 @@
+SELECTED set: expanded_curated
+
+Reason: best HEALTHY-ruler quality among primary candidates.
+Healthy metrics used (NOT disease collapse):
+  validation: 8/8 markers correct
+  healthy PC-PP anticorrelation: -0.479 (want strongly negative)
+  healthy split-half reproducibility: +0.670
+  size: 26 PC + 23 PP
+
+WARNING: selected using Paper 2 / healthy-ruler criteria ONLY, NOT Paper 1 disease effect (disease is the transfer/test cohort, not the tuning cohort).

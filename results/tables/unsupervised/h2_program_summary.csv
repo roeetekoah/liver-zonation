@@ -1,0 +1,7 @@
+signature_set,program,n_genes,median_trend_rho,frac_weakening,n_q05_weakening
+unsupervised,wnt_pericentral_identity,4,-0.5028419839137834,1.0,4
+unsupervised,urea_nitrogen,5,-0.3933670589418417,1.0,5
+unsupervised,other,80,-0.3693374558048783,0.95,75
+unsupervised,acute_phase_secreted,1,-0.3276534607090423,1.0,1
+unsupervised,cyp_xenobiotic,8,-0.3193288171266932,1.0,8
+unsupervised,bile_acid_transport,2,-0.3095365876123616,1.0,2
