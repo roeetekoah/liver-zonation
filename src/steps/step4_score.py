@@ -16,12 +16,19 @@ def load_signature_set(which=config.DEFAULT_SET):
 
 
 def zrows(M, genes, libsize, wanted):
-    """gene -> per-cell z-scored log1p-CP10k vector, for each requested gene present in `genes`."""
-    gi = {g: i for i, g in enumerate(genes)}; out = {}
-    for g in wanted:
-        if g in gi:
-            v = np.log1p(np.asarray(M.getrow(gi[g]).todense()).ravel().astype(float) / libsize * 1e4)
-            sd = v.std(); out[g] = (v - v.mean()) / sd if sd > 0 else v * 0
+    """gene -> per-cell z-scored log1p-CP10k vector, for each requested gene present in `genes`.
+    Slices all requested rows once and converts to CSR (fast row access) — far faster than a
+    per-gene getrow() on a CSC matrix when `wanted` is large (e.g. the full transcriptome)."""
+    gi = {g: i for i, g in enumerate(genes)}
+    keep = [g for g in wanted if g in gi]
+    if not keep:
+        return {}
+    sub = M[[gi[g] for g in keep]].tocsr()          # one slice, row-format
+    lib = np.asarray(libsize, float)
+    out = {}
+    for j, g in enumerate(keep):
+        v = np.log1p(np.asarray(sub.getrow(j).todense()).ravel().astype(float) / lib * 1e4)
+        sd = v.std(); out[g] = (v - v.mean()) / sd if sd > 0 else v * 0
     return out
 
 
