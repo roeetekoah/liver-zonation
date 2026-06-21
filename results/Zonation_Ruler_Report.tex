@@ -26,6 +26,14 @@ Healthy metrics used (NOT disease collapse):
 WARNING: selected using Paper 2 / healthy-ruler criteria ONLY, NOT Paper 1 disease effect (disease is the transfer/test cohort, not the tuning cohort).
 \end{verbatim}
 \clearpage
+\section*{unsupervised\_combined \hfill primary\_candidate}
+Candidate zonation ruler. \textbf{Genes:} 4769 PC + 3719 PP.
+\paragraph{Validation (8-marker healthy gate) \& controls.} Markers correct: 8/8 (PASS). Healthy PC--PP anticorrelation = -0.498 (want strongly negative); split-half reproducibility = +0.720; coherence PC/PP = +0.087/+0.057.
+\paragraph{H1 (donor-level collapse, TRANSFER).} coord-spread vs stage rho = -0.514 (perm p = 0.0005); PC--PP anticorr trend rho = +0.625 (perm p = 0.0005).
+\paragraph{H2 (zonal slope-loss, held-out).} 100 genes tested; 86\% weaken; median trend rho = -0.258.
+\paragraph{H3 (de-zonation $\leftrightarrow$ plasticity, donor-level).} mean rho = -0.010; 24/47 donors $>$0; sign-test p = 1.
+\begin{center}\includegraphics[width=0.92\textwidth]{figures/collapse_unsupervised_combined.png}\end{center}
+\clearpage
 \section*{unsupervised\_p2 \hfill primary\_candidate}
 Candidate zonation ruler. \textbf{Genes:} 5177 PC + 3302 PP.
 \paragraph{Validation (8-marker healthy gate) \& controls.} Markers correct: 8/8 (PASS). Healthy PC--PP anticorrelation = -0.471 (want strongly negative); split-half reproducibility = +0.691; coherence PC/PP = +0.076/+0.052.
@@ -82,6 +90,14 @@ Paper 2's exact 20+20 hepatocyte landmark genes (Hepatocyte-\{PC,PP\}-LM.csv), t
 \paragraph{H3 (de-zonation $\leftrightarrow$ plasticity, donor-level).} mean rho = +0.024; 33/47 donors $>$0; sign-test p = 0.0079.
 \begin{center}\includegraphics[width=0.92\textwidth]{figures/collapse_paper2_landmark.png}\end{center}
 \clearpage
+\section*{unsupervised\_top250 \hfill primary\_candidate}
+Candidate zonation ruler. \textbf{Genes:} 250 PC + 250 PP.
+\paragraph{Validation (8-marker healthy gate) \& controls.} Markers correct: 8/8 (PASS). Healthy PC--PP anticorrelation = -0.227 (want strongly negative); split-half reproducibility = +0.853; coherence PC/PP = +0.047/+0.033.
+\paragraph{H1 (donor-level collapse, TRANSFER).} coord-spread vs stage rho = -0.575 (perm p = 0.0005); PC--PP anticorr trend rho = +0.526 (perm p = 0.0005).
+\paragraph{H2 (zonal slope-loss, held-out).} 500 genes tested; 81\% weaken; median trend rho = -0.241.
+\paragraph{H3 (de-zonation $\leftrightarrow$ plasticity, donor-level).} mean rho = +0.025; 31/47 donors $>$0; sign-test p = 0.04.
+\begin{center}\includegraphics[width=0.92\textwidth]{figures/collapse_unsupervised_top250.png}\end{center}
+\clearpage
 \section*{paper2\_top50 \hfill primary\_candidate}
 Top 50+50 genes by |center-of-mass| among q<0.05 zonated genes (supplementary table 8). \textbf{Genes:} 50 PC + 50 PP.
 \paragraph{Validation (8-marker healthy gate) \& controls.} Markers correct: 8/8 (PASS). Healthy PC--PP anticorrelation = -0.404 (want strongly negative); split-half reproducibility = +0.573; coherence PC/PP = +0.051/+0.034.
@@ -97,6 +113,13 @@ Top 100+100 zonated genes by |center-of-mass|. \textbf{Genes:} 100 PC + 100 PP.
 \paragraph{H2 (zonal slope-loss, held-out).} 186 genes tested; 59\% weaken; median trend rho = -0.066.
 \paragraph{H3 (de-zonation $\leftrightarrow$ plasticity, donor-level).} mean rho = +0.011; 28/47 donors $>$0; sign-test p = 0.24.
 \begin{center}\includegraphics[width=0.92\textwidth]{figures/collapse_paper2_top100.png}\end{center}
+\clearpage
+\section*{unsupervised\_full \hfill exploratory}
+Candidate zonation ruler. \textbf{Genes:} 4585 PC + 3903 PP.
+\paragraph{Validation (8-marker healthy gate) \& controls.} Markers correct: 6/8 (PASS). Healthy PC--PP anticorrelation = +0.646 (want strongly negative); split-half reproducibility = +0.831; coherence PC/PP = +0.008/+0.011.
+\paragraph{H1 (donor-level collapse, TRANSFER).} coord-spread vs stage rho = -0.421 (perm p = 0.0035); PC--PP anticorr trend rho = +0.196 (perm p = 0.2).
+\paragraph{H3 (de-zonation $\leftrightarrow$ plasticity, donor-level).} mean rho = -0.008; 21/47 donors $>$0; sign-test p = 0.56.
+\begin{center}\includegraphics[width=0.92\textwidth]{figures/collapse_unsupervised_full.png}\end{center}
 \clearpage
 \section*{core\_curated \hfill interpretability\_only}
 13+8 hand-curated, highly interpretable canonical anchors (GLUL, CYP2E1, ASS1, HAL, ...). \textbf{Genes:} 13 PC + 8 PP.
