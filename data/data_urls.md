@@ -31,6 +31,23 @@ the `-LM.csv` landmark genes); the Paper 2 snRNA reference + zonation ruler for 
 | `PhenoCyclerLiverPanel.zip` | Paper 2 protein imaging (Zenodo 17735558) | https://zenodo.org/records/17735558/files/PhenoCyclerLiverPanel.zip?download=1 |
 | `GSE202379_RAW.tar` / SRA FASTQs | Paper 1 raw (GEO / PRJNA835824) | https://ftp.ncbi.nlm.nih.gov/geo/series/GSE202nnn/GSE202379/suppl/GSE202379_RAW.tar |
 
+## Extension data (Days 3-4 — replication, inherited-risk bonus)
+
+> Recon June 2026. Paper 4 (Martin/Alatrakchi, Nat Immunol 2025) is **immune-cell-focused**
+> (liver+blood fine-needle aspirates) and is **NOT a good hepatocyte-zonation replication** — no
+> public GEO surfaced. Use a hepatocyte-bearing MASLD cohort instead (below).
+
+| Purpose | Dataset | Source / URL | Notes |
+|---|---|---|---|
+| **Replication + spatial validation (recommended)** | Spatially resolved multi-omics of human MASLD (Nat Genet 2025) | atlas portal https://db.genomics.cn/stomics/hmsma/ ; article https://www.nature.com/articles/s41588-025-02407-8 ; open text PMC12695644 | 540k scRNA cells (incl. hepatocytes) **+ 47,864 Visium spots** across control/MASLD/MASH. scRNA → replicate H1 collapse; Visium → validate the reconstructed coordinate vs **real disease spatial position** (the gap the primer flags). |
+| Replication (alt, spatial, open) | Spatial transcriptomics of healthy & fibrotic human liver (Nat Commun 2024) | https://www.nature.com/articles/s41467-024-55325-4 | open-access; GEO in its data-availability |
+| Replication (alt, snRNA) | MASLD scRNA cohort | GEO GSE159977 (healthy + MASLD) | dissociated; hepatocyte content to verify |
+| **Inherited-risk bonus (Step 9, Paper 3)** | Zhu et al., Nat Genet 2026 — risk→target genes | https://www.nature.com/articles/s41588-026-02617-8 (SI) ; preprint Research Square rs-6984670 ; PMC12633503 | target genes in **Suppl. Tables S2 (365 DAVs, HepG2), S6 (20 CRISPRi metabolic target genes), S7 (114 LD-indep DAVs)**. SI is paywalled on Nature — grab the `*_MOESM*_ESM.xlsx` manually or from the preprint. Known examples: SLC22A3, APOA5, ANGPTL3, LPL. |
+
+**Fetch status (June 2026):** landing pages/accessions located; the Nature SI (Paper 3 target genes)
+is **paywalled** (manual download of the supplementary xlsx needed), and the spatial-MASLD atlas is a
+**large portal download** (run from `db.genomics.cn/stomics/hmsma`). Neither auto-downloads here.
+
 ## Landing pages / browse
 
 - Paper 1 GEO: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE202379

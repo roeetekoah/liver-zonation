@@ -8,8 +8,11 @@ paper2_top250,geneset,True,True
 paper2_full,geneset,True,True
 unsupervised_top50,geneset,True,True
 unsupervised_top100,geneset,True,True
+unsupervised_top250,geneset,True,True
+unsupervised_full,geneset,True,True
 unsupervised_lasso,geneset,True,True
 unsupervised_elasticnet,geneset,True,True
 unsupervised,projection,True,True
 unsupervised_p2,projection,True,True
+unsupervised_combined,projection,True,True
 supervised,projection,True,True
