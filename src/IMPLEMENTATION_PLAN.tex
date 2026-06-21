@@ -86,9 +86,10 @@ The default signature is the full transcriptome-wide zonation program from Paper
 \end{itemize}
 for a total of $\approx 1{,}637$ \emph{significantly-zonated} hepatocyte genes (Paper 2,
 $q < 0.05$, well-expressed, and present in Paper 1). This is \code{config.DEFAULT\_SET = "full"}.
-\textbf{Both} the coordinate \emph{and} the classifier use this full set: the classifier's
-\code{paper2\_train.npz} must be rebuilt so its feature genes are the full zonated set, not just
-the $40$ landmark genes.
+\textbf{Both} the coordinate \emph{and} the classifier use this full set. The classifier's
+\code{paper2\_train.npz} cache now stores the \emph{union of all tiers} ($\sim$1{,}700 genes), so any
+set can be sliced from it by gene name; re-run \code{src/prep/02\_convert\_paper2\_mat.py} once if the
+cache predates this change.
 
 \paragraph{Robustness / baseline alternatives.}
 Smaller sets are kept as robustness and baseline checks, each selectable via
@@ -101,10 +102,41 @@ Smaller sets are kept as robustness and baseline checks, each selectable via
 \code{full}            & $1273 / 364$ & primary, transcriptome-wide (default) \\
 \code{expanded}        & $\sim 102 / 91$ & ranked top genes, $\sim\!100$ each \\
 \code{core}            & $13 / 8$ & curated canonical markers \\
-\code{paper2\_landmark} & $20 / 20$ exact & Paper 2 landmark baseline \\
+\code{paper2\_landmark} & $13 / 8$ exact & Paper 2 landmark baseline \\
 \bottomrule
 \end{tabular}
 \end{center}
+
+\paragraph{The decision: \code{full} is the result, \code{paper2\_landmark} is the audit.}
+We report both, but they do \emph{different jobs} --- this is not a 50/50 hedge.
+\code{full} is primary because (i)~it \emph{is} the contribution (read position from the entire
+program, not markers by eye); (ii)~it is the \emph{more robust} ruler in disease --- the coordinate is
+a \emph{mean} of z-scored genes, so disease-corruption of any single marker is diluted (e.g.\
+\code{CYP2E1}, canonical pericentral, is induced in NASH for non-spatial reasons and could swing a
+13-gene ruler, but is 1-of-$\sim$1{,}600 here); and (iii)~only a large set makes the H2 ``which
+programs collapse'' question and its non-circular held-out-gene test (Step~7) meaningful.
+\code{paper2\_landmark} is the \emph{credibility control}: a canonical, Paper-2-faithful, fully
+interpretable 13$+$8 ruler. If it shows the \emph{same} collapse, the signal is not an artefact of
+gene-set size; if the two \emph{disagree}, that is itself a finding (a warning the ruler may be
+disease-sensitive). \textbf{Per hypothesis:} H1 (collapse) $+$ ruler/classifier $\to$ \code{full}
+primary, \code{paper2\_landmark} control; H2 $\to$ \code{full} with the held-out repeated split;
+H3 $\to$ de-zonation score from \code{full}. \code{expanded}/\code{core} are an optional robustness
+gradient. \textbf{Why the original plan said ``landmark'':} marker-based reconstruction is the
+field-standard, validated method (Paper 2; Halpern et al.\ 2017) --- the conservative starting point;
+\code{full} is the deliberate upgrade.
+
+\paragraph{The PC/PP imbalance (1{,}273 vs 364) does not bias the coordinate.}
+This is a \emph{feature}-set asymmetry, not ML class imbalance (which concerns label counts, e.g.\ the
+classifier's zone terciles). The coordinate is $\operatorname{mean}_z(\text{PC}) -
+\operatorname{mean}_z(\text{PP})$; because each arm is a \emph{mean} (not a sum), the 3.5:1 count ratio
+carries \emph{no} magnitude bias. It does create a \emph{precision} asymmetry --- the PP arm averages
+fewer genes, so it is noisier and the periportal end is estimated less reliably. Mitigations:
+(1)~standardise each arm to unit variance across cells \emph{before} subtracting (equalises the arms
+regardless of count); (2)~a size-matched run --- top-364 strongest-zonated PC genes vs the 364 PP --- as
+a robustness check; (3)~optionally strength-weight genes by Paper~2 zonation effect size, which shrinks
+the imbalance by down-weighting the long tail of weak PC genes. The imbalance itself is part biology
+(zonation skews pericentral here) and part the selection thresholds ($q<0.05$ $+$ p90 expression $+$
+center-of-mass split).
 
 \noindent\textbf{Code:} \code{src/config.py}
 (\code{PAPER1}, \code{PAPER2\_TRAIN}, \code{SIGNATURES}, \code{FIGURES}, \code{TABLES},

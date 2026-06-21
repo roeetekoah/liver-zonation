@@ -1,0 +1,41 @@
+I'm continuing a 2-day Computational Genomics hackathon project. The repo root is
+D:\CS\Genomics\Hackathon. Don't write or run anything yet — first orient yourself,
+then give me a state summary and wait.
+
+PROJECT IN ONE PARAGRAPH
+"Spatial Degradation of Hepatocyte Zonation." We use Paper 2's healthy human-liver
+spatial zonation atlas as a quantitative ruler to assign a pseudo-zonation coordinate
+to Paper 1's spatially-blind disease snRNA-seq hepatocytes, then measure how zonation
+collapses across MASLD stages. H1: does zonation collapse with disease stage? H2: which
+gene programs collapse? H3: are de-zonated cells also plastic/biphenotypic? Prep is done;
+the hackathon executes the pipeline live.
+
+READ THESE FIRST, IN ORDER
+1. PROJECT_MAP.md            (the index — folder layout, what's done vs left)
+2. src/IMPLEMENTATION_PLAN.md (step-by-step build order + acceptance checks)
+3. src/config.py             (paths + signature-set config)
+4. signatures/README.md      (which gene sets, and why "full" is default)
+5. docs/primers/*.pdf        (4 method primers: stats H1/H3, DE+FDR, spatial genomics)
+6. docs/WORK_DIVISION.md     (who does what — me=Roee, teammate=Shira)
+
+NON-NEGOTIABLE CONVENTIONS
+- The DONOR (~47 patients, Patient.ID), never the cell (~69k), is the unit of
+  statistical inference. Cell-level p-values = pseudoreplication.
+- Signatures: "full" transcriptome-wide set is the DEFAULT/primary; report results
+  BOTH ways (full AND paper2_landmark) as a robustness comparison.
+- De-zonation (lost position WITHIN hepatocytes; healthy coordinate is one broad
+  UNIMODAL hump, proven by marker SLOPES not bumpiness) is distinct from plasticity
+  (lost cell identity, hepatocyte->cholangiocyte). H3 tests if they co-occur.
+- Keep the prep deliverables (primers, deck) intact; only build/run analysis code now.
+
+CURRENT STATUS
+Done: question locked; data downloaded + converted to data/processed/; signatures built;
+pipeline.py written + smoke-tested (donor-level); positive control validated on Paper 2.
+Left before live work: (1) run src/prep/02_convert_paper2_mat.py once if paper2_train.npz
+is missing; (2) execute Steps 3-8 live (harmonize -> score+classifier -> validate/ruler
+battery -> collapse H1 -> zone DE+FDR H2 -> plasticity H3).
+
+TASK FOR NOW
+Read the files above, then summarize back to me: (a) the pipeline's current state, (b) the
+exact next step to run, (c) anything in the plan that looks ambiguous or risky. Then stop
+and wait for my go-ahead.

@@ -83,10 +83,15 @@ allm  = pd.read_csv("data/processed/paper1/metadata_all_cells.csv")   # + Patien
 
 Zone-labelled Paper 2 **snRNA** hepatocytes — the classifier training set.
 
+`X` spans the **union of all signature tiers** (full ∪ expanded ∪ core ∪ paper2_landmark,
+restricted to genes shared with Paper 1) — ~1,700 genes, not just the 40 landmarks. One
+cache serves every set: downstream, pick a tier by slicing the columns of `feats` whose
+gene symbol is in that tier's list. Zone labels are derived from the **`full`** coordinate.
+
 | key | shape | dtype | meaning |
 |---|---|---|---|
-| `X` | (50979, 40) | float32 | CP-normalized expression of the 40 `paper2_landmark` genes (20 PC + 20 PP), column order = `feats` |
-| `feats` | (40,) | str | gene symbols (the X column order) |
+| `X` | (≈50979, ≈1700) | float32 | CP-normalized expression over the union of all signature-tier genes, column order = `feats` |
+| `feats` | (≈1700,) | str | gene symbols (the X column order); slice per tier by membership |
 | `zone_label` | (50979,) | int64 | zone class per nucleus (0 / 1 / 2 = portal / mid / central tercile) |
 | `donor` | (50979,) | str | donor ID (`M5`…`M8`) |
 

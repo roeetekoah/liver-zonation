@@ -51,11 +51,13 @@ Hackathon/
 
 ## signatures/  (artifact A1)
 Four families per zone (see `signatures/README.md`):
-- `*_paper2_landmark.txt` — **the EXACT Paper 2 landmark set (extracted verbatim) → the pipeline's default baseline.**
-- `*_core.txt` — curated, biology-informed anchors (derived).
+- `*_full.txt` — **transcriptome-wide zonation program (1273 PC / 364 PP) → the pipeline's default/primary.**
+- `*_paper2_landmark.txt` — the EXACT Paper 2 landmark set (verbatim, 13 PC / 8 PP) → the credibility audit, reported alongside `full`.
+- `*_core.txt` — curated, biology-informed anchors (derived, 13 / 8).
 - `*_expanded.txt` — landmark ∪ core ∪ top-ranked genes from Paper 2's snRNA table (≈100).
 - `periportal_sensitivity.txt` — inflammation-linked genes removed (H1 robustness check).
-PCK2 is placed **pericentrally** (human-specific, per Paper 2). `config.py` defaults to `paper2_landmark`.
+PCK2 is placed **pericentrally** (human-specific, per Paper 2). `config.py` defaults to `full`;
+`full` is the result, `paper2_landmark` the audit (see `signatures/README.md` for the full rationale + the PC/PP-imbalance note).
 
 ## src/  (code)
 | Path | Purpose | Status |

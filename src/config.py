@@ -15,7 +15,7 @@ SIGNATURES = ROOT / "signatures"
 #   full           ~1273 + 364   transcriptome-wide PRIMARY (default)
 #   expanded       ~102 + 91      mid-size (landmark + core + top-ranked)
 #   core           13 + 8         curated, biology-informed anchors
-#   paper2_landmark 20 + 20       EXACT Paper 2 landmark set (sanity baseline)
+#   paper2_landmark 13 + 8        EXACT Paper 2 landmark set (sanity baseline)
 #   sensitivity    (PP only, 7)   core periportal minus inflammation genes
 SIGNATURE_SETS = {
     name: (SIGNATURES / f"pericentral_{name}.txt", SIGNATURES / f"periportal_{name}.txt")

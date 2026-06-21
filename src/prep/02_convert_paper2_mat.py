@@ -5,11 +5,13 @@ rest of the pipeline never touches MATLAB. Builds the classifier training set di
 
 Reads:
   data/raw/combined_scRNAseq_atlas_M5M6M7M8.mat   (Paper 2 snRNA atlas, v7.3 HDF5)
-  signatures/{pericentral,periportal}_core.txt    (signatures)
+  signatures/{pericentral,periportal}_*.txt       (UNION of all tiers: full/expanded/core/landmark)
   data/processed/paper1/genes.txt                 (to keep only features shared w/ Paper 1)
 Writes:
   data/processed/paper2_train.npz = { X (cells x feats, float32), feats (str[]),
                        zone_label (int[]: 0 portal / 1 mid / 2 central), donor (str[]) }
+  X spans the UNION of every signature tier, so one cache serves all sets — downstream
+  selects a tier by slicing the columns of `feats` that belong to it (no re-run per set).
 
 Zone labels (Option A): tercile of the PC-PP signature coordinate on Paper 2's own
 hepatocytes. Swap in Paper 2's Visium-HD zonation mapping later for ground-truth labels.
@@ -22,8 +24,15 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) 
 import config
 
 MAT  = str(config.DATA_RAW / "combined_scRNAseq_atlas_M5M6M7M8.mat")
-PC   = [g.strip() for g in open(str(config.PC_GENES)) if g.strip()]
-PP   = [g.strip() for g in open(str(config.PP_GENES)) if g.strip()]
+_read = lambda p: [g.strip() for g in open(str(p)) if g.strip()]
+# Features = UNION of every signature tier's genes, so one cache serves all sets.
+PC, PP = [], []
+for _name, (_pcp, _ppp) in config.SIGNATURE_SETS.items():
+    PC += _read(_pcp); PP += _read(_ppp)
+PC = list(dict.fromkeys(PC))        # de-dup, preserve order
+PP = list(dict.fromkeys(PP))
+# Zone-label coordinate uses the PRIMARY 'full' set only (not the union).
+PC_FULL, PP_FULL = (_read(p) for p in config.signature_files("full"))
 P1G  = set(g.strip() for g in open(str(config.PAPER1 / "genes.txt")))
 OUT  = str(config.PAPER2_TRAIN)
 
@@ -62,7 +71,7 @@ def main():
     fi = {g: j for j, g in enumerate(feats)}
     z = lambda gl: np.mean([(X[:, fi[g]] - X[:, fi[g]].mean()) / (X[:, fi[g]].std() + 1e-9)
                             for g in gl if g in fi], axis=0)
-    coord = z(PC) - z(PP); t1, t2 = np.quantile(coord, [1/3, 2/3])
+    coord = z(PC_FULL) - z(PP_FULL); t1, t2 = np.quantile(coord, [1/3, 2/3])
     y = np.where(coord <= t1, 0, np.where(coord >= t2, 2, 1)).astype(int)
 
     np.savez(OUT, X=X, feats=np.array(feats), zone_label=y, donor=donor)

@@ -667,22 +667,35 @@ coordinate alone. The coordinate is a \emph{signed real number} (sign $=$ which 
 strongly committed), centred near zero --- \textbf{not} a 0--1 probability; probabilities come later,
 from the classifier (\S\ref{sec:classifier}).
 
-\aside{The signature, run both ways --- landmark \emph{and} transcriptome-wide}{We compute the
-coordinate with \textbf{two} gene schemes and report both, checking they agree.
-\textbf{(a)~The exact Paper~2 landmark set} --- the verbatim 20$+$20 pericentral/periportal landmark
-genes Paper~2 used to seed its axis. This is \emph{faithful to the original landmark/marker-based plan}
-and is the interpretable sanity baseline.
-\textbf{(b)~The full transcriptome-wide program} --- the $\sim$1{,}640 significantly-zonated hepatocyte
-genes ($q<0.05$, well-expressed, present in Paper~1; PC/PP $=$ 1{,}273\,/\,364). This is the
-\textbf{default}, and a deliberate strengthening: it reads position from the \emph{entire} program
-rather than a handful of markers by eye, which is the whole motivation of the project and is also what
-makes the non-circular held-out-gene test (\S\ref{sec:workplan}, Step~7) meaningful. Two further sets
-bridge them as robustness checks --- a $\sim$100-gene \code{expanded} set (landmark $\cup$ core $\cup$
-top-ranked) and a curated 13/8-gene \code{core}. \textbf{Honest framing:} transcriptome-wide is the
-headline because it is stronger, but we run the landmark set alongside and show the collapse is the
-\emph{same} either way --- so the result is not an artefact of choosing a large gene set. (An earlier
-draft mistakenly made the 20-gene landmark set the default, silently contradicting the
-transcriptome-wide motivation; corrected here.)}
+\aside{The signature, run both ways --- \code{full} is the result, landmark is the audit}{We compute
+the coordinate with \textbf{two} gene schemes and report both --- but they do \emph{different jobs}, not
+a 50/50 hedge.
+\textbf{(a)~The full transcriptome-wide program is the primary instrument} --- the $\sim$1{,}640
+significantly-zonated hepatocyte genes ($q<0.05$, well-expressed, present in Paper~1; PC/PP $=$
+1{,}273\,/\,364), the \textbf{default}. It is primary for three reasons: it \emph{is} the contribution
+(read position from the entire program, not 2--3 markers by eye); it is the \emph{more robust} ruler in
+disease --- because the coordinate is a \emph{mean} of z-scored genes, disease-corruption of any one
+marker is diluted (e.g.\ \gene{CYP2E1}, canonical pericentral, is induced in NASH for non-spatial
+reasons and could swing a 13-gene ruler, but is 1-of-$\sim$1{,}600 here); and only a large set makes the
+non-circular held-out-gene test (\S\ref{sec:workplan}, Step~7) and the ``which programs collapse'' (H2)
+question meaningful.
+\textbf{(b)~The exact Paper~2 landmark set (13$+$8) is the credibility control} --- the verbatim,
+canonical, biologically-named genes Paper~2 used to seed its axis. Its job is to rebut ``did you just
+engineer this with enough genes?'': if a maximally-different small ruler shows the \emph{same} collapse,
+the signal is not a gene-set artefact; if the two \emph{disagree}, that is itself a finding (a warning
+the ruler may be disease-sensitive). It is also faithful and fully interpretable. Two further sets are an
+optional robustness gradient --- a $\sim$100-gene \code{expanded} (landmark $\cup$ core $\cup$ top-ranked)
+and a curated 13/8 \code{core}.
+\textbf{Why the original plan said ``landmark.''} Marker-based reconstruction is the field-standard,
+validated method --- exactly what Paper~2 and the foundational liver-zonation work (Halpern et al.\ 2017)
+did. Landmark was the conservative starting point; \code{full} is the deliberate upgrade, not a
+correction of a mistake. (An earlier draft did briefly make landmark the \emph{default}, which silently
+contradicted the transcriptome-wide motivation; corrected --- \code{full} is the default now.)
+\textbf{On the PC/PP imbalance (1{,}273 vs 364).} This is a \emph{feature}-set asymmetry, not class
+imbalance, and it does \emph{not} bias the coordinate: each arm is a \emph{mean} of z-scores, so the
+3.5:1 count ratio carries no magnitude bias. It only makes the periportal arm noisier (fewer genes
+averaged); we neutralise that by standardising each arm to unit variance before subtracting, and verify
+with a size-matched (top-364 PC) run.}
 
 \noindent\textbf{In code.} \code{src/steps/step4\_score.py} --- \code{coord = mean\_z(pericentral) -
 mean\_z(periportal)}; default gene sets are \code{signatures/*\_full.txt} (via
@@ -950,7 +963,7 @@ signature genes, the driver test must not simply re-test them. We use a \textbf{
 split} --- define the coordinate on one half of the zonation genes, test collapse on the other ---
 \textbf{repeated $K\approx20$--$50$ times}, reporting the \emph{distribution} of the result across
 splits (a robust signal holds across most splits; this is meaningful only with the full
-$\sim$1{,}640-gene set, not 20 landmarks), and we exclude/flag signature genes from any ``driver'' claim.
+$\sim$1{,}640-gene set, not $\sim$20 landmarks), and we exclude/flag signature genes from any ``driver'' claim.
 
 \noindent\textbf{In code.} \code{src/steps/step7\_de.py} --- pseudobulk (donor$\times$zone), per-gene
 \code{expr $\sim$ coord + stage + coord:stage}, \code{multipletests(method='fdr\_bh')}.

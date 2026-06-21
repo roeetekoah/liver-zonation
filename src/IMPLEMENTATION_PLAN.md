@@ -21,9 +21,24 @@ statistical steps already exist in `src/pipeline.py` (the integrated donor-level
 ---
 
 ## Step 1 — Build the ruler (prep; DONE)
-**Inputs:** Paper 2 landmark CSVs → `signatures/*_paper2_landmark.txt` (baseline, 20+20);
-`supplementary_table_8.xlsx` sheet `Hepatocyte` → `signatures/*_expanded.txt` (ranked, ~100);
+**Inputs:** Paper 2 landmark CSVs → `signatures/*_paper2_landmark.txt` (baseline, 13+8);
+`supplementary_table_8.xlsx` sheet `Hepatocyte` → `signatures/*_full.txt` (transcriptome-wide,
+1273+364; **the default/primary**) and `*_expanded.txt` (ranked, ~100);
 `combined_scRNAseq_atlas_M5M6M7M8.mat` → `paper2_train.npz`.
+
+> **Signature-set strategy (`full` = result, `paper2_landmark` = audit).** Report both, different
+> jobs — not a hedge. `full` is primary: it *is* the contribution (whole program, not markers by
+> eye); it's the more robust ruler (coordinate is a *mean* of z-scored genes, so one disease-corrupted
+> marker like NASH-induced `CYP2E1` is diluted 1-in-~1600 instead of swinging a 13-gene ruler); and
+> only a large set makes H2's held-out-gene test meaningful. `paper2_landmark` is the credibility
+> control — same collapse on a canonical 13+8 ruler ⇒ not a gene-set artefact; disagreement ⇒ a real
+> warning. Per hypothesis: H1+ruler→`full` primary/`landmark` control; H2→`full`+held-out split;
+> H3→`full`. Original plan said "landmark" because that's the field-standard method (Paper 2; Halpern
+> 2017); `full` is the upgrade.
+> **PC/PP imbalance (1273 vs 364) doesn't bias the coordinate:** it's a feature asymmetry, not class
+> imbalance; each arm is a *mean*, so the count ratio carries no magnitude bias — only a precision
+> asymmetry (PP arm noisier). Fix: standardize each arm to unit variance before subtracting; verify
+> with a size-matched top-364-PC run. See `signatures/README.md` for the full write-up.
 **Training labels (the classifier's `y`):** zone label per Paper 2 nucleus.
 - *Ground-truth (target):* port `parse_snRNAseq_combined_atlas.m` — Paper 2 mapped its
   **spatial** (Visium) zonation onto its snRNA nuclei; use that zone index, binned to 3 classes.
@@ -84,12 +99,13 @@ pc = score(PERICENTRAL);  pp = score(PERIPORTAL)
 zonation_coord = pc − pp                      # signed; >0 pericentral, <0 periportal
 plasticity     = score(PLASTICITY)            # signatures/plasticity.txt: KRT7,KRT19,SOX9,SOX4,KRT23,NCAM1
 ```
-Default gene sets: `*_paper2_landmark.txt`. (Our simpler `pipeline.py:score` uses the mean of
+Default gene sets: `*_full.txt` (`config.DEFAULT_SET="full"`); `paper2_landmark` is run alongside as
+the audit. (Our simpler `pipeline.py:score` uses the mean of
 z-scored signature genes without an explicit control set; the `score_genes` background form above
 is the upgrade.)
 
 ### 4b Classifier + entropy (`steps/step4b_classifier.py`; ref `classifier.py`)
-1. Train on `paper2_train.npz`: `X` (nuclei × 40 landmark feats, CP-normalized), `y = zone_label` ∈ {0,1,2}.
+1. Train on `paper2_train.npz`: `X` (nuclei × ~1700 union feats, CP-normalized; slice to the chosen tier — `full` by default), `y = zone_label` ∈ {0,1,2}.
 2. `Pipeline(StandardScaler(), LogisticRegression(multi_class="multinomial", C=…, max_iter=…))`.
    Prefer **calibrated** logistic (well-behaved probabilities) over random forest.
 3. **Evaluate on a held-out Paper 2 split FIRST** (`train_test_split`, stratified by donor):
