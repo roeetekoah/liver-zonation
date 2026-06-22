@@ -207,8 +207,13 @@ def contact_sheet(coords, summary, axis, out_path, block_ncol=5):
              "Reading key:  anti-diagonal cloud = intact zonation;  "
              "round / positive blob = collapse.   "
              "Per panel: n = number of cells in that donor;  r = Spearman(pc, pp) anti-correlation;  "
-             "UMI = median sequencing depth.",
+             "UMI = median SCT-corrected depth.",
              fontsize=9.5, ha="left", va="center", color=C.MUTED)
+    # figure-level axis labels (every panel shares these axes)
+    fig.supxlabel("every panel's x-axis = PERICENTRAL-program score per cell  (higher = more pericentral)",
+                  fontsize=11, color=C.INK)
+    fig.supylabel("every panel's y-axis = PERIPORTAL-program score per cell",
+                  fontsize=11, color=C.INK)
 
     fig.savefig(out_path, dpi=130, bbox_inches="tight")
     plt.close(fig)

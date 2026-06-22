@@ -21,6 +21,9 @@ MODULES = [
     ("b3_program_vs_coord.py","B3 program-arm expression vs coordinate", "B3"),
     ("b4_set_levels.py",     "B4 per-set expression level vs stage/fib", "B4"),
     ("c_confounders.py",     "C  confounder controls (cell-count, depth, UMI)", "C"),
+    ("c3_level_vs_slope.py", "C3 level vs slope per gene",               "C3"),
+    ("d_staging.py",         "D  fibrosis / NAS higher-res staging",     "D"),
+    ("e_pca_interpretation.py","E  interpret the learned PCA ruler",     "E"),
 ]
 
 

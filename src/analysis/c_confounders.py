@@ -17,11 +17,11 @@ nuisance variable and ask whether the H1 trend SURVIVES:
   C2  equalize sequencing depth (binomial thin every cell to a common target T, RE-SCORE)
       -> re-test H1 trend; plus a within-donor depth-response curve = the clean causal proof
          that depth degrades the anti-correlation measurement.
-  C4  UMI-coloured end-stage scatter: is the end-stage "blob" partly low-depth noise, or do
-      the high-UMI cells still anti-correlate (real biology)?
+  C4  SCT-counts-coloured end-stage scatter: is the end-stage "blob" partly low-depth noise, or do
+      the high-SCT-counts cells still anti-correlate (real biology)?
 
 NOTE on depth units: the intervention operates on the counts matrix in common._p1_matrix(),
-whose per-cell library size (sum over its ~30k genes) spans ~3.3k–5.7k UMI. T and the
+is the SCT-CORRECTED counts (= nCount_SCT exactly; depth-regularized), per-cell totals ~3-5.7k. T and the
 depth-response targets are chosen WITHIN that range so the thinning actually bites. (The
 clinical `depth_med` column is the full raw nCount and is larger; it is reported for context
 only, never fed to the thinner.)
@@ -42,7 +42,7 @@ plt.rcParams.update({
 
 SEED = 0
 COMMON_N = 200          # C1 common cell count (most donors meet this)
-DEPTH_T = 2000          # C2 common sequencing depth target (UMI); ~all cells exceed it
+DEPTH_T = 2000          # C2 common sequencing depth target (SCT-counts); ~all cells exceed it
 RESPONSE_TARGETS = [750, 1500, 2500, 3500]   # C2b within-donor depth-response (in lib range)
 
 # per-stage colour for points/lines
@@ -201,7 +201,7 @@ def c2_depth(coords, summary, out_paired, out_csv):
     pcg, ppg = C.gene_lists(WHICH)
     b2i = {b: i for i, b in enumerate(bars)}
 
-    print(f"  [C2] thinning all {M.shape[1]} cells to T={DEPTH_T} UMI (binomial)…", flush=True)
+    print(f"  [C2] thinning all {M.shape[1]} cells to T={DEPTH_T} SCT-counts (binomial)…", flush=True)
     Ms, libs = C.subsample_counts(M, lib, DEPTH_T, seed=SEED)
     coordS, pcS, ppS = C.score_from_matrix(Ms, libs, genes, pcg, ppg)
 
@@ -232,14 +232,14 @@ def c2_depth(coords, summary, out_paired, out_csv):
         ax.plot(1, r["anticorr_at_T"], "o", color=col, ms=5, mec="white", mew=0.5, zorder=3)
     ax.axhline(0, color=C.RULE, lw=0.7, zorder=0)
     ax.set_xticks([0, 1])
-    ax.set_xticklabels(["original depth", f"thinned to {DEPTH_T} UMI"])
+    ax.set_xticklabels(["original depth", f"thinned to {DEPTH_T} SCT-counts"])
     ax.set_xlim(-0.25, 1.45)
     ax.set_ylabel("anticorr  Spearman(pc, pp)   (more negative = stronger zonation)")
     ax.set_title("C2a  Depth equalization — paired per-donor anti-correlation",
                  fontsize=11, fontweight="bold")
     txt = (f"H1 trend  Spearman(strength=-anticorr, stage_rank):\n"
            f"  original depth   rho = {rho_o:+.3f}  (p = {p_o:.3g})\n"
-           f"  @ {DEPTH_T} UMI      rho = {rho_t:+.3f}  (p = {p_t:.3g})")
+           f"  @ {DEPTH_T} SCT-counts      rho = {rho_t:+.3f}  (p = {p_t:.3g})")
     ax.text(0.97, 0.04, txt, transform=ax.transAxes, fontsize=8.5, va="bottom", ha="right",
             family="monospace",
             bbox=dict(boxstyle="round,pad=0.4", fc="white", ec=C.RULE, lw=0.5))
@@ -306,7 +306,7 @@ def c2_response(coords, summary, out_resp):
         ax.plot(xs, ys, "-o", color=col, lw=1.6, ms=6, mec="white", mew=0.5,
                 label=f"donor {d} ({C.STAGE_SHORT[srow.loc[d,'stage']]}, n={int(srow.loc[d,'n_cells'])})")
     ax.axhline(0, color=C.RULE, lw=0.7, zorder=0)
-    ax.set_xlabel("target depth  (UMI per cell after thinning)")
+    ax.set_xlabel("target depth  (SCT-counts per cell after thinning)")
     ax.set_ylabel("anticorr  Spearman(pc, pp)")
     ax.set_title("C2b  Within-donor depth-response (causal proof)",
                  fontsize=11, fontweight="bold")
@@ -323,10 +323,10 @@ def c2_response(coords, summary, out_resp):
     return out_resp, pick
 
 
-# ============================================================ C4 — UMI-COLOURED SCATTER
+# ============================================================ C4 — SCT-counts-COLOURED SCATTER
 def c4_umi_scatter(coords, out):
-    """End-stage PC-vs-PP scatter coloured by per-cell log10 UMI. Is the blob partly low-depth
-    noise? Annotate anticorr in the TOP-UMI tercile vs BOTTOM-UMI tercile of cells."""
+    """End-stage PC-vs-PP scatter coloured by per-cell log10 SCT-counts. Is the blob partly low-depth
+    noise? Annotate anticorr in the TOP-SCT-counts tercile vs BOTTOM-SCT-counts tercile of cells."""
     M, genes, bars, lib = C._p1_matrix()
     libdf = pd.DataFrame({"cell_id": bars, "umi": lib})
     es = coords[coords["stage"] == "end stage"].merge(libdf, on="cell_id", how="left")
@@ -351,20 +351,20 @@ def c4_umi_scatter(coords, out):
     ax.set_title(f"C4  End-stage cells coloured by depth  (pooled, n={len(es):,} cells)",
                  fontsize=11, fontweight="bold")
     cb = fig.colorbar(sc, ax=ax, fraction=0.046, pad=0.02)
-    cb.set_label("log10 per-cell UMI")
+    cb.set_label("log10 per-cell SCT-counts")
     txt = (f"anti-corr Spearman(pc, pp):\n"
            f"  all end-stage cells   = {ac_all:+.3f}\n"
-           f"  TOP-UMI tercile       = {ac_top:+.3f}\n"
-           f"  BOTTOM-UMI tercile    = {ac_bot:+.3f}")
+           f"  TOP-SCT-counts tercile       = {ac_top:+.3f}\n"
+           f"  BOTTOM-SCT-counts tercile    = {ac_bot:+.3f}")
     ax.text(0.03, 0.04, txt, transform=ax.transAxes, fontsize=8.5, va="bottom",
             family="monospace",
             bbox=dict(boxstyle="round,pad=0.4", fc="white", ec=C.RULE, lw=0.5))
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
-    msg = ("High-UMI cells retain stronger anti-correlation than low-UMI cells — part of the "
+    msg = ("High-SCT-counts cells retain stronger anti-correlation than low-SCT-counts cells — part of the "
            "end-stage 'blob' is low-depth noise, but real residual zonation remains in well-sequenced cells."
            if (np.isfinite(ac_top) and np.isfinite(ac_bot) and ac_top < ac_bot) else
-           "High-UMI cells do NOT anti-correlate more than low-UMI cells — the end-stage collapse is not explained by depth.")
+           "High-SCT-counts cells do NOT anti-correlate more than low-SCT-counts cells — the end-stage collapse is not explained by depth.")
     fig.text(0.5, 0.005, msg, ha="center", va="bottom", fontsize=7.4, color=C.MUTED, wrap=True)
     fig.subplots_adjust(left=0.11, right=0.99, top=0.92, bottom=0.13)
     fig.savefig(out)
@@ -405,8 +405,8 @@ def main():
     print(f"C2a H1 trend  orig rho={d2['rho_orig']:+.3f} p={d2['p_orig']:.3g}  |  "
           f"@T={DEPTH_T} rho={d2['rho_T']:+.3f} p={d2['p_T']:.3g}")
     print(f"C2b depth-response donors: {picked}")
-    print(f"C4 end-stage anticorr  all={c4['all']:+.3f}  top-UMI={c4['top']:+.3f}  "
-          f"bottom-UMI={c4['bot']:+.3f}  (n={c4['n']})")
+    print(f"C4 end-stage anticorr  all={c4['all']:+.3f}  top-SCT-counts={c4['top']:+.3f}  "
+          f"bottom-SCT-counts={c4['bot']:+.3f}  (n={c4['n']})")
 
 
 if __name__ == "__main__":

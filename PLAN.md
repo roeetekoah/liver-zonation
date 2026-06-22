@@ -98,6 +98,13 @@ PC-arm vs PP-arm scatter discriminates these.
   `results/figures/h2/b4_*`, `results/tables/analysis/set_expression_levels.csv`.
 
 ## C — Confounders (first-class, not footnotes)  — `src/analysis/c_confounders.py` → results/figures/confounders/
+> **CRITICAL METHODS NOTE (found 2026-06-22):** the count matrix the whole pipeline scores on
+> (`counts.npz`) is the **SCT-corrected (SCTransform) assay**, not raw counts — `corr(matrix_total,
+> nCount_SCT) = 1.000` exactly (per-cell totals ~3–5.7k), whereas raw `nCount_RNA` spans 935–49,854.
+> Implication: **depth is already largely regularized at the source**, so the main result is not built
+> on raw-depth-confounded data. The C2 "depth" intervention thins these SCT-corrected counts (so the
+> targets are on the SCT scale, not raw UMI) — a valid sensitivity test on the corrected scale. This
+> belongs prominently in F (methods).
 - [x] **C1** **Cell count**: strength-vs-n_cells (confounded by stage); **common-N=200 intervention** →
   H1 trend −0.612 → **−0.586** (survives). `c1_cellcount_vs_strength.png`, `c1_commonN_h1.png`.
 - [x] **C2** **Sequencing depth** (the key control — DONE as an INTERVENTION, not a correlation):
