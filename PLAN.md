@@ -15,6 +15,9 @@ panel (never cherry-picked single donors).
 
 ---
 
+
+> **UPDATE (review 4): C confounder controls DROPPED** (code+report) — they validated the secondary indicators (spread/IQR/anti-corr), not the dominant turn-off signal. Parked in CONFOUNDERS_PLAN.md (recenter on pericentral LEVEL + stronger checks: neg-control genes, purity, covariate regression). The old Biology Findings PDF was rejected (unreadable shrunk figures, offset auto-circles) and REPLACED by `results/reports/Zonation_Story.pdf` (`src/reports/make_zonation_story.py`): arc-driven (indicators->biology), one readable figure per page, full 47-donor panels, no auto-circles, fibrosis re-staging shown, de-zonation called WEAK honestly (pattern-view z-scoring artifact explained).
+
 ## Emerging findings (from A1–A4, B1–B4 — first pass, expanded_curated ruler)
 A coherent, mechanism-specific picture (real biology), CONVERGENT across 7 independent views:
 - **Dominant signal = pericentral program TURN-OFF (level collapse), strongest End-stage/F4.**
