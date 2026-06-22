@@ -156,7 +156,7 @@ def make_figure(long_df, order, axis, out_png):
              "dropping line (whole curve toward 0) = turn-off.",
              ha="center", va="top", fontsize=8.5, color=C.MUTED, wrap=True)
     fig.tight_layout(rect=(0, 0, 1, 0.99))
-    fig.savefig(out_png, dpi=150, bbox_inches="tight")
+    fig.savefig(out_png, dpi=200, bbox_inches="tight")
     plt.close(fig)
     return out_png
 

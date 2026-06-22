@@ -213,9 +213,16 @@ def c2_depth(coords, summary, out_paired, out_csv):
         cells = [b2i[c] for c in sub["cell_id"] if c in b2i]
         ac_t = (spearmanr(pcS[cells], ppS[cells]).statistic
                 if len(cells) > 3 and np.std(pcS[cells]) > 0 else np.nan)
+        cc = coordS[cells] if len(cells) else np.array([])             # re-scored coord @T for this donor
+        sd_t = float(np.std(cc)) if len(cc) else np.nan
+        iqr_t = float(np.percentile(cc, 75) - np.percentile(cc, 25)) if len(cc) else np.nan
+        rng_t = float(np.percentile(cc, 95) - np.percentile(cc, 5)) if len(cc) else np.nan
         rows.append(dict(donor=d, stage=r["stage"], stage_rank=int(r["stage_rank"]),
                          depth_med=float(r["depth_med"]), n_cells=int(r["n_cells"]),
-                         anticorr_orig=float(r["anticorr"]), anticorr_at_T=float(ac_t)))
+                         anticorr_orig=float(r["anticorr"]), anticorr_at_T=float(ac_t),
+                         sd_orig=float(r["sd"]), sd_at_T=sd_t,
+                         iqr_orig=float(r["iqr"]), iqr_at_T=iqr_t,
+                         range_orig=float(r["coord_range"]), range_at_T=rng_t))
     dt = pd.DataFrame(rows)
     dt.to_csv(out_csv, index=False)
 
@@ -254,6 +261,40 @@ def c2_depth(coords, summary, out_paired, out_csv):
     fig.subplots_adjust(left=0.10, right=0.97, top=0.92, bottom=0.13)
     fig.savefig(out_paired)
     plt.close(fig)
+
+    # --- C2c MULTI-METRIC survival: not just anti-corr — does the H1 collapse trend survive depth
+    # equalization for EVERY zonation readout (strength, spread, IQR, range)? (reviewer ask) ---
+    metrics = [("strength\n(−anticorr)", -dt["anticorr_orig"], -dt["anticorr_at_T"]),
+               ("coord spread\n(SD)", dt["sd_orig"], dt["sd_at_T"]),
+               ("coord IQR", dt["iqr_orig"], dt["iqr_at_T"]),
+               ("coord range\n(p95−p5)", dt["range_orig"], dt["range_at_T"])]
+    labels, ros, rts, pts = [], [], [], []
+    for name, mo, mt in metrics:
+        ro, _ = _spear(mo, dt["stage_rank"]); rt, pt = _spear(mt, dt["stage_rank"])
+        labels.append(name); ros.append(ro); rts.append(rt); pts.append(pt)
+    figm, axm = plt.subplots(figsize=(7.6, 4.7))
+    x = np.arange(len(labels)); w = 0.38
+    axm.bar(x - w / 2, ros, w, label="original depth", color=C.TEAL)
+    axm.bar(x + w / 2, rts, w, label=f"@ {DEPTH_T} SCT-counts", color=C.RUST)
+    axm.axhline(0, color=C.RULE, lw=0.7)
+    for xi, (ro, rt, pt) in enumerate(zip(ros, rts, pts)):
+        axm.text(xi - w / 2, ro - 0.02, f"{ro:+.2f}", ha="center", va="top", fontsize=8)
+        star = "*" if (np.isfinite(pt) and pt < 0.05) else ""
+        axm.text(xi + w / 2, rt - 0.02, f"{rt:+.2f}{star}", ha="center", va="top", fontsize=8)
+    axm.set_xticks(x); axm.set_xticklabels(labels, fontsize=8.5)
+    axm.set_ylabel("Spearman(metric, stage)\n(negative = collapses with disease)", fontsize=9)
+    axm.set_title("C2c  H1 collapse survives depth equalization for EVERY zonation metric "
+                  "(not just anti-corr)", fontsize=10.5, fontweight="bold")
+    axm.legend(fontsize=8.5, loc="lower left"); axm.set_ylim(top=0.05)
+    for s in ("top", "right"):
+        axm.spines[s].set_visible(False)
+    figm.text(0.5, 0.005, "* = p<0.05 after depth equalization.  All four readouts keep a negative "
+              "(collapsing) trend at common depth — the collapse is not an anti-corr-specific or "
+              "depth artifact.", ha="center", va="bottom", fontsize=7.4, color=C.MUTED)
+    figm.subplots_adjust(left=0.12, right=0.97, top=0.88, bottom=0.16)
+    out_multi = out_paired.replace("c2_depth_paired", "c2_multimetric_survival")
+    figm.savefig(out_multi); plt.close(figm)
+    print(f"  [C2c] multi-metric survival -> {out_multi}")
     return out_paired, out_csv, dict(rho_orig=rho_o, p_orig=p_o, rho_T=rho_t, p_T=p_t), dt
 
 

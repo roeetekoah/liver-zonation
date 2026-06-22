@@ -106,7 +106,7 @@ def main(which="expanded_curated"):
     fig.tight_layout(rect=[0, 0, 1, 0.93])
     out = os.path.join(str(config.FIG_H1), f"a2_zonation_distribution_by_patient_{which}.png")
     os.makedirs(os.path.dirname(out), exist_ok=True)
-    fig.savefig(out, dpi=130)
+    fig.savefig(out, dpi=200)
     plt.close(fig)
     print("wrote", out)
     # also print the per-representative numbers

@@ -138,7 +138,7 @@ def fig_vs_axis(df, axis, axis_label, levels, level_col, outname, color):
                  f"orange n = low-n stratum)", fontsize=11, y=1.02)
     fig.tight_layout()
     path = C.fig_path("staging", outname)
-    fig.savefig(path, dpi=130, bbox_inches="tight"); plt.close(fig)
+    fig.savefig(path, dpi=200, bbox_inches="tight"); plt.close(fig)
     return path, trends
 
 
@@ -172,7 +172,7 @@ def fig_fibrosis_vs_nas(df):
              bbox=dict(boxstyle="round", fc="#f4f6f6", ec=C.RULE))
     fig.tight_layout()
     path = C.fig_path("staging", "d_fibrosis_vs_nas.png")
-    fig.savefig(path, dpi=130, bbox_inches="tight"); plt.close(fig)
+    fig.savefig(path, dpi=200, bbox_inches="tight"); plt.close(fig)
     trends = [
         dict(readout="strength_partial_fib_ctrl_nas", axis="fibrosis", rho=pr_f, p=np.nan, n_donors=npf),
         dict(readout="strength_partial_nas_ctrl_fib", axis="nas", rho=pr_n, p=np.nan, n_donors=npn),
@@ -196,7 +196,7 @@ def fig_nash_split(df):
                  "coarse stage? (F1/F2/F3)", fontsize=10.5, y=1.02)
     fig.tight_layout()
     path = C.fig_path("staging", "d_nash_fibrosis_split.png")
-    fig.savefig(path, dpi=130, bbox_inches="tight"); plt.close(fig)
+    fig.savefig(path, dpi=200, bbox_inches="tight"); plt.close(fig)
     return path, out
 
 

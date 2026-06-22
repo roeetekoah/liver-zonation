@@ -215,7 +215,7 @@ def _draw_panels(mats, labels, order, gene_names, *, cmap, vmin, vmax,
     # shared x-axis label centered under the panels
     fig.supxlabel(XLABEL, fontsize=9, family="serif", y=0.015, color=C.INK)
     fig.suptitle(suptitle, fontsize=10.0, family="serif", y=0.995)
-    fig.savefig(outpath, dpi=150, bbox_inches="tight")
+    fig.savefig(outpath, dpi=200, bbox_inches="tight")
     plt.close(fig)
     print("wrote", outpath)
     return outpath

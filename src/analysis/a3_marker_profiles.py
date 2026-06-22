@@ -133,7 +133,7 @@ def _make_figure(donor_binned_by_gene, levels, colors, axis_label, which, outnam
         fontsize=10.5, family="serif", y=0.995)
     fig.tight_layout(rect=[0, 0.055, 1, 0.93])
     out = C.fig_path("h1", outname)
-    fig.savefig(out, dpi=140)
+    fig.savefig(out, dpi=200)
     plt.close(fig)
     print("wrote", out)
     return out

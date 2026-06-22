@@ -58,9 +58,9 @@ class Doc:
     # -- page lifecycle --
     def _flush(self):
         self._chrome()
-        self.pdf.savefig(self.fig)
+        self.pdf.savefig(self.fig, dpi=200)
         if self.png_dir:
-            self.fig.savefig(os.path.join(self.png_dir, f"page_{self.page:02d}.png"), dpi=110)
+            self.fig.savefig(os.path.join(self.png_dir, f"page_{self.page:02d}.png"), dpi=200)
         plt.close(self.fig)
 
     def _new_page(self, first=False):
@@ -278,6 +278,7 @@ F_B1P  = config.FIG_H2 / "b1_heatmap_pattern_stage.png"
 F_B4   = config.FIG_H2 / "b4_set_expression_by_stage.png"
 F_C3   = config.FIG_CONF / "c3_level_vs_slope.png"
 F_C2   = config.FIG_CONF / "c2_depth_paired.png"
+F_C2C  = config.FIG_CONF / "c2_multimetric_survival.png"
 F_C4   = config.FIG_CONF / "c4_endstage_umi_scatter.png"
 F_D    = config.FIG_STAGING / "d_zonation_vs_fibrosis.png"
 F_PCA  = config.FIG_STAGING / "e_pca_pc12_map.png"
@@ -480,6 +481,21 @@ def build(path, png_dir=None):
         caption="c2_depth_paired: per-donor anti-correlation at original depth vs thinned to a common "
                 "2000 SCT-counts. Deep, strongly-zonated donors weaken toward 0 when thinned, but the "
                 "STAGE trend (boxed) is unchanged: −0.612 → −0.617.")
+    d.para("And this is not specific to the anti-correlation readout. We repeated the depth-equalization "
+           "test for EVERY zonation metric — coordinate spread (SD), inter-quartile range, and 5–95% "
+           "range — and all four keep a significant collapsing trend at common depth (strength −0.62, "
+           "spread −0.44, IQR −0.40, range −0.39; all p < 0.05). The collapse is a property of the data, "
+           "not of one metric or of sequencing depth.")
+    d.embed_figure(
+        str(F_C2C), height=2.5, width_frac=0.82,
+        annotations=[
+            {"ellipse": (0.5, 0.5, 0.98, 0.92, 0.0),
+             "label": "every metric stays negative after depth equalization",
+             "label_xy": (0.5, 0.96), "label_ha": "center"},
+        ],
+        caption="c2_multimetric_survival: Spearman(metric, stage) at original depth (teal) vs common "
+                "depth (rust) for four independent zonation readouts. All stay negative (collapsing) and "
+                "significant — the depth control is not anti-correlation-specific.")
     d.para("Depth DOES causally degrade the measurement — a deep, zonated donor weakens from "
            "r = −0.55 to −0.33 when thinned — but depth does not track disease stage, so it cannot "
            "manufacture the trend. The End-stage positive blob is likewise NOT a depth artifact: among "

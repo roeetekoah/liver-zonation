@@ -123,7 +123,7 @@ def _plot(axis, levels, set_donor_levels, fname, xlabel):
                  fontsize=14, fontweight="bold", y=0.99)
     fig.text(0.5, 0.90, SUBTITLE, ha="center", va="top", fontsize=8.5, color=C.MUTED)
     fig.tight_layout(rect=(0, 0, 1, 0.88))
-    fig.savefig(fname, dpi=150)
+    fig.savefig(fname, dpi=200)
     plt.close(fig)
     return table_rows
 

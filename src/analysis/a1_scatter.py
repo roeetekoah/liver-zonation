@@ -31,8 +31,8 @@ plt.rcParams.update({
     "font.family": "serif",
     "font.size": 9,
     "axes.linewidth": 0.6,
-    "savefig.dpi": 130,
-    "figure.dpi": 130,
+    "savefig.dpi": 200,
+    "figure.dpi": 200,
 })
 LIM = (-3.0, 4.0)          # fixed equal limits for every PC/PP panel
 VMIN, VMAX = -2.5, 2.5     # coord colour range (PuOr centred at 0)
@@ -190,8 +190,8 @@ def contact_sheet(coords, summary, axis, out_path, block_ncol=5):
     # ---- dedicated colorbar axis on the right (never overlaps a panel) ----
     cax = fig.add_axes([0.925, 0.30, 0.016, 0.40])
     cbar = fig.colorbar(last_pc, cax=cax, ticks=[VMIN, 0, VMAX])
-    cbar.ax.set_yticklabels(["periportal\nend", "0", "pericentral\nend"])
-    cbar.set_label("zonation coordinate (per cell)", fontsize=9)
+    cbar.ax.set_yticklabels([f"{VMIN:+.1f}\nperiportal", "0", f"{VMAX:+.1f}\npericentral"])
+    cbar.set_label("zonation coordinate (per cell, scale −2.5…+2.5)", fontsize=9)
     cbar.ax.tick_params(labelsize=7)
 
     # ---- titles + shared-axes key (stated ONCE) ----
@@ -215,7 +215,7 @@ def contact_sheet(coords, summary, axis, out_path, block_ncol=5):
     fig.supylabel("every panel's y-axis = PERIPORTAL-program score per cell",
                   fontsize=11, color=C.INK)
 
-    fig.savefig(out_path, dpi=130, bbox_inches="tight")
+    fig.savefig(out_path, dpi=200, bbox_inches="tight")
     plt.close(fig)
     return out_path
 
@@ -269,7 +269,7 @@ def representatives_panel(coords, reps, healthy, axis, out_path):
     cbar.ax.tick_params(labelsize=7)
 
     fig.subplots_adjust(left=0.05, right=0.93, top=0.82, bottom=0.12, wspace=0.28)
-    fig.savefig(out_path, dpi=130)
+    fig.savefig(out_path, dpi=200)
     plt.close(fig)
     return out_path
 

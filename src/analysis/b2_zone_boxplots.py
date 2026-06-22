@@ -136,7 +136,7 @@ def make_figure(long_df, order, axis, out_png):
              "NOT per-cell measurement noise.",
              ha="center", va="top", fontsize=8, color=C.MUTED, wrap=True)
     fig.tight_layout(rect=(0, 0, 1, 0.98))
-    fig.savefig(out_png, dpi=150, bbox_inches="tight")
+    fig.savefig(out_png, dpi=200, bbox_inches="tight")
     plt.close(fig)
     return out_png
 

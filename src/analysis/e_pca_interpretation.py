@@ -162,7 +162,7 @@ def main():
                     xy=(1, var_ratio[0]*100), xytext=(2.0, var_ratio[0]*100*0.7),
                     fontsize=8.5, color=C.MUTED)
     ax.spines[["top", "right"]].set_visible(False)
-    fig.tight_layout(); fig.savefig(C.fig_path("staging", "e_pca_scree.png"), dpi=150); plt.close(fig)
+    fig.tight_layout(); fig.savefig(C.fig_path("staging", "e_pca_scree.png"), dpi=200); plt.close(fig)
 
     # ============================== FIGURE 2: loadings ==============================
     order = np.argsort(load)
@@ -184,7 +184,7 @@ def main():
                  f"purple = pericentral (+),  orange = periportal (-);  * = canonical marker",
                  fontsize=11, color=C.INK)
     ax.spines[["top", "right"]].set_visible(False)
-    fig.tight_layout(); fig.savefig(C.fig_path("staging", "e_pca_loadings.png"), dpi=150); plt.close(fig)
+    fig.tight_layout(); fig.savefig(C.fig_path("staging", "e_pca_loadings.png"), dpi=200); plt.close(fig)
 
     # ============================== FIGURE 3: PC1 vs PC2 map ==============================
     fig, axes = plt.subplots(1, 2, figsize=(12.5, 5.4))
@@ -208,7 +208,7 @@ def main():
         ax.set_xlabel("PC1"); ax.set_ylabel("PC2")
         ax.spines[["top", "right"]].set_visible(False)
     fig.suptitle("Is the dominant axis biology or a quality factor?", fontsize=12, color=C.INK)
-    fig.tight_layout(); fig.savefig(C.fig_path("staging", "e_pca_pc12_map.png"), dpi=150); plt.close(fig)
+    fig.tight_layout(); fig.savefig(C.fig_path("staging", "e_pca_pc12_map.png"), dpi=200); plt.close(fig)
 
     print("[figs]",
           C.fig_path("staging", "e_pca_scree.png"),
