@@ -1,0 +1,141 @@
+variant,cls,group,frac
+primary k1 PC1of2 PP2of4,PC,Healthy,0.23639244299283854
+primary k1 PC1of2 PP2of4,PC,F0-biopsy,0.33754333623719124
+primary k1 PC1of2 PP2of4,PC,F1-biopsy,0.1941495549603658
+primary k1 PC1of2 PP2of4,PC,F2-biopsy,0.23721402911703537
+primary k1 PC1of2 PP2of4,PC,F3-biopsy,0.19338163549170628
+primary k1 PC1of2 PP2of4,PC,F4-biopsy,0.2353240484982409
+primary k1 PC1of2 PP2of4,PC,Explant(end),0.14183673469387756
+primary k1 PC1of2 PP2of4,PP,Healthy,0.25219155403571625
+primary k1 PC1of2 PP2of4,PP,F0-biopsy,0.19551336227734956
+primary k1 PC1of2 PP2of4,PP,F1-biopsy,0.20455759615137525
+primary k1 PC1of2 PP2of4,PP,F2-biopsy,0.22457230702690506
+primary k1 PC1of2 PP2of4,PP,F3-biopsy,0.24540410749678548
+primary k1 PC1of2 PP2of4,PP,F4-biopsy,0.23693286194585977
+primary k1 PC1of2 PP2of4,PP,Explant(end),0.42142857142857143
+primary k1 PC1of2 PP2of4,dual,Healthy,0.06422232543273505
+primary k1 PC1of2 PP2of4,dual,F0-biopsy,0.11346026777746127
+primary k1 PC1of2 PP2of4,dual,F1-biopsy,0.06676942752498109
+primary k1 PC1of2 PP2of4,dual,F2-biopsy,0.10220573077715935
+primary k1 PC1of2 PP2of4,dual,F3-biopsy,0.07984158486973858
+primary k1 PC1of2 PP2of4,dual,F4-biopsy,0.09310835990970007
+primary k1 PC1of2 PP2of4,dual,Explant(end),0.23424957431281926
+primary k1 PC1of2 PP2of4,null,Healthy,0.3843888272955183
+primary k1 PC1of2 PP2of4,null,F0-biopsy,0.353483033707998
+primary k1 PC1of2 PP2of4,null,F1-biopsy,0.4476277917114535
+primary k1 PC1of2 PP2of4,null,F2-biopsy,0.36269592812191004
+primary k1 PC1of2 PP2of4,null,F3-biopsy,0.38171730143477645
+primary k1 PC1of2 PP2of4,null,F4-biopsy,0.3884285304762246
+primary k1 PC1of2 PP2of4,null,Explant(end),0.17243186582809225
+k2 (single-UMI fragility),PC,Healthy,0.11444506037815
+k2 (single-UMI fragility),PC,F0-biopsy,0.18587212071853343
+k2 (single-UMI fragility),PC,F1-biopsy,0.1153504856207559
+k2 (single-UMI fragility),PC,F2-biopsy,0.14571706045779756
+k2 (single-UMI fragility),PC,F3-biopsy,0.10005224660397075
+k2 (single-UMI fragility),PC,F4-biopsy,0.12780645031729457
+k2 (single-UMI fragility),PC,Explant(end),0.13622448979591836
+k2 (single-UMI fragility),PP,Healthy,0.027038213103186236
+k2 (single-UMI fragility),PP,F0-biopsy,0.03757265062334442
+k2 (single-UMI fragility),PP,F1-biopsy,0.03879354748256643
+k2 (single-UMI fragility),PP,F2-biopsy,0.03913785573461545
+k2 (single-UMI fragility),PP,F3-biopsy,0.06962586892778865
+k2 (single-UMI fragility),PP,F4-biopsy,0.04912741326123878
+k2 (single-UMI fragility),PP,Explant(end),0.20408163265306123
+k2 (single-UMI fragility),dual,Healthy,0.0
+k2 (single-UMI fragility),dual,F0-biopsy,0.0022103992784878504
+k2 (single-UMI fragility),dual,F1-biopsy,0.0028243766038171325
+k2 (single-UMI fragility),dual,F2-biopsy,0.004859369549047873
+k2 (single-UMI fragility),dual,F3-biopsy,0.0033584846870782815
+k2 (single-UMI fragility),dual,F4-biopsy,0.0
+k2 (single-UMI fragility),dual,Explant(end),0.024489795918367346
+k2 (single-UMI fragility),null,Healthy,0.8032666127308503
+k2 (single-UMI fragility),null,F0-biopsy,0.7743448293796342
+k2 (single-UMI fragility),null,F1-biopsy,0.8154163680879016
+k2 (single-UMI fragility),null,F2-biopsy,0.7867337700378122
+k2 (single-UMI fragility),null,F3-biopsy,0.8072397446728621
+k2 (single-UMI fragility),null,F4-biopsy,0.7807404209173427
+k2 (single-UMI fragility),null,Explant(end),0.5239601070299197
+PP excl ALDOB (2of3),PC,Healthy,0.27657212916629215
+PP excl ALDOB (2of3),PC,F0-biopsy,0.4088677200145153
+PP excl ALDOB (2of3),PC,F1-biopsy,0.2620539458377296
+PP excl ALDOB (2of3),PC,F2-biopsy,0.3226744186046512
+PP excl ALDOB (2of3),PC,F3-biopsy,0.238328199902735
+PP excl ALDOB (2of3),PC,F4-biopsy,0.3077443084348559
+PP excl ALDOB (2of3),PC,Explant(end),0.22448979591836735
+PP excl ALDOB (2of3),PP,Healthy,0.11020327287985454
+PP excl ALDOB (2of3),PP,F0-biopsy,0.07834860715294663
+PP excl ALDOB (2of3),PP,F1-biopsy,0.0942169468124399
+PP excl ALDOB (2of3),PP,F2-biopsy,0.08224910144696879
+PP excl ALDOB (2of3),PP,F3-biopsy,0.10138761400958238
+PP excl ALDOB (2of3),PP,F4-biopsy,0.07190901249285223
+PP excl ALDOB (2of3),PP,Explant(end),0.23826530612244898
+PP excl ALDOB (2of3),dual,Healthy,0.019957604185459138
+PP excl ALDOB (2of3),dual,F0-biopsy,0.04213588400013712
+PP excl ALDOB (2of3),dual,F1-biopsy,0.021413073768860223
+PP excl ALDOB (2of3),dual,F2-biopsy,0.030468801803593924
+PP excl ALDOB (2of3),dual,F3-biopsy,0.029832155397699206
+PP excl ALDOB (2of3),dual,F4-biopsy,0.0315436982890192
+PP excl ALDOB (2of3),dual,Explant(end),0.15203113597664802
+PP excl ALDOB (2of3),null,Healthy,0.535163155844545
+PP excl ALDOB (2of3),null,F0-biopsy,0.4706477888324009
+PP excl ALDOB (2of3),null,F1-biopsy,0.5918981481481481
+PP excl ALDOB (2of3),null,F2-biopsy,0.5239443338310934
+PP excl ALDOB (2of3),null,F3-biopsy,0.601169414327358
+PP excl ALDOB (2of3),null,F4-biopsy,0.5691069563820388
+PP excl ALDOB (2of3),null,Explant(end),0.3429822427633179
+PP=CPS1/ALDOB/ASS1 (2of3),PC,Healthy,0.13125131093998144
+PP=CPS1/ALDOB/ASS1 (2of3),PC,F0-biopsy,0.21704643375126031
+PP=CPS1/ALDOB/ASS1 (2of3),PC,F1-biopsy,0.14027842709469637
+PP=CPS1/ALDOB/ASS1 (2of3),PC,F2-biopsy,0.16427171545772673
+PP=CPS1/ALDOB/ASS1 (2of3),PC,F3-biopsy,0.11071367668018972
+PP=CPS1/ALDOB/ASS1 (2of3),PC,F4-biopsy,0.13590095852838271
+PP=CPS1/ALDOB/ASS1 (2of3),PC,Explant(end),0.09267818049136463
+PP=CPS1/ALDOB/ASS1 (2of3),PP,Healthy,0.3068107800032568
+PP=CPS1/ALDOB/ASS1 (2of3),PP,F0-biopsy,0.3382744228434718
+PP=CPS1/ALDOB/ASS1 (2of3),PP,F1-biopsy,0.383289854336903
+PP=CPS1/ALDOB/ASS1 (2of3),PP,F2-biopsy,0.4194227119885474
+PP=CPS1/ALDOB/ASS1 (2of3),PP,F3-biopsy,0.4121146698828055
+PP=CPS1/ALDOB/ASS1 (2of3),PP,F4-biopsy,0.4379597592533364
+PP=CPS1/ALDOB/ASS1 (2of3),PP,Explant(end),0.38877551020408163
+PP=CPS1/ALDOB/ASS1 (2of3),dual,Healthy,0.1628762965017687
+PP=CPS1/ALDOB/ASS1 (2of3),dual,F0-biopsy,0.23395717026339213
+PP=CPS1/ALDOB/ASS1 (2of3),dual,F1-biopsy,0.14244993829372188
+PP=CPS1/ALDOB/ASS1 (2of3),dual,F2-biopsy,0.18686463577127801
+PP=CPS1/ALDOB/ASS1 (2of3),dual,F3-biopsy,0.15624303755063707
+PP=CPS1/ALDOB/ASS1 (2of3),dual,F4-biopsy,0.19818358904329664
+PP=CPS1/ALDOB/ASS1 (2of3),dual,Explant(end),0.18571428571428572
+PP=CPS1/ALDOB/ASS1 (2of3),null,Healthy,0.26109157799314253
+PP=CPS1/ALDOB/ASS1 (2of3),null,F0-biopsy,0.21072197314187574
+PP=CPS1/ALDOB/ASS1 (2of3),null,F1-biopsy,0.29065474428676025
+PP=CPS1/ALDOB/ASS1 (2of3),null,F2-biopsy,0.22623795184970114
+PP=CPS1/ALDOB/ASS1 (2of3),null,F3-biopsy,0.2399504279184216
+PP=CPS1/ALDOB/ASS1 (2of3),null,F4-biopsy,0.24555219120650734
+PP=CPS1/ALDOB/ASS1 (2of3),null,Explant(end),0.2070230607966457
+strict identity PC2of2 PP3of4,PC,Healthy,0.020732589629129716
+strict identity PC2of2 PP3of4,PC,F0-biopsy,0.04996270689987364
+strict identity PC2of2 PP3of4,PC,F1-biopsy,0.02875124091150777
+strict identity PC2of2 PP3of4,PC,F2-biopsy,0.045328646473559026
+strict identity PC2of2 PP3of4,PC,F3-biopsy,0.02041927543031996
+strict identity PC2of2 PP3of4,PC,F4-biopsy,0.02549401558358101
+strict identity PC2of2 PP3of4,PC,Explant(end),0.02295918367346939
+strict identity PC2of2 PP3of4,PP,Healthy,0.05518452038686082
+strict identity PC2of2 PP3of4,PP,F0-biopsy,0.06188290557576173
+strict identity PC2of2 PP3of4,PP,F1-biopsy,0.07048357188205195
+strict identity PC2of2 PP3of4,PP,F2-biopsy,0.06626484520295137
+strict identity PC2of2 PP3of4,PP,F3-biopsy,0.10000321826075026
+strict identity PC2of2 PP3of4,PP,F4-biopsy,0.062219540798030604
+strict identity PC2of2 PP3of4,PP,Explant(end),0.3573928786964394
+strict identity PC2of2 PP3of4,dual,Healthy,0.0
+strict identity PC2of2 PP3of4,dual,F0-biopsy,0.00045330915684496827
+strict identity PC2of2 PP3of4,dual,F1-biopsy,0.0008404545952394855
+strict identity PC2of2 PP3of4,dual,F2-biopsy,0.001465855743672531
+strict identity PC2of2 PP3of4,dual,F3-biopsy,0.0
+strict identity PC2of2 PP3of4,dual,F4-biopsy,0.0013127061743126802
+strict identity PC2of2 PP3of4,dual,Explant(end),0.006567745074191195
+strict identity PC2of2 PP3of4,null,Healthy,0.9196960129893559
+strict identity PC2of2 PP3of4,null,F0-biopsy,0.8877010783675197
+strict identity PC2of2 PP3of4,null,F1-biopsy,0.8863746068712927
+strict identity PC2of2 PP3of4,null,F2-biopsy,0.8571384577482138
+strict identity PC2of2 PP3of4,null,F3-biopsy,0.8801638264104028
+strict identity PC2of2 PP3of4,null,F4-biopsy,0.8890890053405208
+strict identity PC2of2 PP3of4,null,Explant(end),0.6078812940890295

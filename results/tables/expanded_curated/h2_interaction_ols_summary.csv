@@ -1,2 +1,0 @@
-signature_set,model,se,n_obs_donor_x_bin,n_donors,n_genes,frac_weakening,median_beta_interaction,sign_test_p_2sided,n_genes_q05_weakening
-expanded_curated,expr ~ coord + stage + coord:stage,cluster_robust_by_donor,235,47,49,0.6938775510204082,-0.008291312267976862,0.009399241523873059,13
