@@ -36,9 +36,18 @@ A coherent, mechanism-specific picture (real biology), CONVERGENT across 7 indep
   genuine donor-to-donor variability (some end-stage donors retain pericentral expression, others lose
   it) compounded by small n (5 donors), NOT per-cell measurement noise. The widening is itself biology;
   it's also why n-labelling + the C controls gate confidence.
+- **H1 SURVIVES the confounder controls (C — now run, the decisive step):** the collapse trend
+  Spearman(strength, stage) = −0.612 is unmoved by equalizing **cell count** (common-N=200 → −0.586)
+  and by equalizing **sequencing depth** (all cells thinned to a common depth, re-scored → −0.617).
+  Within-donor depth-response confirms depth *does* causally degrade the measurement (donor 6:
+  −0.55→−0.33 when thinned) — but depth isn't differentially distributed across stages, so it can't
+  manufacture the trend. End-stage blob is NOT a depth artifact: high-UMI cells are *more* positive
+  (+0.33), not more anti-correlated. **So H1 is robust, not an artifact.**
 - **Honest caveats:** only 4 healthy donors, 2 low-depth & weak; per-donor metrics noisy at low n;
   contact sheet (all 47) is the full view, representatives are best-powered (outcome-independent).
-  **Confidence gates on the C controls (downsampling, common-n) — not yet run.**
+  Caveat on C: the counts matrix used for thinning has per-cell totals ~3–5k (gene-subset), below the
+  full clinical nCount, so depth targets are on that scale — the *relative* depth effect + trend
+  survival are valid; absolute UMI numbers are not the raw sequencing depth.
 
 ## Decisions / conventions (from review 2)
 - **Representatives are NOT cherry-picked — document this prominently (in F):** cross-sectional design
@@ -88,23 +97,19 @@ PC-arm vs PP-arm scatter discriminates these.
   each set's PC and PP arms, one line per set. `src/analysis/b4_set_levels.py` →
   `results/figures/h2/b4_*`, `results/tables/analysis/set_expression_levels.csv`.
 
-## C — Confounders (first-class, not footnotes)
-- [ ] **C1** **Cell count**: n_hep per donor/stage (range 105–8650!); per-donor zonation strength vs
-  n_cells; **downsample all donors to common n** and confirm H1 trend survives; bootstrap CIs.
-- [~] **C2** **Sequencing depth**: _early finding (from A1/A4 follow-up):_ zonation strength
-  correlates with genes-detected (ρ=+0.33, p=0.02) and depth (ρ=+0.27) — low-depth donors look
-  under-zonated (2 of 4 healthy controls are low-depth & weak; the deep healthy donor 30 is cleanly
-  zonated, r=−0.50). **BUT depth does NOT track stage (ρ=−0.10, p=0.52), so the H1 collapse survives**
-  (strength vs stage ρ=−0.61, p=5e-6). Still TODO: subsample counts to common depth and re-test.
+## C — Confounders (first-class, not footnotes)  — `src/analysis/c_confounders.py` → results/figures/confounders/
+- [x] **C1** **Cell count**: strength-vs-n_cells (confounded by stage); **common-N=200 intervention** →
+  H1 trend −0.612 → **−0.586** (survives). `c1_cellcount_vs_strength.png`, `c1_commonN_h1.png`.
+- [x] **C2** **Sequencing depth** (the key control — DONE as an INTERVENTION, not a correlation):
+  thin all cells to a common depth + re-score → H1 trend −0.612 → **−0.617 (survives)**; within-donor
+  depth-response curve shows depth causally attenuates anti-corr (donor 6: −0.55→−0.33). The earlier
+  correlation was only an indicator; the intervention is the proof. `c2_depth_paired.png`,
+  `c2_depth_response.png`, `c2_depth_control.csv`.
 - [ ] **C3** **Level vs slope (confounder genes)**: per H2 gene, report mean-expression-change beside
-  slope-change. Slope lost + mean kept = real de-zonation; both lost = turn-off.
-- [ ] **C4** **UMI-colored scatter**: re-color the end-stage PC/PP scatter by per-cell total UMI to
-  check the "blob" isn't a low-depth artifact (cells with more reads should still anti-correlate).
-
-> **Honesty note (from the meeting):** cross-donor correlations (strength vs depth/genes) are
-> **indicators, not proof** — the same bar we hold summary stats to. The *proof* of depth confounding
-> is the **C2 downsampling intervention**, not the correlation. Do not state depth-confounding as
-> established until C2 runs.
+  slope-change. Slope lost + mean kept = real de-zonation; both lost = turn-off. _(still TODO)_
+- [x] **C4** **UMI-colored scatter**: end-stage PC/PP colored by per-cell UMI — high-UMI tercile
+  anticorr +0.33 vs low-UMI +0.24, i.e. best-sequenced cells are NOT more anti-correlated → the blob
+  is real biology, not a depth artifact. `c4_endstage_umi_scatter.png`.
 
 ## D — Higher-resolution staging
 - [ ] **D1** Re-run H1/H2 along **fibrosis F0–F4** and **NAS 0–8**; split "NASH no-cirrhosis"

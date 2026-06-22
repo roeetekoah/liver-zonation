@@ -71,8 +71,10 @@ def _aggregate(donor_levels, arm_col, axis, levels):
     return out
 
 
-SUBTITLE = ("y = mean per-DONOR raw log1p-CP10k expression (un-standardized LEVEL); "
-            "donor = unit of aggregation; error bars = SEM across donors.\n"
+SUBTITLE = ("ROBUSTNESS panel: multiple signature sets shown to confirm the direction is "
+            "set-independent (each line = one candidate PC/PP gene list).\n"
+            "x = disease/fibrosis level; y = mean per-DONOR raw log1p-CP10k expression "
+            "(un-standardized LEVEL); donor = unit of aggregation; error bars = SEM across donors.\n"
             "Falling level with disease = TURN-OFF; flat level (with collapsing spatial "
             "gradient) = DE-ZONATION.")
 

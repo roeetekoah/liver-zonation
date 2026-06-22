@@ -150,6 +150,11 @@ def make_figure(long_df, order, axis, out_png):
     fig.suptitle(f"Program-level zonation gradient vs coordinate, one line per {axlabel}\n"
                  "(per-donor binned means averaged across donors; band = SEM; slope = gradient "
                  "steepness)", y=1.04, fontsize=12)
+    fig.text(0.5, -0.01,
+             "Reading: x = zonation coordinate (left = periportal -> right = pericentral); "
+             "y = mean per-donor raw expression. Flattening line (slope -> 0) = de-zonation; "
+             "dropping line (whole curve toward 0) = turn-off.",
+             ha="center", va="top", fontsize=8.5, color=C.MUTED, wrap=True)
     fig.tight_layout(rect=(0, 0, 1, 0.99))
     fig.savefig(out_png, dpi=150, bbox_inches="tight")
     plt.close(fig)

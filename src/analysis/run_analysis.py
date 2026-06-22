@@ -20,6 +20,7 @@ MODULES = [
     ("b2_zone_boxplots.py",  "B2 zone x program boxplots",               "B2"),
     ("b3_program_vs_coord.py","B3 program-arm expression vs coordinate", "B3"),
     ("b4_set_levels.py",     "B4 per-set expression level vs stage/fib", "B4"),
+    ("c_confounders.py",     "C  confounder controls (cell-count, depth, UMI)", "C"),
 ]
 
 

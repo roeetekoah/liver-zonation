@@ -130,6 +130,11 @@ def make_figure(long_df, order, axis, out_png):
     fig.suptitle(f"Zone-resolved program expression across donors, by {axlabel}\n"
                  "(zones = global coordinate terciles; high coord = pericentral)",
                  y=1.10, fontsize=11)
+    fig.text(0.5, -0.02,
+             "Across-donor boxes widen at End-stage = genuine donor heterogeneity (some end-stage "
+             "donors retain pericentral expression, others lose it) + small n (5 donors), "
+             "NOT per-cell measurement noise.",
+             ha="center", va="top", fontsize=8, color=C.MUTED, wrap=True)
     fig.tight_layout(rect=(0, 0, 1, 0.98))
     fig.savefig(out_png, dpi=150, bbox_inches="tight")
     plt.close(fig)
