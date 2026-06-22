@@ -112,20 +112,21 @@ PC-arm vs PP-arm scatter discriminates these.
   depth-response curve shows depth causally attenuates anti-corr (donor 6: −0.55→−0.33). The earlier
   correlation was only an indicator; the intervention is the proof. `c2_depth_paired.png`,
   `c2_depth_response.png`, `c2_depth_control.csv`.
-- [ ] **C3** **Level vs slope (confounder genes)**: per H2 gene, report mean-expression-change beside
+- [x] **C3** **Level vs slope (confounder genes)** (`c3_level_vs_slope.py`): pericentral genes cluster in TURN-OFF (14/26 lost level+slope, CYP2E1 dLevel -1.21); periportal 22/23 stable -> turn-off primary, de-zonation secondary.: per H2 gene, report mean-expression-change beside
   slope-change. Slope lost + mean kept = real de-zonation; both lost = turn-off. _(still TODO)_
 - [x] **C4** **UMI-colored scatter**: end-stage PC/PP colored by per-cell UMI — high-UMI tercile
   anticorr +0.33 vs low-UMI +0.24, i.e. best-sequenced cells are NOT more anti-correlated → the blob
   is real biology, not a depth artifact. `c4_endstage_umi_scatter.png`.
 
 ## D — Higher-resolution staging
-- [ ] **D1** Re-run H1/H2 along **fibrosis F0–F4** and **NAS 0–8**; split "NASH no-cirrhosis"
+- [x] **D1** (`d_staging.py`) zonation strength declines with fibrosis F0->F4 (rho=-0.49, p=4.4e-4), tracks FIBROSIS specifically (partial -0.40 vs NAS -0.12); within-NASH F1-F3 flat. Re-run H1/H2 along **fibrosis F0-F4** and **NAS 0-8**; split "NASH no-cirrhosis"
   (27 donors) into F1/F2/F3. Ask: does zonation track fibrosis specifically, activity, or both?
   (cell-count caveat front and center, given finer strata).
 
 ## E — Interpret the LEARNED (PCA) ruler  [added per professor Q]
 What did the PCA actually pick, and does it mean biology?
-- [ ] **E1** Variance explained per PC (scree); which PC was selected as the zonation axis and how
+- [x] **E** (`e_pca_interpretation.py`): PC1 IS zonation (|corr|=0.76 curated coord, 0.54 markers, 5.8% var); loadings real (PP: CRP/SAA1/SAA2/FGL1; PC: ADH4/AKR1D1); depth on PC2 not PC1 -> learned ruler is genuine biology.
+- [x] **E1** Variance explained per PC (scree); which PC was selected as the zonation axis and how
   strongly it aligns with the marker axis (|corr|).
 - [ ] **E2** Top +/− loading genes on the zonation PC — do they read as real pericentral (GLUL, CYPs,
   SLCO1B3…) vs periportal (ASS1, ALDOB, fibrinogens…) biology? Tabulate.
@@ -136,7 +137,7 @@ What did the PCA actually pick, and does it mean biology?
   the `unsupervised` ruler; the atlas-fit `unsupervised_p2` follows the same logic in step4c.)
 
 ## F — Biology Findings report (PDF)  [added per professor Q]
-- [ ] **F1** A dedicated "Biology Findings" PDF: the H1/H2 mechanism story with **exact numbers**
+- [x] **F1** DONE: `src/reports/make_biology_findings.py` -> `results/reports/Zonation_Biology_Findings.pdf` (9 pages, every figure-citing claim shows the figure with the key region CIRCLED; exact numbers; honest-caveats section). A dedicated "Biology Findings" PDF: the H1/H2 mechanism story with **exact numbers**
   (n donors/cells per stage & fibrosis, how many plots, how each was analyzed), the representative
   figures embedded, the confounder controls (C) stated, and honest caveats. Build AFTER C lands so the
   numbers are control-checked, not provisional.
