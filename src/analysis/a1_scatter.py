@@ -73,70 +73,144 @@ def _anticorr(sub):
 
 
 # ----------------------------------------------------------------------------- contact sheets
-def contact_sheet(coords, summary, axis, out_path):
-    """All donors as small PC/PP scatters in a grid, grouped/ordered by `axis`.
+def _block_color(axis, label, stage_for_label):
+    """Band/header colour for a block. By stage we key on the stage name; by fibrosis we
+    walk a green->red severity ramp F0..F4."""
+    if axis == "stage":
+        return STAGE_BAND.get(stage_for_label, C.INK)
+    fib_ramp = {"F0": "#2c7a3f", "F1": "#7a9a1f", "F2": "#c9a227",
+                "F3": "#c97a16", "F4": "#b03a2e"}
+    return fib_ramp.get(label, C.INK)
 
-    Donors are laid out in band-order: each staging level's donors occupy a contiguous
-    run of panels, with a coloured band label heading each level's block.
+
+def contact_sheet(coords, summary, axis, out_path, block_ncol=5):
+    """All donors as small PC/PP scatters, grouped into clearly separated BLOCKS by `axis`.
+
+    Each disease-stage (or fibrosis F0..F4) level becomes its own block: a bold coloured
+    header band spanning the block width, then a sub-grid of that level's donor panels.
+    A thin divider rule + whitespace separates consecutive blocks so the grouping is
+    unmistakable. Every panel shows legible per-donor stats (id, n, Spearman r, median
+    UMI depth). One shared colorbar lives in its own dedicated axis on the right and never
+    overlaps a data panel. Axes are fixed/equal across panels so donors are comparable.
     """
+    from matplotlib.gridspec import GridSpec, GridSpecFromSubplotSpec
+
     levels = C.staging_levels(summary, axis)
-    # flat donor order, plus which level each panel belongs to (for the band heading)
-    order, panel_level = [], []
-    for label, donors in levels:
-        # keep the summary's intra-level ordering (already by fibrosis then n_cells)
-        ds = summary[summary.donor.isin(donors)]["donor"].tolist()
-        order.extend(ds)
-        panel_level.extend([label] * len(ds))
-
-    n = len(order)
-    ncol = 7
-    nrow = int(np.ceil(n / ncol))
-    fig, axes = plt.subplots(nrow, ncol, figsize=(ncol * 1.9, nrow * 2.05))
-    axes = np.atleast_1d(axes).ravel()
-
     by_donor = {str(d): sub for d, sub in coords.groupby("donor")}
     srow = summary.set_index("donor")
+
+    # ---- build each block's donor list (keep summary's intra-level ordering) + geometry
+    blocks = []   # (label, color, [donors], nrow_in_block)
+    for label, donors in levels:
+        ds = summary[summary.donor.isin(donors)]["donor"].tolist()
+        if not ds:
+            continue
+        stage_for_label = srow.loc[ds[0], "stage"]
+        col = _block_color(axis, label, stage_for_label)
+        brow = int(np.ceil(len(ds) / block_ncol))
+        blocks.append((label, col, ds, brow))
+
+    n = sum(len(b[2]) for b in blocks)
+    # vertical layout: each block contributes 1 header strip + brow panel rows.
+    HEADER_H = 0.42          # header strip height in "panel-row" units
+    PANEL_H = 1.0
+    GAP_H = 0.55             # whitespace between blocks
+    block_units = [HEADER_H + b[3] * PANEL_H for b in blocks]
+    total_units = sum(block_units) + GAP_H * (len(blocks) - 1)
+
+    # figure size: width from block_ncol; height from total panel-row units
+    panel_in = 1.95
+    fig_w = block_ncol * panel_in + 1.4          # +room for colorbar/margins
+    fig_h = total_units * panel_in * 0.74 + 1.4  # +room for suptitle/key (taller rows)
+    fig = plt.figure(figsize=(fig_w, fig_h))
+
+    # outer grid: one row per block-or-gap. We give blocks height ratios in panel-units.
+    # interleave gaps as thin spacer rows.
+    height_ratios, kind = [], []     # kind: ('block', idx) or ('gap',)
+    for bi, bu in enumerate(block_units):
+        height_ratios.append(bu); kind.append(("block", bi))
+        if bi < len(blocks) - 1:
+            height_ratios.append(GAP_H); kind.append(("gap",))
+
+    outer = GridSpec(len(height_ratios), 1, figure=fig,
+                     height_ratios=height_ratios,
+                     left=0.045, right=0.90, top=0.90, bottom=0.055, hspace=0.0)
+
     last_pc = None
+    for row_idx, k in enumerate(kind):
+        if k[0] == "gap":
+            # a thin centred divider rule in the spacer row
+            gax = fig.add_subplot(outer[row_idx]); gax.axis("off")
+            gax.axhline(0.5, color=C.RULE, lw=1.1, xmin=0.01, xmax=0.99)
+            continue
+        bi = k[1]
+        label, col, ds, brow = blocks[bi]
+        # split this block's slice into a 1-row header strip + brow x block_ncol panels
+        inner = GridSpecFromSubplotSpec(
+            1 + brow, block_ncol, subplot_spec=outer[row_idx],
+            height_ratios=[HEADER_H] + [PANEL_H] * brow,
+            hspace=0.95, wspace=0.32)
 
-    for i, donor in enumerate(order):
-        ax = axes[i]
-        sub = by_donor.get(donor)
-        last_pc = _scatter(ax, sub)
-        _frame(ax)
-        meta = srow.loc[donor]
-        stage = meta["stage"]
-        col = STAGE_BAND.get(stage, C.INK)
-        r = meta["anticorr"]
-        rtxt = f"{r:+.2f}" if pd.notna(r) else "n/a"
-        ax.set_title(f"{donor}  n={int(meta['n_cells'])}\nr={rtxt}",
-                     fontsize=6.5, color=col, pad=2)
-        ax.tick_params(labelsize=5, length=2)
-        # a small coloured corner tab reinforces the level grouping
-        ax.plot([LIM[0]], [LIM[1]], marker="s", ms=6, color=col,
-                clip_on=False, zorder=5)
+        # --- bold header band spanning the block width ---
+        hax = fig.add_subplot(inner[0, :]); hax.axis("off")
+        hax.add_patch(plt.Rectangle((0.0, 0.18), 1.0, 0.64, transform=hax.transAxes,
+                                    facecolor=col, edgecolor="none", alpha=0.16,
+                                    clip_on=False))
+        head_word = "STAGE" if axis == "stage" else "FIBROSIS"
+        hax.text(0.012, 0.5, f"{head_word}: {label}", transform=hax.transAxes,
+                 fontsize=12, fontweight="bold", va="center", ha="left", color=col)
+        hax.text(0.99, 0.5, f"{len(ds)} donor{'s' if len(ds) != 1 else ''}",
+                 transform=hax.transAxes, fontsize=9, va="center", ha="right",
+                 color=col, alpha=0.9)
+        hax.plot([0.0, 1.0], [0.04, 0.04], transform=hax.transAxes,
+                 color=col, lw=2.2, clip_on=False)
 
-    for j in range(n, len(axes)):
-        axes[j].axis("off")
+        # --- donor panels in this block's sub-grid ---
+        for j, donor in enumerate(ds):
+            r_, c_ = divmod(j, block_ncol)
+            ax = fig.add_subplot(inner[1 + r_, c_])
+            sub = by_donor.get(donor)
+            last_pc = _scatter(ax, sub, s=4, alpha=0.55)
+            _frame(ax)
+            meta = srow.loc[donor]
+            r = meta["anticorr"]
+            rtxt = f"{r:+.2f}" if pd.notna(r) else "n/a"
+            depth_k = meta["depth_med"] / 1000.0
+            ax.set_title(
+                f"donor {donor}  (n={int(meta['n_cells'])})\n"
+                f"r={rtxt}, {depth_k:.1f}k UMI",
+                fontsize=8, color=C.INK, pad=3, linespacing=1.15)
+            ax.tick_params(labelsize=6, length=2)
 
-    # legend: one swatch per level present, in band order
-    handles = [plt.Line2D([], [], marker="s", ls="", ms=8,
-                          color=STAGE_BAND.get(s, C.INK),
-                          label=C.STAGE_SHORT.get(s, s))
-               for s in C.STAGE_ORDER if (summary.stage == s).any()]
-    axis_word = "disease stage" if axis == "stage" else "fibrosis stage"
-    fig.suptitle(f"A1  PC-vs-PP zonation scatter — all {n} donors, ordered by {axis_word}\n"
-                 "x = pericentral score, y = periportal score; colour = zonation coord (PuOr); "
-                 "r = pc/pp anti-correlation", fontsize=11, y=0.997)
-    fig.legend(handles=handles, loc="lower center", ncol=len(handles),
-               fontsize=8, frameon=False, bbox_to_anchor=(0.5, 0.0))
-    cbar = fig.colorbar(last_pc, ax=axes.tolist(), fraction=0.012, pad=0.01,
-                        shrink=0.5, aspect=30)
-    cbar.set_label("zonation coord", fontsize=8)
+        # blank out any unused cells in the last panel row of the block
+        for j in range(len(ds), brow * block_ncol):
+            r_, c_ = divmod(j, block_ncol)
+            fig.add_subplot(inner[1 + r_, c_]).axis("off")
+
+    # ---- dedicated colorbar axis on the right (never overlaps a panel) ----
+    cax = fig.add_axes([0.925, 0.30, 0.016, 0.40])
+    cbar = fig.colorbar(last_pc, cax=cax, ticks=[VMIN, 0, VMAX])
+    cbar.ax.set_yticklabels(["periportal\nend", "0", "pericentral\nend"])
+    cbar.set_label("zonation coordinate (per cell)", fontsize=9)
     cbar.ax.tick_params(labelsize=7)
 
-    fig.subplots_adjust(left=0.03, right=0.93, top=0.93, bottom=0.05,
-                        wspace=0.25, hspace=0.45)
-    fig.savefig(out_path, dpi=130)
+    # ---- titles + shared-axes key (stated ONCE) ----
+    axis_word = "disease stage" if axis == "stage" else "fibrosis (F0-F4)"
+    fig.suptitle(f"A1  PC-vs-PP zonation scatter — all {n} donors, grouped by {axis_word}",
+                 fontsize=14, fontweight="bold", y=0.985)
+    fig.text(0.045, 0.945,
+             "Each panel = one donor: x = pericentral-program score,  y = periportal-program score,  "
+             "colour = each cell's zonation coordinate (purple = pericentral, orange = periportal).  "
+             "Axes fixed/equal across all donors.",
+             fontsize=9.5, ha="left", va="center", color=C.INK)
+    fig.text(0.045, 0.925,
+             "Reading key:  anti-diagonal cloud = intact zonation;  "
+             "round / positive blob = collapse.   "
+             "Per panel: n = number of cells in that donor;  r = Spearman(pc, pp) anti-correlation;  "
+             "UMI = median sequencing depth.",
+             fontsize=9.5, ha="left", va="center", color=C.MUTED)
+
+    fig.savefig(out_path, dpi=130, bbox_inches="tight")
     plt.close(fig)
     return out_path
 

@@ -110,6 +110,46 @@ def _p1_matrix():
     return _P1
 
 
+def subsample_counts(M, lib, target, seed=0):
+    """Binomially thin each cell's counts to ~`target` total UMIs (cells already <= target kept as-is).
+    Simulates LOWER sequencing depth — the controlled intervention behind the C2 depth test. Returns
+    (M_sub CSR, lib_sub)."""
+    rng = np.random.RandomState(seed)
+    Mc = M.tocsc().astype(np.int64).copy()
+    lib = np.asarray(lib, float)
+    p = np.minimum(1.0, target / np.maximum(lib, 1.0))
+    for c in range(Mc.shape[1]):
+        s, e = Mc.indptr[c], Mc.indptr[c + 1]
+        if e > s and p[c] < 1.0:
+            Mc.data[s:e] = rng.binomial(Mc.data[s:e], p[c])
+    Mc.eliminate_zeros()
+    return Mc.tocsr(), np.asarray(Mc.sum(0)).ravel().astype(float)
+
+
+def score_from_matrix(M, lib, genes, pc_genes, pp_genes):
+    """Standardized arm scores + zonation coordinate from a counts matrix (genes x cells, sparse) and
+    libsize. Mirrors steps/step4_score.score EXACTLY: per-gene z of log1p-CP10k, mean per arm,
+    re-standardize each arm, coord = pc - pp. `genes` = the row gene-symbol array. Returns
+    (coord, pc, pp). Used to RE-SCORE subsampled counts in the C2 depth control."""
+    g2i = {g: i for i, g in enumerate(genes)}
+    lib = np.maximum(np.asarray(lib, float), 1.0)
+    def zrow(g):
+        i = g2i.get(g)
+        if i is None:
+            return None
+        v = np.log1p(np.asarray(M[i].todense()).ravel().astype(float) / lib * 1e4)
+        sd = v.std()
+        return (v - v.mean()) / sd if sd > 0 else v * 0.0
+    def arm(gl):
+        zs = [z for z in (zrow(g) for g in gl) if z is not None]
+        if not zs:
+            return np.zeros(M.shape[1])
+        a = np.mean(zs, axis=0)
+        return (a - a.mean()) / (a.std() + 1e-9)
+    pc, pp = arm(pc_genes), arm(pp_genes)
+    return pc - pp, pc, pp
+
+
 def raw_gene_matrix(genes):
     """Per-cell raw log1p-CP10k expression, one column per requested gene present (UN-standardized).
     DataFrame indexed by cell_id. For marker profiles (A3) and gene x cell heatmaps (B1/B2).

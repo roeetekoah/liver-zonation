@@ -1,24 +1,38 @@
 #!/usr/bin/env python3
-"""B1 -- the centerpiece H2 figure: gene x (zone-ordered cells) heatmaps showing how the zonation
-PATTERN of the signature genes DISSOLVES with MASLD disease.
+"""B1 -- the centerpiece H2 figure: gene x (zone-binned cells) heatmaps showing how hepatocyte
+zonation changes across MASLD disease.
 
-SCIENTIFIC IDEA: order genes by their HEALTHY zonal slope (most pericentral-rising at top, most
-periportal-rising at bottom) and order cells by zonation coordinate (LEFT=periportal, RIGHT=
-pericentral). In healthy tissue this yields a clean diagonal "staircase" of banding. With disease
-the banding should wash out. We render TWO complementary versions so the two mechanisms separate:
+A reviewer found the old single "z vs healthy" encoding confusing because it ENTANGLES two distinct
+things: a change in overall LEVEL (a gene turning off) and a change in spatial PATTERN (the
+left->right gradient washing out / de-zonation). When a pericentral gene simply turns off, the whole
+top of that panel goes one color and it reads as "a flip" rather than "level dropped."
 
-  (1) per-gene Z-SCORED expression (z-scored against the HEALTHY reference, shared scale, cmap PuOr,
-      vmin/vmax symmetric): isolates PATTERN loss (de-zonation), independent of overall level.
-  (2) library-normalized RAW expression on a SHARED color scale across panels (cmap magma): a fading
-      panel = LEVEL loss (turn-off).
+To separate the two mechanisms cleanly we render THREE distinctly-labelled encodings, each its own
+figure:
 
-PSEUDOBULK / UNIT NOTE (descriptive figure): within each group we bin the coordinate into 50
-quantile bins and average cells per bin -> a (genes x 50) pseudobulk matrix. The unit here is the
-CELL (bins aggregate cells, not donors). That is acceptable for a *visualization*; the donor-level
-statistics live in the H2 tests elsewhere. This figure is meant to be SEEN, not tested.
+  (1) PATTERN view (de-zonation)  -- b1_heatmap_pattern_stage.png / _fibrosis.png
+      Each gene is z-scored WITHIN EACH PANEL (normalized to that stage's OWN mean/SD across its
+      bins). This asks, for THAT stage alone, "is there still a left->right gradient?", INDEPENDENT
+      of overall level. cmap PuOr, symmetric +/-1.8. Healthy -> crisp diagonal. A later stage that
+      keeps a diagonal still has spatial structure; one that washes to noise = de-zonation. KEY VIEW.
 
-The GENE ORDER is computed ONCE on Healthy-control cells and REUSED for every panel, so you can
-literally watch the same ordering go from a crisp diagonal to noise as disease advances.
+  (2) LEVEL view (turn-off)       -- b1_heatmap_level_stage.png / _fibrosis.png
+      Raw mean log1p-CP10k expression on a SHARED color scale across all panels (cmap magma). A
+      fading row/panel = the gene(s) turning off.
+
+  (3) DEVIATION view              -- b1_heatmap_vs_healthy_stage.png
+      Per-gene z vs the HEALTHY reference: what changed relative to healthy. Explicitly labelled
+      "orange = below healthy level" so it is not misread as a pattern flip.
+
+LAYOUT (every figure): rows = signature genes, ordered ONCE by their HEALTHY zonal slope
+(pericentral-rising at top, periportal-rising at bottom) and REUSED for every panel. Columns within
+a panel = cells binned into ~50 quantile bins of the zonation coordinate (LEFT=periportal ->
+RIGHT=pericentral); each cell of the heatmap is the mean expression over the cells in that bin
+(pseudobulk). Bins with < MIN_CELLS_PER_BIN cells are masked.
+
+PSEUDOBULK / UNIT NOTE: the unit here is the CELL (bins aggregate cells, not donors). That is fine
+for a *visualization*; the donor-level statistics live in the H2 tests elsewhere. This figure is
+meant to be SEEN, not tested.
 
 Usage:  python src/analysis/b1_heatmap.py [signature_set]      (default expanded_curated)
 """
@@ -32,9 +46,16 @@ import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
 N_GENE_BINS = 20          # quantile bins of coordinate used to estimate each gene's HEALTHY slope
 N_CELL_BINS = 50          # quantile bins of coordinate per panel (the x-axis of every heatmap)
 MIN_CELLS_PER_BIN = 5     # bins with fewer cells -> NaN (masked / shown as background)
-Z_LIM = 2.0               # symmetric vmin/vmax for the z-scored panels
+Z_LIM_PATTERN = 1.8       # symmetric vmin/vmax for the PATTERN (within-panel z) figures
+Z_LIM_DEV = 2.0           # symmetric vmin/vmax for the DEVIATION (z-vs-healthy) figure
 # marker rows to label on the y-axis (whichever are present)
 MARKER_ROWS = ["GLUL", "CYP2E1", "CYP1A2", "CYP3A4", "ASS1", "ALDOB", "PCK1", "HAL", "ARG1"]
+
+YLABEL = ("signature genes\n(top = pericentral-rising, bottom = periportal-rising; "
+          "order fixed from healthy)")
+XLABEL = "cells binned by zonation coordinate\n(left = periportal  ->  right = pericentral)"
+READING_KEY = ("reading key: diagonal banding = zonation;  PATTERN view washing out = de-zonation;  "
+               "LEVEL view fading = turn-off")
 
 
 # ------------------------------------------------------------------ helpers
@@ -50,13 +71,15 @@ def _binned_pseudobulk(coord, G, edges, nbins):
     """Per-bin mean expression for each gene -> (n_genes x nbins) array; bins with < MIN_CELLS_PER_BIN
     cells become NaN columns. G is (n_cells x n_genes) aligned to `coord`. Bins are ordered so that
     column 0 = LOW coord = periportal (left) and the last column = HIGH coord = pericentral (right)."""
+    coord = np.asarray(coord)
     b = pd.cut(coord, bins=edges, labels=False, include_lowest=True)
+    b = np.asarray(b)
     n_genes = G.shape[1]
     out = np.full((n_genes, nbins), np.nan, dtype=float)
     for j in range(nbins):
         m = (b == j)
         if int(m.sum()) >= MIN_CELLS_PER_BIN:
-            out[:, j] = np.nanmean(G[m.values if hasattr(m, "values") else m], axis=0)
+            out[:, j] = np.nanmean(G[m], axis=0)
     return out
 
 
@@ -82,13 +105,33 @@ def _healthy_gene_order(coord_h, G_h):
 
 def _healthy_ref_stats(coord_h, G_h, edges_ref):
     """Healthy per-gene mean & SD computed over the HEALTHY per-bin pseudobulk (same binning the panels
-    use), so z-scoring is on the same footing as what is plotted. Returns (mu[g], sd[g])."""
+    use), so the deviation z-score is on the same footing as what is plotted. Returns (mu[g], sd[g])."""
     pb = _binned_pseudobulk(coord_h, G_h, edges_ref, N_CELL_BINS)   # genes x N_CELL_BINS
     mu = np.nanmean(pb, axis=1)
     sd = np.nanstd(pb, axis=1)
     sd = np.where((sd > 1e-9) & np.isfinite(sd), sd, 1.0)
     mu = np.where(np.isfinite(mu), mu, 0.0)
     return mu, sd
+
+
+def _within_panel_z(pb):
+    """Z-score EACH ROW (gene) of a panel against that panel's OWN mean/SD across its (finite) bins.
+    This is the PATTERN view: it removes the gene's overall level so only the left->right SHAPE
+    survives. Rows that are flat (no gradient) -> ~0 everywhere; rows with a gradient keep their
+    diagonal sign. NaN bins stay NaN (masked)."""
+    out = np.full_like(pb, np.nan, dtype=float)
+    for i in range(pb.shape[0]):
+        row = pb[i]
+        ok = np.isfinite(row)
+        if ok.sum() < 3:
+            continue
+        mu = np.nanmean(row[ok])
+        sd = np.nanstd(row[ok])
+        if not (sd > 1e-9):
+            out[i, ok] = 0.0
+        else:
+            out[i, ok] = (row[ok] - mu) / sd
+    return out
 
 
 def _group_levels(coords, axis):
@@ -110,14 +153,36 @@ def _group_levels(coords, axis):
     raise ValueError(axis)
 
 
+def _build_matrices(coords, G, order, axis, ref_mu, ref_sd):
+    """For each group level along `axis`, compute the (genes x N_CELL_BINS) pseudobulk in shared gene
+    order, then derive the three encodings. Returns (labels, raw_mats, pattern_mats, dev_mats):
+      raw_mats     = per-bin mean log1p-CP10k expression          (LEVEL view)
+      pattern_mats = each gene z-scored WITHIN its own panel      (PATTERN view)
+      dev_mats     = each gene z-scored vs the HEALTHY reference  (DEVIATION view)
+    Each group uses its OWN quantile bins of coord, so a panel always fills its x-axis."""
+    levels = _group_levels(coords, axis)
+    labels, raw_mats, pattern_mats, dev_mats = [], [], [], []
+    for lab, m in levels:
+        sub_coord = coords.loc[m, "coord"].values
+        sub_G = G[m]                                    # cells x genes (group subset)
+        edges = _quantile_edges(sub_coord, N_CELL_BINS)
+        pb = _binned_pseudobulk(sub_coord, sub_G, edges, N_CELL_BINS)  # genes x bins
+        pb = pb[order]                                  # reorder rows to shared gene order
+        raw_mats.append(pb)
+        pattern_mats.append(_within_panel_z(pb))
+        dev_mats.append((pb - ref_mu[order][:, None]) / ref_sd[order][:, None])
+        labels.append(lab)
+    return labels, raw_mats, pattern_mats, dev_mats
+
+
 # ------------------------------------------------------------------ plotting
-def _draw_panels(mats, labels, order, gene_names, *, cmap, vmin, vmax, norm_kind,
+def _draw_panels(mats, labels, order, gene_names, *, cmap, vmin, vmax,
                  suptitle, outpath, cbar_label):
     """mats = list of (genes x N_CELL_BINS) arrays (already in plot order), one per group level."""
     n = len(mats)
-    fig_w = max(7.5, 2.05 * n + 1.6)
-    fig, axes = plt.subplots(1, n, figsize=(fig_w, 6.6), squeeze=False,
-                             gridspec_kw=dict(wspace=0.08))
+    fig_w = max(8.0, 2.05 * n + 1.8)
+    fig, axes = plt.subplots(1, n, figsize=(fig_w, 7.0), squeeze=False,
+                             gridspec_kw=dict(wspace=0.07))
     axes = axes[0]
 
     # y positions of marker rows (in the shared gene order)
@@ -134,12 +199,10 @@ def _draw_panels(mats, labels, order, gene_names, *, cmap, vmin, vmax, norm_kind
         # x ticks: periportal (left) -> pericentral (right)
         ax.set_xticks([0, mat.shape[1] - 1])
         ax.set_xticklabels(["PP", "PC"], fontsize=8, family="serif")
-        ax.set_xlabel("zonation coord", fontsize=7.5, family="serif", color=C.MUTED)
         if k == 0:
             ax.set_yticks([r for _, r in marker_rows])
-            ax.set_yticklabels([g for g, _ in marker_rows], fontsize=7.5, family="serif")
-            ax.set_ylabel("signature genes\n(pericentral-rising  ->  periportal-rising)",
-                          fontsize=8.5, family="serif")
+            ax.set_yticklabels([g for g, _ in marker_rows], fontsize=8, family="serif")
+            ax.set_ylabel(YLABEL, fontsize=8.5, family="serif")
         else:
             ax.set_yticks([])
         for s in ax.spines.values():
@@ -149,30 +212,23 @@ def _draw_panels(mats, labels, order, gene_names, *, cmap, vmin, vmax, norm_kind
     cbar.set_label(cbar_label, fontsize=8.5, family="serif")
     cbar.ax.tick_params(labelsize=7)
 
-    fig.suptitle(suptitle, fontsize=10.5, family="serif", y=0.985)
+    # shared x-axis label centered under the panels
+    fig.supxlabel(XLABEL, fontsize=9, family="serif", y=0.015, color=C.INK)
+    fig.suptitle(suptitle, fontsize=10.0, family="serif", y=0.995)
     fig.savefig(outpath, dpi=150, bbox_inches="tight")
     plt.close(fig)
     print("wrote", outpath)
     return outpath
 
 
-def _build_matrices(coords, G, order, axis, ref_mu, ref_sd, ref_edges):
-    """For each group level along `axis`, compute the (genes x N_CELL_BINS) pseudobulk in shared gene
-    order. Returns (labels, raw_mats, z_mats). raw_mats use each group's OWN quantile bins of coord;
-    z_mats subtract/divide the HEALTHY reference mean/SD per gene."""
-    levels = _group_levels(coords, axis)
-    labels, raw_mats, z_mats = [], [], []
-    for lab, m in levels:
-        sub_coord = coords.loc[m, "coord"].values
-        sub_G = G[m]                                   # cells x genes (group subset)
-        edges = _quantile_edges(sub_coord, N_CELL_BINS)
-        pb = _binned_pseudobulk(coords.loc[m, "coord"], sub_G, edges, N_CELL_BINS)  # genes x bins
-        pb = pb[order]                                 # reorder rows to shared gene order
-        raw_mats.append(pb)
-        z = (pb - ref_mu[order][:, None]) / ref_sd[order][:, None]
-        z_mats.append(z)
-        labels.append(lab)
-    return labels, raw_mats, z_mats
+def _shared_raw_scale(mats):
+    """Robust shared (vmin, vmax) over the finite values of all LEVEL-view matrices."""
+    vals = np.concatenate([m[np.isfinite(m)] for m in mats]) if mats else np.array([0.0])
+    vmin = float(np.nanpercentile(vals, 1))
+    vmax = float(np.nanpercentile(vals, 99))
+    if not (vmax > vmin):
+        vmin, vmax = float(np.nanmin(vals)), float(np.nanmax(vals) + 1e-6)
+    return vmin, vmax
 
 
 # ------------------------------------------------------------------ main
@@ -206,81 +262,73 @@ def main(which="expanded_curated"):
     G_h = G[h_mask]
     order, ordered_slopes = _healthy_gene_order(coord_h, G_h)
     ref_edges = _quantile_edges(coord_h, N_CELL_BINS)
-    ref_mu, ref_sd = _healthy_ref_stats(coords.loc[h_mask, "coord"], G_h, ref_edges)
+    ref_mu, ref_sd = _healthy_ref_stats(coord_h, G_h, ref_edges)
     print(f"Healthy reference: {int(h_mask.sum())} cells; gene order fixed by healthy zonal slope.")
     print("  top (pericentral-rising):", ", ".join(gene_names[order][:5]))
     print("  bottom (periportal-rising):", ", ".join(gene_names[order][-5:]))
 
     outs = []
 
-    # ============ STAGE panels ============
-    labels, raw_mats, z_mats = _build_matrices(coords, G, order, "stage",
-                                               ref_mu, ref_sd, ref_edges)
+    # ============================== STAGE panels ==============================
+    labels, raw_mats, pattern_mats, dev_mats = _build_matrices(
+        coords, G, order, "stage", ref_mu, ref_sd)
 
-    # (1) z-scored by stage
+    # (1) PATTERN view (de-zonation) -- within-panel z
     outs.append(_draw_panels(
-        z_mats, labels, order, gene_names, cmap="PuOr", vmin=-Z_LIM, vmax=Z_LIM, norm_kind="z",
-        suptitle=("B1  de-zonation: per-gene expression Z-SCORED to the HEALTHY reference   "
-                  f"[ruler: {which}]\n"
-                  "rows = signature genes (fixed HEALTHY zonal-slope order, pericentral-rising top -> "
-                  "periportal-rising bottom);  cols = zonation-coord bins (LEFT=periportal -> "
-                  "RIGHT=pericentral).\nclean diagonal banding in Healthy that WASHES OUT with disease "
-                  "= loss of zonal pattern (de-zonation), independent of level.  "
-                  "(descriptive pseudobulk: cells, not donors, are the unit)"),
-        outpath=C.fig_path("h2", "b1_heatmap_zscored_stage.png"),
-        cbar_label="z vs Healthy\n(per gene)"))
+        pattern_mats, labels, order, gene_names,
+        cmap="PuOr", vmin=-Z_LIM_PATTERN, vmax=Z_LIM_PATTERN,
+        suptitle=("B1 PATTERN view (de-zonation)   [ruler: " + which + "]\n"
+                  "each gene z-scored WITHIN ITS OWN stage panel -> shows the left->right gradient "
+                  "INDEPENDENT of overall level.\n" + READING_KEY),
+        outpath=C.fig_path("h2", "b1_heatmap_pattern_stage.png"),
+        cbar_label="within-panel z\n(purple = high / pericentral end,\norange = low / periportal end)"))
 
-    # shared raw scale across stage panels (robust percentiles over finite values)
-    raw_all = np.concatenate([m[np.isfinite(m)] for m in raw_mats]) if raw_mats else np.array([0.0])
-    rvmin = float(np.nanpercentile(raw_all, 1))
-    rvmax = float(np.nanpercentile(raw_all, 99))
-    if not (rvmax > rvmin):
-        rvmin, rvmax = float(np.nanmin(raw_all)), float(np.nanmax(raw_all) + 1e-6)
-
-    # (2) raw by stage, shared scale
+    # (2) LEVEL view (turn-off) -- raw expression, shared scale
+    rvmin, rvmax = _shared_raw_scale(raw_mats)
     outs.append(_draw_panels(
-        raw_mats, labels, order, gene_names, cmap="magma", vmin=rvmin, vmax=rvmax, norm_kind="raw",
-        suptitle=("B1  turn-off: library-normalized RAW expression on a SHARED color scale   "
-                  f"[ruler: {which}]\n"
-                  "same gene order & layout as the z-scored figure;  cols = zonation-coord bins "
-                  "(LEFT=periportal -> RIGHT=pericentral).\na whole panel FADING toward dark = loss of "
-                  "expression LEVEL (turn-off); top (pericentral) rows are expected to fade most.  "
-                  "(descriptive pseudobulk: cells, not donors, are the unit)"),
-        outpath=C.fig_path("h2", "b1_heatmap_raw_stage.png"),
-        cbar_label="mean raw expr\n(log1p-CP10k)"))
+        raw_mats, labels, order, gene_names,
+        cmap="magma", vmin=rvmin, vmax=rvmax,
+        suptitle=("B1 LEVEL view (turn-off)   [ruler: " + which + "]\n"
+                  "raw mean expression on a SHARED color scale across panels -> fading rows = genes "
+                  "turning off.\n" + READING_KEY),
+        outpath=C.fig_path("h2", "b1_heatmap_level_stage.png"),
+        cbar_label="mean expression\n(log1p-CP10k; bright = high)"))
 
-    # ============ FIBROSIS panels ============
-    flabels, fraw_mats, fz_mats = _build_matrices(coords, G, order, "fibrosis",
-                                                  ref_mu, ref_sd, ref_edges)
-
-    # (3) z-scored by fibrosis
+    # (3) DEVIATION view -- z vs healthy reference
     outs.append(_draw_panels(
-        fz_mats, flabels, order, gene_names, cmap="PuOr", vmin=-Z_LIM, vmax=Z_LIM, norm_kind="z",
-        suptitle=("B1  de-zonation by fibrosis stage: per-gene Z-SCORED to the HEALTHY reference   "
-                  f"[ruler: {which}]\n"
-                  "rows = signature genes (fixed HEALTHY zonal-slope order);  cols = zonation-coord "
-                  "bins (LEFT=periportal -> RIGHT=pericentral).\ndiagonal banding at F0 washing out "
-                  "toward F4 = de-zonation tracking fibrosis.  "
-                  "(descriptive pseudobulk: cells, not donors, are the unit)"),
-        outpath=C.fig_path("h2", "b1_heatmap_zscored_fibrosis.png"),
-        cbar_label="z vs Healthy\n(per gene)"))
+        dev_mats, labels, order, gene_names,
+        cmap="PuOr", vmin=-Z_LIM_DEV, vmax=Z_LIM_DEV,
+        suptitle=("B1 DEVIATION view: change vs HEALTHY   [ruler: " + which + "]\n"
+                  "per-gene z relative to the healthy reference -> orange = BELOW healthy level, "
+                  "purple = ABOVE.  (level + pattern combined; read with the two views above.)\n"
+                  + READING_KEY),
+        outpath=C.fig_path("h2", "b1_heatmap_vs_healthy_stage.png"),
+        cbar_label="deviation from healthy\n(orange = below healthy level,\npurple = above)"))
 
-    # (4) raw by fibrosis (cheap -- same shared-scale logic)
-    fraw_all = (np.concatenate([m[np.isfinite(m)] for m in fraw_mats])
-                if fraw_mats else np.array([0.0]))
-    fvmin = float(np.nanpercentile(fraw_all, 1))
-    fvmax = float(np.nanpercentile(fraw_all, 99))
-    if not (fvmax > fvmin):
-        fvmin, fvmax = float(np.nanmin(fraw_all)), float(np.nanmax(fraw_all) + 1e-6)
+    # ============================== FIBROSIS panels ==============================
+    flabels, fraw_mats, fpattern_mats, fdev_mats = _build_matrices(
+        coords, G, order, "fibrosis", ref_mu, ref_sd)
+
+    # PATTERN view by fibrosis
     outs.append(_draw_panels(
-        fraw_mats, flabels, order, gene_names, cmap="magma", vmin=fvmin, vmax=fvmax, norm_kind="raw",
-        suptitle=("B1  turn-off by fibrosis stage: library-normalized RAW expression, SHARED scale   "
-                  f"[ruler: {which}]\n"
-                  "same gene order & layout;  cols = zonation-coord bins (LEFT=periportal -> "
-                  "RIGHT=pericentral).\npanels fading toward dark from F0 -> F4 = expression turn-off "
-                  "with fibrosis.  (descriptive pseudobulk: cells, not donors, are the unit)"),
-        outpath=C.fig_path("h2", "b1_heatmap_raw_fibrosis.png"),
-        cbar_label="mean raw expr\n(log1p-CP10k)"))
+        fpattern_mats, flabels, order, gene_names,
+        cmap="PuOr", vmin=-Z_LIM_PATTERN, vmax=Z_LIM_PATTERN,
+        suptitle=("B1 PATTERN view (de-zonation) by FIBROSIS stage   [ruler: " + which + "]\n"
+                  "each gene z-scored WITHIN ITS OWN F-stage panel -> diagonal at F0 washing out "
+                  "toward F4 = de-zonation tracking fibrosis.\n" + READING_KEY),
+        outpath=C.fig_path("h2", "b1_heatmap_pattern_fibrosis.png"),
+        cbar_label="within-panel z\n(purple = high / pericentral end,\norange = low / periportal end)"))
+
+    # LEVEL view by fibrosis
+    fvmin, fvmax = _shared_raw_scale(fraw_mats)
+    outs.append(_draw_panels(
+        fraw_mats, flabels, order, gene_names,
+        cmap="magma", vmin=fvmin, vmax=fvmax,
+        suptitle=("B1 LEVEL view (turn-off) by FIBROSIS stage   [ruler: " + which + "]\n"
+                  "raw mean expression on a SHARED color scale -> rows fading from F0 -> F4 = "
+                  "expression turn-off with fibrosis.\n" + READING_KEY),
+        outpath=C.fig_path("h2", "b1_heatmap_level_fibrosis.png"),
+        cbar_label="mean expression\n(log1p-CP10k; bright = high)"))
 
     print("\nB1 done. Figures:")
     for o in outs:

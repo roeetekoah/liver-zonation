@@ -15,7 +15,7 @@ Run:  python src/h2_transcriptome_wide.py [ruler_name]   (default expanded_curat
 import os, sys
 import numpy as np, pandas as pd
 from scipy.stats import spearmanr
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # src/
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))   # src/
 import config
 from steps.common import log, bh, OUT, S2R
 from steps.step2_load_qc import load_qc

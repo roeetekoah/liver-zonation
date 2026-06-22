@@ -14,7 +14,7 @@ Run:  python src/run_explicit_signature_battery.py [--include-selected]
 """
 import os, sys, argparse
 import numpy as np, pandas as pd
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # src/
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))   # src/
 import config
 from steps.common import log, OUT, set_dir
 from steps.step2_load_qc import load_qc

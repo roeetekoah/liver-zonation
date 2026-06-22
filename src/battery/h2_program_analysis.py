@@ -15,7 +15,7 @@ Run:  python src/h2_program_analysis.py [ruler]   (default expanded_curated)
 import os, sys
 import numpy as np, pandas as pd
 from scipy.stats import mannwhitneyu
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # src/
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))   # src/
 import config
 from steps.common import log, bh, OUT
 

@@ -21,19 +21,39 @@ A coherent, mechanism-specific picture (real biology), CONVERGENT across 7 indep
   B4: raw PC level −34–37% by End-stage (all sets agree). A3: CYP1A2/CYP2E1/SLCO1B3/GLUL drop. B2: PC
   program loses level *in the PC zone* (1.25→0.74). B3: PC level 0.92→0.73. B1 (raw + z-scored): the
   pericentral rows go uniformly low (turn-off), not merely un-patterned.
-- **Secondary signal = periportal DE-ZONATION (level held, restriction lost), and it's MODEST.**
-  Periportal arm holds its level (B4/A3/B2). BUT B3 quantifies the program-level slope flattening as
-  small (PC slope +0.126→+0.102; PP slope magnitude even grows slightly) — so "de-zonation" is real
-  but weaker than the heatmap visually suggests. Honest corrective: **level (turn-off) dominates,
-  pure pattern-loss (de-zonation) is secondary.**
+- **Secondary signal = DE-ZONATION is MODEST and mostly LATE.** B1 PATTERN view (each stage z-scored
+  within itself): the left→right gradient diagonal **largely persists** through NAFLD/NASH/Cirrhosis
+  and degrades clearly only at End-stage/F4. B3 agrees (PC slope only +0.126→+0.102). So the spatial
+  PATTERN mostly survives — the dominant change is LEVEL (turn-off), not pattern loss. (The old
+  z-vs-healthy heatmap conflated level & pattern and looked like "a flip"; now split into separate
+  PATTERN / LEVEL / deviation views — `b1_heatmap_{pattern,level,vs_healthy}_*`.)
 - **The bipolar axis dissolves** (A1): intact anti-diagonal Healthy(r=−0.48)/NAFLD/NASH → positive
   blob by Cirrhosis(+0.26)/End-stage(+0.22). Likely **downstream of the pericentral turn-off** (silent
   PC genes → pc score becomes noise → anti-corr breaks), i.e. A4's "noise" may not be independent.
 - **The 1D coordinate distribution is a weak readout** (A2): broad unimodal humps; "spread by stage"
   is an indicator, not the result.
+- **End-stage is HETEROGENEOUS** (B2): the across-donor boxes WIDEN markedly at end-stage — this is
+  genuine donor-to-donor variability (some end-stage donors retain pericentral expression, others lose
+  it) compounded by small n (5 donors), NOT per-cell measurement noise. The widening is itself biology;
+  it's also why n-labelling + the C controls gate confidence.
 - **Honest caveats:** only 4 healthy donors, 2 low-depth & weak; per-donor metrics noisy at low n;
   contact sheet (all 47) is the full view, representatives are best-powered (outcome-independent).
   **Confidence gates on the C controls (downsampling, common-n) — not yet run.**
+
+## Decisions / conventions (from review 2)
+- **Representatives are NOT cherry-picked — document this prominently (in F):** cross-sectional design
+  (each donor = one stage, so per-stage panels are necessarily different donors); selection is
+  OUTCOME-INDEPENDENT (best-powered = highest depth, never by anti-corr/the result); the 47-donor
+  contact sheet is the honest full view, representatives are just clean well-measured examples.
+- **Number of sets:** MAIN story figures use 1–2 rulers (the co-primaries expanded_curated +
+  unsupervised_p2) for clarity; the broad multi-set figure (B4) is kept as a labelled ROBUSTNESS
+  panel (all sets agree on direction), not the headline.
+- **A4 mechanism CLASSIFICATION is deprecated** (heuristic z-argmax → unreliable, per review). KEEP the
+  per-donor metric trajectories (anticorr / prog_raw / coord_range vs stage — real measurements);
+  DROP the "dominant mechanism" call. The mechanism story is carried by B1–B4, which measure level vs
+  pattern directly.
+- **The currently-committed `Zonation_Narrative_Report` is STALE** — superseded by deliverable F once
+  the controls (C) land. Narrative depth is increasing; F is the new authoritative writeup.
 
 ## A — H1: is zonation intact at the start, and HOW does it collapse?
 The question behind H1: when "spread" shrinks, is it (a) **expression turn-off** (genes go silent →

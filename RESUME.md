@@ -10,11 +10,15 @@ deliverables, emerging findings, what's ticked off). Then, only if you need dept
 `PRIMER_COMPLIANCE.md` (which primer-specified tests are done). `CLAUDE.md` is auto-loaded and holds
 the conventions + the "treat narrative docs as unverified" rule.
 
-**Repo layout (updated):** `src/steps/` pipeline, `src/plotting/` battery plots, `src/analysis/` the
-biology deep-dive (A/B/C/D; shared loaders in `analysis/common.py`, run via
-`python src/analysis/run_analysis.py`). Outputs: `results/reports/` (PDFs), `results/figures/{h1,h2,
-confounders,staging}/` (analysis figures) + battery figures in `results/figures/` root,
-`results/tables/analysis/` (per-donor summaries, mechanism calls).
+**Repo layout (reorganized):** `src/` root holds only `config.py` + `run_everything.py` (entry point).
+Subpackages: `src/steps/` (pipeline steps), `src/battery/` (ruler-battery orchestration:
+build_candidate_sets, summarize, h2_program/transcriptome, unsupervised_axis_eval, make_panel_figure),
+`src/reports/` (PDF generators: make_latex/narrative/methods/report), `src/plotting/` (battery plots),
+`src/analysis/` (biology deep-dive A/B/C/D; shared loaders in `analysis/common.py`, run via
+`python src/analysis/run_analysis.py`), `src/prep/` (data conversions). Outputs: `results/reports/`
+(PDFs), `results/figures/{h1,h2,confounders,staging}/` (analysis) + battery figures in
+`results/figures/` root, `results/tables/analysis/` (per-donor summaries). _(Legacy pipeline.py /
+classifier.py / run_all.py / run_p2_validation.py and the archive/*.html primers were removed.)_
 
 ---
 

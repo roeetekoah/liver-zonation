@@ -9,7 +9,7 @@ Run:  python src/summarize_signature_battery.py
 """
 import os, sys
 import numpy as np, pandas as pd
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # src/
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))   # src/
 import config
 
 T = config.TABLES

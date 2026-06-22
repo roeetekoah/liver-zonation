@@ -54,7 +54,7 @@ def _py(*args):
 
 def ensure_inputs():
     if not (CAND / "pericentral_paper2_landmark.txt").exists():
-        log("building candidate gene sets ..."); _py("build_candidate_sets.py")
+        log("building candidate gene sets ..."); _py("battery/build_candidate_sets.py")
     for name, mode in LEARNED.items():
         if not os.path.exists(os.path.join(OUT, f"coordinates_learned_{name}.csv")):
             log(f"generating learned coords: {name} ..."); _py("steps/step4c_learned_coords.py", mode)
@@ -125,14 +125,14 @@ def main():
     pd.DataFrame(status).to_csv(os.path.join(OUT, "battery_run_status.csv"), index=False)
 
     log("\n--- summarize + panel + program-analysis + reports ---")
-    _py("summarize_signature_battery.py")
-    _py("make_panel_figure.py")
-    _py("h2_transcriptome_wide.py", "expanded_curated")   # H2c: every gene on a VALID ruler
-    _py("h2_program_analysis.py", "expanded_curated")     # H2b: programs, reads the H2c table
-    _py("unsupervised_axis_eval.py")
-    _py("make_latex_report.py")        # per-set results dossier
-    _py("make_narrative_report.py")    # narrative analysis report
-    log("\nDONE. Inspect: results/Zonation_Narrative_Report.pdf (analysis), "
+    _py("battery/summarize_signature_battery.py")
+    _py("battery/make_panel_figure.py")
+    _py("battery/h2_transcriptome_wide.py", "expanded_curated")   # H2c: every gene on a VALID ruler
+    _py("battery/h2_program_analysis.py", "expanded_curated")     # H2b: programs, reads the H2c table
+    _py("battery/unsupervised_axis_eval.py")
+    _py("reports/make_latex_report.py")        # per-set results dossier
+    _py("reports/make_narrative_report.py")    # narrative analysis report
+    log("\nDONE. Inspect: results/reports/Zonation_Narrative_Report.pdf (analysis), "
         "results/Zonation_Ruler_Report.pdf (per-set), "
         "results/tables/signature_battery_summary.csv, results/figures/ruler_panel.png")
 

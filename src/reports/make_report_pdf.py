@@ -7,7 +7,7 @@ import os, sys, datetime
 import numpy as np, pandas as pd
 import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # src/
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))   # src/
 import config
 
 T = config.TABLES; FIG = config.FIGURES

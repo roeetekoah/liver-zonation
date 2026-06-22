@@ -8,7 +8,7 @@ Run:  python src/make_narrative_report.py
 """
 import os, sys, datetime
 import numpy as np, pandas as pd
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # src/
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))   # src/
 import config
 
 T = str(config.TABLES); FIG = str(config.FIGURES); RES = str(config.REPORTS)

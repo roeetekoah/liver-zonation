@@ -12,7 +12,7 @@ Sources:
 """
 import os, sys
 import numpy as np, pandas as pd, openpyxl
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # src/
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))   # src/
 import config
 
 EXPLICIT_SET_ORDER = [
