@@ -11,6 +11,7 @@ from __future__ import annotations
 import os, sys
 import numpy as np, pandas as pd
 from scipy.stats import spearmanr, ttest_1samp
+from scipy import stats
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # src/
 import config
 from steps.common import log, bh, OUT, S2R, _is_na, set_dir
@@ -125,6 +126,146 @@ def h2_slope_loss(M, genes, libsize, col, coord, stage, donor, pc_genes, pp_gene
     artefacts.plot_h2_histogram(tr, os.path.join(str(config.FIGURES), f"h2_slope_loss_{which}.png"),
                                 title=f"H2 [{which}]: {n_weak}/{n} weaken, median={np.nanmedian(tr):+.2f}, p={sgp:.1g}")
     log(f"  wrote h2_slope_loss_{which}.csv + .png + summary")
+    return res
+
+
+# ---------------- COMPLEMENTARY H2: explicit interaction OLS ----------------
+def _donor_bin_long(Mc, local_idx, libsize, coord, donor, stage,
+                    n_bins=5, min_cells_bin=10, min_bins=3):
+    """Like `_donor_bin_slopes` but returns the LONG-FORM (donor x coord-bin) pseudobulk instead of
+    collapsing to a slope. One row per (donor, bin): a true pseudobulk (log1p(1e4*sum_counts/sum_lib))
+    for the requested genes, tagged with the bin ordinal, the donor's stage rank, and the donor id
+    (for clustering). Returns (Y[n_obs x n_genes], bin_ord[n_obs], stage_rank[n_obs], donor_id[n_obs])
+    or None. Donor stays the unit of inference — cells are aggregated, never used as observations."""
+    local_idx = np.asarray(local_idx)
+    sub = Mc[local_idx].tocsc()
+    Yrows, xord, srank, did = [], [], [], []
+    for d in np.unique(donor):
+        m = np.where(donor == d)[0]
+        if _is_na([d]).iat[0] or len(m) < min_cells_bin * min_bins: continue
+        st = pd.Series(stage[m]).mode().iat[0]
+        if st not in S2R: continue
+        c = coord[m]
+        edges = np.quantile(c, np.linspace(0, 1, n_bins + 1))
+        edges[0] -= 1e-9; edges[-1] += 1e-9
+        bid = np.clip(np.digitize(c, edges[1:-1]), 0, n_bins - 1)
+        rows_d = []
+        for b in range(n_bins):
+            cb = m[bid == b]
+            if len(cb) < min_cells_bin: continue
+            lib_b = libsize[cb].sum()
+            if lib_b <= 0: continue
+            cnt = np.asarray(sub[:, cb].sum(1)).ravel()
+            rows_d.append((b, np.log1p(1e4 * cnt / lib_b)))
+        if len(rows_d) < min_bins: continue          # donor must span >= min_bins zones
+        for b, yv in rows_d:
+            Yrows.append(yv); xord.append(b); srank.append(S2R[st]); did.append(d)
+    if not Yrows: return None
+    return np.vstack(Yrows), np.array(xord, float), np.array(srank, float), np.asarray(did)
+
+
+def _cluster_robust_ols(X, y, groups):
+    """OLS of y on X with cluster-robust (by `groups`) covariance — the sandwich estimator that
+    respects donor as the unit when (donor x bin) rows repeat within a donor. Stata-style finite-
+    sample correction c = G/(G-1) * (n-1)/(n-k). Returns (beta, se[k], G clusters)."""
+    XtX_inv = np.linalg.pinv(X.T @ X)
+    beta = XtX_inv @ (X.T @ y)
+    resid = y - X @ beta
+    k = X.shape[1]; n = X.shape[0]
+    meat = np.zeros((k, k))
+    uniq = np.unique(groups)
+    for g in uniq:
+        idx = np.where(groups == g)[0]
+        s = X[idx].T @ resid[idx]
+        meat += np.outer(s, s)
+    G = len(uniq)
+    c = (G / (G - 1.0)) * ((n - 1.0) / (n - k)) if (G > 1 and n > k) else 1.0
+    cov = c * (XtX_inv @ meat @ XtX_inv)
+    return beta, np.sqrt(np.maximum(np.diag(cov), 0.0)), G
+
+
+def h2_interaction_ols(M, genes, libsize, coord, stage, donor, pc_genes, pp_genes,
+                       which="", n_bins=5):
+    """COMPLEMENTARY H2 — the primer's explicit model  expr ~ coord + stage + coord:stage,  fit
+    donor-level (per-donor coord-bin pseudobulk; cluster-robust SE clustered by donor) for every
+    signature gene. The coord:stage coefficient, sign-ALIGNED to the Paper-2 direction (+1 PC, -1 PP),
+    is the direct slope-loss test: aligned beta < 0 == the gene's zonal slope flattens with disease.
+
+    This is the IN-SAMPLE, parametric, single-coefficient companion to the held-out, non-parametric
+    two-stage h2_slope_loss(): it uses the full frozen coordinate (not a held-out split), so the two
+    bracket the effect. Writes h2_interaction_ols.csv (per gene) + h2_interaction_ols_summary.csv.
+    """
+    log(f"Step 7c [H2 interaction OLS]: expr ~ coord + stage + coord:stage, cluster-robust by donor [set={which}]")
+    g2i = {g: i for i, g in enumerate(genes)}
+    PCp = [g for g in pc_genes if g in g2i]; PPp = [g for g in pp_genes if g in g2i]
+    direction = {g: +1 for g in PCp}; direction.update({g: -1 for g in PPp})
+    sig_all = PCp + PPp
+    if min(len(PCp), len(PPp)) < 4:
+        log(f"  too few present signature genes (PC={len(PCp)}, PP={len(PPp)}); skipping."); return None
+    Msig = M[[g2i[g] for g in sig_all]].tocsc()
+    out = _donor_bin_long(Msig, range(len(sig_all)), libsize, coord, donor, stage, n_bins=n_bins)
+    if out is None:
+        log("  no donor x bin pseudobulk rows; skipping."); return None
+    Y, xord, srank, did = out
+    n_obs, n_donor = len(xord), len(np.unique(did))
+    if n_donor < 6:
+        log(f"  too few donors with >= 3 zones ({n_donor}); skipping."); return None
+    xc = xord - xord.mean(); sc = srank - srank.mean()                 # center -> stable main effects
+    X = np.column_stack([np.ones_like(xc), xc, sc, xc * sc])           # 1, coord, stage, coord:stage
+    rows = []
+    for j, g in enumerate(sig_all):
+        y = Y[:, j]
+        if np.std(y) == 0: continue
+        beta, se, G = _cluster_robust_ols(X, y, did)
+        sgn = direction[g]
+        b_coord = beta[1] * sgn                                        # aligned baseline zonal slope
+        b_int, s_int = beta[3] * sgn, se[3]                            # aligned interaction (slope-loss)
+        t = b_int / s_int if s_int > 0 else np.nan
+        p = float(2 * stats.t.sf(abs(t), G - 1)) if np.isfinite(t) else np.nan
+        rows.append({"signature_set": which, "gene": g,
+                     "direction": "PC" if sgn > 0 else "PP",
+                     "beta_coord_aligned": float(b_coord),
+                     "beta_interaction_aligned": float(b_int),
+                     "se_interaction": float(s_int), "t_interaction": float(t),
+                     "p_interaction": p, "n_clusters": int(G)})
+    if not rows:
+        log("  no genes fit; skipping."); return None
+    res = pd.DataFrame(rows)
+    res["q_interaction"] = bh(np.nan_to_num(res["p_interaction"].values, nan=1.0))
+    res = res.sort_values("beta_interaction_aligned")
+    sd = set_dir(which)
+    res.to_csv(os.path.join(sd, "h2_interaction_ols.csv"), index=False)
+
+    bi = res["beta_interaction_aligned"].values
+    n = len(bi); n_weak = int((bi < 0).sum())
+    try:
+        from scipy.stats import binomtest; sgp = binomtest(n_weak, n, 0.5).pvalue
+    except Exception:
+        from scipy.stats import binom_test; sgp = binom_test(n_weak, n, 0.5)
+    n_sig = int(((res["q_interaction"] < 0.05) & (bi < 0)).sum())
+    prog = (res.assign(weak=bi < 0).groupby("direction")
+            .agg(n=("gene", "size"), n_weakening=("weak", "sum"),
+                 median_beta_interaction=("beta_interaction_aligned", "median"),
+                 n_q05_weakening=("q_interaction", lambda s: int(((s < 0.05) & (res.loc[s.index, "beta_interaction_aligned"] < 0)).sum())))
+            .reset_index())
+    prog.insert(0, "signature_set", which)
+    summ = pd.DataFrame([{"signature_set": which, "model": "expr ~ coord + stage + coord:stage",
+                          "se": "cluster_robust_by_donor", "n_obs_donor_x_bin": int(n_obs),
+                          "n_donors": int(n_donor), "n_genes": n,
+                          "frac_weakening": n_weak / n, "median_beta_interaction": float(np.median(bi)),
+                          "sign_test_p_2sided": float(sgp), "n_genes_q05_weakening": n_sig}])
+    summ.to_csv(os.path.join(sd, "h2_interaction_ols_summary.csv"), index=False)
+    prog.to_csv(os.path.join(sd, "h2_interaction_ols_by_program.csv"), index=False)
+    log(f"  {n} signature genes, {n_donor} donors, {n_obs} (donor x bin) rows: "
+        f"{n_weak}/{n} have aligned coord:stage < 0 (median={np.median(bi):+.4f}, sign-test p={sgp:.3g}); "
+        f"{n_sig} genes q<0.05 & weakening")
+    for _, r in prog.iterrows():
+        log(f"    {r['direction']}: {int(r['n_weakening'])}/{int(r['n'])} weaken "
+            f"(median interaction beta={r['median_beta_interaction']:+.4f})")
+    artefacts.plot_h2_interaction(
+        bi, os.path.join(str(config.FIGURES), f"h2_interaction_ols_{which}.png"),
+        title=f"H2 interaction [{which}]: {n_weak}/{n} coord:stage<0, p={sgp:.1g}")
+    log(f"  wrote h2_interaction_ols_{which}.csv + by_program + summary + .png")
     return res
 
 

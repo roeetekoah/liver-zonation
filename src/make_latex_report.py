@@ -11,7 +11,7 @@ import numpy as np, pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # src/
 import config
 
-T = str(config.TABLES); FIG = str(config.FIGURES); RES = str(config.RESULTS)
+T = str(config.TABLES); FIG = str(config.FIGURES); RES = str(config.REPORTS)
 SUMM = os.path.join(T, "signature_battery_summary.csv")
 
 DESC = {
@@ -23,7 +23,7 @@ DESC = {
     "paper2_top100": "Top 100+100 zonated genes by |center-of-mass|.",
     "paper2_top250": "Top 250+250 zonated genes by |center-of-mass|.",
     "paper2_full": "All significant zonated hepatocyte genes (q<0.05, max-expr>1e-4), split by COM sign (1624+447).",
-    "selected_frozen": "The auto-frozen primary ruler (a copy of the best signature set by healthy metrics).",
+    "selected_frozen": "Copy of the interpretable co-primary anchor (best leakage-clean PUBLISHED set by healthy metrics); drives downstream H2b/H2c.",
     "full": "Legacy transcriptome-wide unweighted signature mean (main pipeline).",
     "supervised": "Whole-transcriptome multinomial logistic regression trained on Paper 2 zone labels (landmarks excluded).",
     "unsupervised": "Label-free PCA porto-central axis learned on Paper 1 HEALTHY cells (sensitivity version).",
@@ -63,7 +63,8 @@ def quality_score(r):
 
 def section(s, srow):
     sd = os.path.join(T, s)
-    L = [f"\\section*{{{esc(s)} \\hfill {esc(srow['recommended_role'])}}}"]
+    role = srow.get("display_role", srow["recommended_role"]) if hasattr(srow, "get") else srow["recommended_role"]
+    L = [f"\\section*{{{esc(s)} \\hfill {esc(role)}}}"]
     desc = DESC.get(s, "Candidate zonation ruler.")
     L.append(desc + f" \\textbf{{Genes:}} {int(srow['n_pc'])} PC + {int(srow['n_pp'])} PP.")
     # validation + controls
@@ -101,8 +102,9 @@ def section(s, srow):
     # figure
     figp = os.path.join(FIG, f"collapse_{s}.png")
     if os.path.exists(figp):
+        absfig = figp.replace("\\", "/")
         L.append("\\begin{center}\\includegraphics[width=0.92\\textwidth]"
-                 f"{{figures/collapse_{s}.png}}\\end{{center}}")
+                 f"{{{absfig}}}\\end{{center}}")
     return "\n".join(L) + "\n\\clearpage\n"
 
 
@@ -123,8 +125,13 @@ def main():
 Candidate zonation rulers were built, each scored as a per-cell coordinate
 (coord $=$ mean\_z(PC) $-$ mean\_z(PP), or a learned projection). \textbf{Ruler quality is judged
 ONLY on Paper 2 / healthy-atlas criteria} (8-marker validation gate, healthy PC--PP
-anticorrelation, split-half reproducibility). The best healthy ruler is frozen, then transferred
-to the Paper 1 disease cohort, where H1/H2/H3 are TEST results --- never used for selection.
+anticorrelation, split-half reproducibility). \textbf{Two co-primary rulers} are frozen --- an
+interpretable published anchor and a label-free learned axis --- then transferred to the Paper 1
+disease cohort, where H1/H2/H3 are TEST results --- never used for selection. Eligibility for the
+primary slot is \emph{leakage-clean} (axis NOT fit on Paper-1 cells), \emph{not} publishability:
+rulers fit on Paper-1 healthy cells (\texttt{unsupervised}, \texttt{unsupervised\_combined}) have
+in-sample healthy metrics, so they are shown as \emph{control (Paper1-fit)} and excluded from
+selection while still serving as H1 robustness checks.
 Sections below are ordered by healthy-ruler quality (split-half $+\,\max(0,-$anticorr$)$).
 H1 = donor-level zonation collapse; H2 = zonal-slope loss; H3 = de-zonation/plasticity coupling.
 

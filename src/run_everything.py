@@ -25,7 +25,7 @@ from steps.step4_score import score, zrows
 from steps.step5_validate import validate
 from steps.step5b_ruler_diagnostics import ruler_diagnostics
 from steps.step6_collapse import collapse
-from steps.step7_de import h2_slope_loss, de
+from steps.step7_de import h2_slope_loss, h2_interaction_ols, de
 from steps.step8_plasticity import plasticity
 
 CAND = config.SIGNATURES / "candidates"
@@ -118,6 +118,7 @@ def main():
         plasticity(coord, plast, stage, donor, which=which)
         if min(sum(g in set(genes) for g in PC), sum(g in set(genes) for g in PP)) >= 4:
             h2_slope_loss(M, genes, lib, col, coord, stage, donor, PC, PP, which=which, K=K_SLOPE)
+            h2_interaction_ols(M, genes, lib, coord, stage, donor, PC, PP, which=which)
         if which == "paper2_full":
             de(M, genes, lib, coord, stage, donor, set(PC + PP), which=which)
         status.append({"signature_set": which, "kind": kind, "built": True, "validation_pass": True})

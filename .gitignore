@@ -5,8 +5,8 @@
 data/raw/
 data/processed/
 papers/
-analysis/
-results/figures/*.png
+/analysis/                       # top-level scratch analysis dir ONLY (NOT src/analysis/ — the code package)
+results/figures/*.png            # loose battery figures regenerate; analysis figures in subdirs ARE kept
 *.rds
 *.rds.gz
 *.mat

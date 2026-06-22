@@ -11,7 +11,7 @@ import numpy as np, pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # src/
 import config
 
-T = str(config.TABLES); FIG = str(config.FIGURES); RES = str(config.RESULTS)
+T = str(config.TABLES); FIG = str(config.FIGURES); RES = str(config.REPORTS)
 
 
 def rd(p):
@@ -42,7 +42,7 @@ def summary_table_tex(summ):
             ("healthy_pc_pp_anticorr", "healthy anticorr"),
             ("healthy_splithalf_rho_mean", "split-half"),
             ("h1_coord_spread_rho_vs_stage", "H1 spread $\\rho$"),
-            ("recommended_role", "role")]
+            ("display_role", "role")]
     rows = []
     for _, r in summ.iterrows():
         cells = []
@@ -74,8 +74,9 @@ def main():
         r = tw.iloc[0]; tw_n = str(int(r["n_tested"])); tw_frac = f"{r['frac_weakening']*100:.0f}"
         tw_sig = str(int(r["n_q05_weakening"]))
 
-    lm_s, lm_p = h1("paper2_landmark"); un_s, un_p = h1("unsupervised")
+    lm_s, lm_p = h1("paper2_landmark"); un_s, un_p = h1("unsupervised_p2")   # clean label-free co-primary
     ex_s, ex_p = h1("expanded_curated"); fl_s, fl_p = h1("paper2_full")
+    co_a, co_b = _co_primaries(summ); co_decide = _co_decide(summ, co_a, co_b)
 
     prog_tex = ""; wnt_q = "n/a"
     if prog is not None:
@@ -177,19 +178,34 @@ $\sim$2000 weakly-zonated genes lets a shared technical/expression factor domina
 Every ruler is scored on \textbf{healthy} quality alone --- a quality score of
 (split-half reproducibility) $+\,\max(0,-$healthy PC--PP anticorrelation$)$ --- and the table below
 is \textbf{ordered by it}. Disease-collapse strength is deliberately \emph{excluded} from selection:
-using the test cohort to choose the instrument would be leakage. The frozen primary is the
-top-ranked \emph{published-signature} set; learned rulers are shown for comparison but do not compete
-in the auto-selection. We keep the whole spectrum (curated, data-ranked, learned PCA, regularized,
-supervised) because agreement of \emph{independent construction mechanisms} is the robustness
-evidence --- not because any one is cherry-picked.
+using the test cohort to choose the instrument would be leakage.
+
+\textbf{Eligibility is by leakage, not by publishability.} A ruler may compete for the frozen
+primary slot iff its axis was \emph{not} fit on Paper-1 cells. This matters because two learned
+rulers (\texttt{unsupervised}, \texttt{unsupervised\_combined}) are fit by PCA on Paper-1 healthy
+cells --- so their healthy anticorrelation/split-half are computed on the very cells the axis was
+fit to (\emph{in-sample}, and therefore optimistically inflated; that is exactly why they top the
+raw table). They remain valid H1 robustness checks --- the Paper-1 \emph{disease} cells are never
+used to fit them --- so we keep and show them, marked \emph{control (Paper1-fit)}, but they do not
+compete. Every other ruler (published gene lists, which fit nothing; and the Paper-2-trained learned
+axes \texttt{unsupervised\_p2}/\texttt{supervised}/\texttt{lasso}/\texttt{elasticnet}, external to
+Paper 1) is leakage-clean and eligible regardless of whether it is a curated list or a label-free
+axis.
 
 %(summary_table)s
 
-\subsection{Which ruler we selected, and why it is not the strongest-on-disease one}
-By healthy-ruler quality the selected primary set is %(selected)s. Notably this is \emph{not} the
-set with the strongest disease trend (the small curated %(core_name)s set has a steeper collapse) ---
-choosing that would be cherry-picking. Selection used healthy metrics only; the disease result is
-the independent confirmation.
+\subsection{Two co-primary rulers, and why we report both}
+Among the leakage-clean rulers we freeze \textbf{two co-primaries} of deliberately different
+construction, then transfer \emph{both} to disease: an \textbf{interpretable} published anchor
+(%(co_a)s) and a \textbf{label-free} learned axis (%(co_b)s, trained entirely on the external
+Paper~2 healthy atlas). On healthy quality they are statistically indistinguishable
+(%(co_decide)s), so picking one over the other would be arbitrary --- and the label-free axis is in
+fact the \emph{highest}-scoring eligible ruler, so the result is not an artefact of insisting on a
+hand-curated gene list. The headline rests on the two \emph{agreeing}: a curated signature and an
+unsupervised axis built with no marker genes both reconstruct the same coordinate and both show the
+same collapse. We also note the selected rulers are \emph{not} the steepest-collapsing ones (the
+tiny curated %(core_name)s set collapses harder) --- choosing by disease strength would be
+cherry-picking; selection used healthy metrics only, and disease is the independent confirmation.
 
 \subsection{H1 --- zonation collapses (and it is robust)}
 On every \emph{valid} ruler, per-donor coordinate spread falls and the PC--PP anti-correlation
@@ -255,7 +271,7 @@ Within donors, de-zonation correlates positively with plasticity-marker expressi
 effect is small (mean $\rho\approx0.02$). This is the weakest of the three hypotheses: directionally
 consistent with Paper~1's transdifferentiation theme, but not a strong donor-level effect here.
 
-\begin{center}\includegraphics[width=\textwidth]{figures/ruler_panel.png}\end{center}
+\begin{center}\includegraphics[width=\textwidth]{%(panel)s}\end{center}
 
 \section{Discussion}
 Three independent constructions --- a published landmark signature, a label-free PCA axis (trained
@@ -288,7 +304,8 @@ per-set \texttt{results/tables/<set>/}.
     M = {
         "date": datetime.date.today().isoformat(),
         "summary_table": summary_table_tex(summ) if summ is not None else "",
-        "selected": tt(_selected()), "core_name": tt("core_curated"),
+        "panel": (FIG + "/ruler_panel.png").replace("\\", "/"),
+        "co_a": tt(co_a), "co_b": tt(co_b), "co_decide": co_decide, "core_name": tt("core_curated"),
         "lm_name": tt("paper2_landmark"), "ex_name": tt("expanded_curated"),
         "top250": tt("paper2_top250"), "full": tt("paper2_full"),
         "lm_s": lm_s, "lm_p": lm_p, "ex_s": ex_s, "ex_p": ex_p,
@@ -309,13 +326,28 @@ per-set \texttt{results/tables/<set>/}.
     print("wrote", os.path.join(RES, "Zonation_Narrative_Report.pdf"))
 
 
-def _selected():
-    p = os.path.join(T, "selected_set_decision.txt")
-    if os.path.exists(p):
-        for line in open(p):
-            if line.startswith("SELECTED set:"):
-                return line.split(":", 1)[1].strip()
-    return "expanded_curated"
+def _co_primaries(summ):
+    """(interpretable, label-free) co-primary set names, read from display_role; robust defaults."""
+    co_a, co_b = "expanded_curated", "unsupervised_p2"
+    if summ is not None and "display_role" in summ.columns:
+        a = summ[summ["display_role"] == "PRIMARY (interpretable)"]
+        b = summ[summ["display_role"] == "PRIMARY (label-free)"]
+        if len(a): co_a = a.iloc[0]["set_name"]
+        if len(b): co_b = b.iloc[0]["set_name"]
+    return co_a, co_b
+
+
+def _co_decide(summ, co_a, co_b):
+    """One-clause statement of the healthy-score gap between the two co-primaries."""
+    try:
+        ga = summ[summ.set_name == co_a].iloc[0]["healthy_score"]
+        gb = summ[summ.set_name == co_b].iloc[0]["healthy_score"]
+        gap = abs(ga - gb)
+        band = "within" if gap < 0.02 else "beyond"
+        return (f"healthy-quality scores {ga:.2f} vs {gb:.2f}, a gap of {gap:.3f} --- {band} the "
+                "0.02 tie band")
+    except Exception:
+        return "healthy-quality scores essentially tied"
 
 
 if __name__ == "__main__":

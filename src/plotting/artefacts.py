@@ -187,6 +187,21 @@ def plot_h2_histogram(trend_values, out, title=None):
     return _save(fig, out)
 
 
+def plot_h2_interaction(beta_values, out, title=None):
+    """H2 interaction figure: distribution of per-gene aligned coord:stage OLS coefficients
+    (negative = zonal slope flattens with disease stage)."""
+    bi = np.asarray(beta_values, float)
+    fig, a = plt.subplots(figsize=(5, 3.8))
+    a.hist(bi, bins=40, color=PC_COLOR, alpha=0.85)
+    a.axvline(0, color=PP_COLOR, lw=2)
+    a.axvline(np.nanmedian(bi), color="#222", lw=1.5, ls="--")
+    a.set_xlabel("per-gene aligned coord:stage coefficient  (<0 = slope flattens with stage)")
+    a.set_ylabel("genes")
+    if title:
+        a.set_title(title)
+    return _save(fig, out)
+
+
 def plot_h3_per_donor(per_donor_df, out, short=None, title=None, col="rho_dez_plast"):
     """H3 figure: per-donor rho(de-zonation, plasticity) vs stage + per-stage mean."""
     short = short or SHORT_STAGES

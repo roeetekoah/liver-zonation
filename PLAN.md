@@ -1,0 +1,141 @@
+# PLAN — "show the real biology" deep dive
+
+_Tracked work plan from the professor meeting (2026-06-22). Principle: **summary statistics are
+indicators, not results.** Every claim must be backed by a look at the actual cell-level data and an
+explicit confounder check. Tick items as they land. Companion: [RESUME.md](RESUME.md) (project state),
+methods in `results/reports/Zonation_Methods_Explainer.pdf`._
+
+**Primary disease axes (decided):** run everything on BOTH the 5 coarse stages AND fibrosis F0–F4
+(the stronger biology). NAS (activity 0–8) as a secondary axis. All staging is already in
+`data/processed/paper1/metadata_all_cells.csv` (`Fibrosis.score..F0.4.`, `Steatosis`/`Ballooning`/
+`Inflammation` → NAS, `SAF.Score`) — **no download needed.**
+
+**Scatter scope (decided):** all 47 donors as a contact sheet + a curated depth-matched representative
+panel (never cherry-picked single donors).
+
+---
+
+## Emerging findings (from A1–A4, B1–B4 — first pass, expanded_curated ruler)
+A coherent, mechanism-specific picture (real biology), CONVERGENT across 7 independent views:
+- **Dominant signal = pericentral program TURN-OFF (level collapse), strongest End-stage/F4.**
+  B4: raw PC level −34–37% by End-stage (all sets agree). A3: CYP1A2/CYP2E1/SLCO1B3/GLUL drop. B2: PC
+  program loses level *in the PC zone* (1.25→0.74). B3: PC level 0.92→0.73. B1 (raw + z-scored): the
+  pericentral rows go uniformly low (turn-off), not merely un-patterned.
+- **Secondary signal = periportal DE-ZONATION (level held, restriction lost), and it's MODEST.**
+  Periportal arm holds its level (B4/A3/B2). BUT B3 quantifies the program-level slope flattening as
+  small (PC slope +0.126→+0.102; PP slope magnitude even grows slightly) — so "de-zonation" is real
+  but weaker than the heatmap visually suggests. Honest corrective: **level (turn-off) dominates,
+  pure pattern-loss (de-zonation) is secondary.**
+- **The bipolar axis dissolves** (A1): intact anti-diagonal Healthy(r=−0.48)/NAFLD/NASH → positive
+  blob by Cirrhosis(+0.26)/End-stage(+0.22). Likely **downstream of the pericentral turn-off** (silent
+  PC genes → pc score becomes noise → anti-corr breaks), i.e. A4's "noise" may not be independent.
+- **The 1D coordinate distribution is a weak readout** (A2): broad unimodal humps; "spread by stage"
+  is an indicator, not the result.
+- **Honest caveats:** only 4 healthy donors, 2 low-depth & weak; per-donor metrics noisy at low n;
+  contact sheet (all 47) is the full view, representatives are best-powered (outcome-independent).
+  **Confidence gates on the C controls (downsampling, common-n) — not yet run.**
+
+## A — H1: is zonation intact at the start, and HOW does it collapse?
+The question behind H1: when "spread" shrinks, is it (a) **expression turn-off** (genes go silent →
+cloud collapses to the origin), (b) **noise** (anti-correlation dissolves → round blob), or (c) **true
+de-zonation** (cells pile at the axis center, keep anti-correlation sign, lose the extremes)? The
+PC-arm vs PP-arm scatter discriminates these.
+
+- [x] **A1** Per-donor **PC vs PP scatter** — full 47-donor contact sheet (by stage AND fibrosis) +
+  best-powered representative panel vs healthy envelope; colored by coordinate.
+  `src/analysis/a1_scatter.py` → `results/figures/h1/a1_*`.
+- [x] **A2** Per-donor **coordinate distribution** along the zonation axis. `src/analysis/
+  a2_distributions.py` → `results/figures/h1/a2_*`. _(TODO: extend to fibrosis axis + contact sheet.)_
+- [x] **A3** **Marker zonation profiles** (`src/analysis/a3_marker_profiles.py` → results/figures/h1/a3_*) — — mean expression of canonical markers (GLUL, CYP2E1 / ASS1,
+  ALDOB) vs coordinate-bin, per stage/fibrosis: does the gradient flatten while expression persists
+  (de-zonation) or drop to zero (turn-off)?
+- [x] **A4** **Per-donor mechanism quantification** — anti-corr (noise) / raw program level (turn-off)
+  / coordinate range (de-zonation); classify + plot across stage/fibrosis. `src/analysis/
+  a4_mechanism.py` → `results/figures/h1/a4_*`, `results/tables/analysis/mechanism_by_donor.csv`.
+- [ ] **A1b** **Anti-cherry-pick hardening:** representative panel shows 2–3 best-powered donors per
+  stage with the (outcome-independent) selection rule printed on the figure; PLUS a clean **cross-ruler
+  story figure** — PC/PP collapse for the two co-primary rulers (expanded_curated + unsupervised_p2)
+  side by side, to show the collapse is ruler-independent, not a hand-picked view.
+
+## B — H2: which programs lose zonation, shown as patterns
+- [x] **B1** **Gene × cell heatmap** (`src/analysis/b1_heatmap.py` → results/figures/h2/b1_*) — — cells (cols) ordered by coordinate, genes (rows) ordered by
+  their **healthy** slope (fixed order across stages). Render BOTH per-gene z-scored (pattern /
+  de-zonation) and library-normalized log (level / turn-off). Bin cells ~50/stage for tractability.
+- [x] **B2** **Zone × program boxplots** (`src/analysis/b2_zone_boxplots.py` → results/figures/h2/b2_*) — — terciles PC/mid/PP on x, program expression on y, faceted by
+  stage/fibrosis: does the pericentral program lose expression *in the pericentral zone*?
+- [x] **B3** **Program score vs coordinate** (`src/analysis/b3_program_vs_coord.py` → results/figures/h2/b3_*) — per cell, colored by stage — the gradient directly.
+- [x] **B4** **Per-set expression level** — x = stage & fibrosis, y = mean per-DONOR raw expression of
+  each set's PC and PP arms, one line per set. `src/analysis/b4_set_levels.py` →
+  `results/figures/h2/b4_*`, `results/tables/analysis/set_expression_levels.csv`.
+
+## C — Confounders (first-class, not footnotes)
+- [ ] **C1** **Cell count**: n_hep per donor/stage (range 105–8650!); per-donor zonation strength vs
+  n_cells; **downsample all donors to common n** and confirm H1 trend survives; bootstrap CIs.
+- [~] **C2** **Sequencing depth**: _early finding (from A1/A4 follow-up):_ zonation strength
+  correlates with genes-detected (ρ=+0.33, p=0.02) and depth (ρ=+0.27) — low-depth donors look
+  under-zonated (2 of 4 healthy controls are low-depth & weak; the deep healthy donor 30 is cleanly
+  zonated, r=−0.50). **BUT depth does NOT track stage (ρ=−0.10, p=0.52), so the H1 collapse survives**
+  (strength vs stage ρ=−0.61, p=5e-6). Still TODO: subsample counts to common depth and re-test.
+- [ ] **C3** **Level vs slope (confounder genes)**: per H2 gene, report mean-expression-change beside
+  slope-change. Slope lost + mean kept = real de-zonation; both lost = turn-off.
+- [ ] **C4** **UMI-colored scatter**: re-color the end-stage PC/PP scatter by per-cell total UMI to
+  check the "blob" isn't a low-depth artifact (cells with more reads should still anti-correlate).
+
+> **Honesty note (from the meeting):** cross-donor correlations (strength vs depth/genes) are
+> **indicators, not proof** — the same bar we hold summary stats to. The *proof* of depth confounding
+> is the **C2 downsampling intervention**, not the correlation. Do not state depth-confounding as
+> established until C2 runs.
+
+## D — Higher-resolution staging
+- [ ] **D1** Re-run H1/H2 along **fibrosis F0–F4** and **NAS 0–8**; split "NASH no-cirrhosis"
+  (27 donors) into F1/F2/F3. Ask: does zonation track fibrosis specifically, activity, or both?
+  (cell-count caveat front and center, given finer strata).
+
+## E — Interpret the LEARNED (PCA) ruler  [added per professor Q]
+What did the PCA actually pick, and does it mean biology?
+- [ ] **E1** Variance explained per PC (scree); which PC was selected as the zonation axis and how
+  strongly it aligns with the marker axis (|corr|).
+- [ ] **E2** Top +/− loading genes on the zonation PC — do they read as real pericentral (GLUL, CYPs,
+  SLCO1B3…) vs periportal (ASS1, ALDOB, fibrinogens…) biology? Tabulate.
+- [ ] **E3** What the OTHER top PCs capture: correlate PC1/PC2/PC3 scores with total UMI/depth,
+  n_genes, %mito — is the leading axis zonation or a technical/quality factor? PC1–PC2 map colored by
+  zonation coordinate AND by depth.
+  (Reconstruct on Paper-1 healthy hepatocytes via HVG PCA — self-contained with `counts.npz`. Mirrors
+  the `unsupervised` ruler; the atlas-fit `unsupervised_p2` follows the same logic in step4c.)
+
+## F — Biology Findings report (PDF)  [added per professor Q]
+- [ ] **F1** A dedicated "Biology Findings" PDF: the H1/H2 mechanism story with **exact numbers**
+  (n donors/cells per stage & fibrosis, how many plots, how each was analyzed), the representative
+  figures embedded, the confounder controls (C) stated, and honest caveats. Build AFTER C lands so the
+  numbers are control-checked, not provisional.
+
+---
+
+## Infrastructure / organization
+- [x] Organized result dirs in `config.py`: `results/reports/` (PDFs), `results/figures/{h1,h2,
+  confounders,staging}/`, `results/tables/analysis/`.
+- [x] Moved PDFs → `results/reports/`; report generators point there (config.REPORTS; absolute figure
+  paths fixed for the new cwd).
+- [x] `src/analysis/` package: `common.py` (coordinates, clinical metadata, raw program expression,
+  per-donor summary, representative selection, staging axes), modules `a1_scatter`/`a2_distributions`/
+  `a4_mechanism`/`b4_set_levels`, `run_analysis.py` orchestrator (`python src/analysis/run_analysis.py`).
+
+## Repo map (target)
+```
+src/
+  steps/        pipeline (load→score→validate→collapse→DE→plasticity)   [unchanged]
+  plotting/     shared battery plotting                                 [unchanged]
+  prep/         one-time data conversions                               [unchanged]
+  analysis/     NEW biology deep-dive (A/B/C/D); imports analysis/common.py
+  make_*.py, summarize_*, build_candidate_sets, ...  battery orchestration + reports
+results/
+  reports/      PDFs (Narrative, Ruler dossier, Methods explainer, ...)
+  figures/      battery figures (root) + h1/ h2/ confounders/ staging/  (analysis)
+  tables/       per-set battery tables + analysis/  (per-donor summaries, mechanism calls)
+```
+
+## Done earlier this session (context)
+- [x] H2 explicit interaction OLS (`expr ~ coord + stage + coord:stage`, donor cluster-robust).
+- [x] Leakage-clean eligibility + two co-primary rulers (`expanded_curated` + `unsupervised_p2`).
+- [x] Methods companion PDF (normalization, PCA, validation, quality score, spread/IQR, coherence,
+  ρ, perm-p, slope-loss held-out).

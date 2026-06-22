@@ -33,5 +33,13 @@ PC_GENES, PP_GENES = SIGNATURE_SETS[DEFAULT_SET]   # transcriptome-wide by defau
 RESULTS    = ROOT / "results"
 FIGURES    = RESULTS / "figures"
 TABLES     = RESULTS / "tables"
-for _d in (FIGURES, TABLES):
+REPORTS    = RESULTS / "reports"                       # all human-facing PDFs live here
+# Organized figure groups for the biology deep-dive (analysis layer). Pipeline/battery figures
+# stay in FIGURES/ root; these subdirs hold the H1/H2/confounder/staging analysis outputs.
+FIG_H1     = FIGURES / "h1"
+FIG_H2     = FIGURES / "h2"
+FIG_CONF   = FIGURES / "confounders"
+FIG_STAGING = FIGURES / "staging"
+ANALYSIS_TABLES = TABLES / "analysis"                   # per-donor summaries, mechanism calls, etc.
+for _d in (FIGURES, TABLES, REPORTS, FIG_H1, FIG_H2, FIG_CONF, FIG_STAGING, ANALYSIS_TABLES):
     _d.mkdir(parents=True, exist_ok=True)

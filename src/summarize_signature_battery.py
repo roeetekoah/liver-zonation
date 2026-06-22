@@ -14,9 +14,17 @@ import config
 
 T = config.TABLES
 CAND = config.SIGNATURES / "candidates"
-# Explicit signature-set order (the auto-selection competes ONLY among these).
+# Published Paper-2 gene-set rulers (the interpretable family).
 SIGNATURE_SETS = ["paper2_landmark", "core_curated", "expanded_curated",
                   "paper2_top50", "paper2_top100", "paper2_top250", "paper2_full"]
+# Rulers whose axis is FIT on Paper-1 cells. Their HEALTHY selection metrics (anticorr, split-half)
+# are computed on the same Paper-1 healthy cells the axis was fit to -> in-sample / leakage-inflated,
+# so they cannot compete head-to-head on healthy quality. They are still valid H1 robustness checks
+# (the Paper-1 *disease* cells are never used to fit them), so we keep + show them, just ineligible.
+PAPER1_FIT = {"unsupervised", "unsupervised_combined"}
+# A ruler may compete for the frozen primary slot iff it was NOT fit on Paper-1 cells (leakage-clean):
+# published gene lists fit nothing; Paper-2-trained learned axes (unsupervised_p2, supervised,
+# lasso, elasticnet) are external to Paper 1. Eligibility is by leakage, NOT by publishability.
 SET_ORDER = list(SIGNATURE_SETS)
 if (CAND / "pericentral_selected_frozen.txt").exists():
     SET_ORDER.append("selected_frozen")
@@ -116,53 +124,82 @@ def main():
             row["h2_frac_weakening"] = h2.iloc[0]["frac_weakening"]
             row["h2_median_trend_rho"] = h2.iloc[0]["median_trend_rho"]
         row["recommended_role"] = role_of(row)
+        row["leakage_clean"] = row["set_name"] not in PAPER1_FIT     # NOT fit on Paper-1 cells
         rows.append(row)
 
     df = pd.DataFrame(rows)
+
+    # healthy-ruler quality score (split-half + bipolarity); same metric used everywhere.
+    df["healthy_score"] = (df["healthy_splithalf_rho_mean"].fillna(0)
+                           - df["healthy_pc_pp_anticorr"].fillna(0))
+    # eligible for the frozen primary slot: passes the healthy gate AND is leakage-clean AND is not
+    # one of the frozen copies (avoid double-counting selected_frozen, a copy of the chosen set).
+    df["eligible_primary"] = ((df["recommended_role"] == "primary_candidate")
+                              & df["leakage_clean"] & (df["set_name"] != "selected_frozen"))
+
+    # ---------- Stage 4: freeze TWO co-primary rulers on HEALTHY metrics only (never disease) ----------
+    # The frozen primary competes among ALL leakage-clean rulers (publishability is NOT a criterion).
+    # We designate two co-primaries so the headline rests on independent construction mechanisms:
+    #   A = best leakage-clean PUBLISHED gene-set ruler  (interpretable anchor)
+    #   B = best leakage-clean LEARNED axis              (label-free; trained external to Paper 1)
+    elig = df[df["eligible_primary"]].sort_values("healthy_score", ascending=False)
+    pub = elig[elig["set_name"].isin(SIGNATURE_SETS)]
+    learned = elig[~elig["set_name"].isin(SIGNATURE_SETS)]
+    co_a = pub.iloc[0]["set_name"] if len(pub) else None              # interpretable
+    co_b = learned.iloc[0]["set_name"] if len(learned) else None      # label-free
+    overall_best = elig.iloc[0]["set_name"] if len(elig) else None
+
+    # display_role: honest human-facing label (the machine column recommended_role is unchanged).
+    def _display_role(r):
+        if r["set_name"] == co_a: return "PRIMARY (interpretable)"
+        if r["set_name"] == co_b: return "PRIMARY (label-free)"
+        if (not r["leakage_clean"]) and r["recommended_role"] in ("primary_candidate", "robustness"):
+            return "control (Paper1-fit)"          # passes quality bar but ineligible (in-sample)
+        return r["recommended_role"]
+    df["display_role"] = df.apply(_display_role, axis=1)
     df.to_csv(os.path.join(T, "signature_battery_summary.csv"), index=False)
     print("wrote signature_battery_summary.csv")
     print(df[["set_name", "n_pc", "n_pp", "validation_pass", "healthy_pc_pp_anticorr",
-              "healthy_splithalf_rho_mean", "recommended_role"]].to_string(index=False))
+              "healthy_splithalf_rho_mean", "leakage_clean", "display_role"]].to_string(index=False))
 
-    # ---------- Stage 4: auto-freeze the best HEALTHY ruler (never by disease) ----------
-    # auto-selection competes ONLY among the explicit signature sets (not the frozen copy,
-    # not the learned/unsupervised comparison sets)
-    cands = df[(df["recommended_role"] == "primary_candidate") &
-               (df["set_name"].isin(SIGNATURE_SETS))].copy()
     decision = os.path.join(T, "selected_set_decision.txt")
-    if cands.empty:
+    if co_a is None and co_b is None:
         with open(decision, "w") as f:
-            f.write("AMBIGUOUS — manual review required.\nNo set qualified as primary_candidate on "
-                    "healthy-ruler metrics (validation pass + bipolar PC-PP anticorr + split-half + size).\n")
-        print("\nNo primary_candidate — wrote AMBIGUOUS decision.")
+            f.write("AMBIGUOUS — manual review required.\nNo leakage-clean set qualified as "
+                    "primary_candidate on healthy-ruler metrics.\n")
+        print("\nNo eligible primary — wrote AMBIGUOUS decision.")
         return
-    # rank by healthy-ruler quality only: all markers correct, then split-half desc, then anticorr asc
-    cands["score"] = cands["healthy_splithalf_rho_mean"].fillna(0) - cands["healthy_pc_pp_anticorr"].fillna(0)
-    cands = cands.sort_values("score", ascending=False).reset_index(drop=True)
-    best = cands.iloc[0]
-    ambiguous = len(cands) > 1 and (cands.iloc[0]["score"] - cands.iloc[1]["score"] < 0.02)
-    if ambiguous:
-        with open(decision, "w") as f:
-            f.write("AMBIGUOUS — manual review required.\n"
-                    f"Top healthy-ruler candidates near-tied: "
-                    f"{cands.iloc[0]['set_name']} vs {cands.iloc[1]['set_name']} "
-                    f"(scores {cands.iloc[0]['score']:.3f} vs {cands.iloc[1]['score']:.3f}).\n")
-        print(f"\nAMBIGUOUS selection ({best['set_name']} ~ {cands.iloc[1]['set_name']}) — wrote decision, no freeze.")
-        return
-    sel = best["set_name"]
-    for arm in ("pericentral", "periportal"):
-        (CAND / f"{arm}_selected_frozen.txt").write_text((CAND / f"{arm}_{sel}.txt").read_text())
+    # Freeze the interpretable anchor's gene lists into selected_frozen (downstream H2b/H2c use it).
+    if co_a is not None:
+        for arm in ("pericentral", "periportal"):
+            (CAND / f"{arm}_selected_frozen.txt").write_text((CAND / f"{arm}_{co_a}.txt").read_text())
+
+    def _line(name, kind):
+        r = df[df["set_name"] == name].iloc[0]
+        return (f"  [{kind}] {name}: score={r['healthy_score']:+.3f}, "
+                f"anticorr={r['healthy_pc_pp_anticorr']:+.3f}, "
+                f"split-half={r['healthy_splithalf_rho_mean']:+.3f}, "
+                f"markers={int(r['n_validation_correct'])}/{int(r['n_validation_present'])}, "
+                f"{int(r['n_pc'])} PC + {int(r['n_pp'])} PP\n")
     with open(decision, "w") as f:
-        f.write(f"SELECTED set: {sel}\n\n")
-        f.write("Reason: best HEALTHY-ruler quality among primary candidates.\n")
-        f.write("Healthy metrics used (NOT disease collapse):\n")
-        f.write(f"  validation: {int(best['n_validation_correct'])}/{int(best['n_validation_present'])} markers correct\n")
-        f.write(f"  healthy PC-PP anticorrelation: {best['healthy_pc_pp_anticorr']:+.3f} (want strongly negative)\n")
-        f.write(f"  healthy split-half reproducibility: {best['healthy_splithalf_rho_mean']:+.3f}\n")
-        f.write(f"  size: {int(best['n_pc'])} PC + {int(best['n_pp'])} PP\n\n")
-        f.write("WARNING: selected using Paper 2 / healthy-ruler criteria ONLY, NOT Paper 1 disease "
-                "effect (disease is the transfer/test cohort, not the tuning cohort).\n")
-    print(f"\nSELECTED (healthy-ruler): {sel} -> wrote selected_frozen files + selected_set_decision.txt")
+        f.write("CO-PRIMARY rulers (frozen on HEALTHY metrics only; eligibility = leakage-clean, "
+                "i.e. NOT fit on Paper-1 cells -- publishability is NOT a criterion):\n\n")
+        if co_a is not None: f.write(_line(co_a, "interpretable / published anchor"))
+        if co_b is not None: f.write(_line(co_b, "label-free / learned, external to Paper 1"))
+        f.write(f"\nHighest healthy score among ALL eligible rulers: {overall_best}.\n")
+        if co_a and co_b:
+            ga = df[df.set_name == co_a].iloc[0]["healthy_score"]
+            gb = df[df.set_name == co_b].iloc[0]["healthy_score"]
+            f.write(f"Interpretable vs label-free healthy-score gap = {abs(ga - gb):.3f} "
+                    f"({'within' if abs(ga - gb) < 0.02 else 'beyond'} the 0.02 tie band) -- reported "
+                    "side-by-side; the headline rests on their agreement, not on either alone.\n")
+        f.write("\nExcluded from the competition (fit on Paper-1 cells -> in-sample healthy metrics, "
+                f"kept as H1 robustness controls): {', '.join(sorted(PAPER1_FIT))}.\n")
+        f.write("selected_frozen.txt = copy of the interpretable anchor (for downstream H2b/H2c).\n")
+        f.write("WARNING: selection used HEALTHY-atlas criteria ONLY, NOT Paper 1 disease effect "
+                "(disease is the transfer/test cohort, not the tuning cohort).\n")
+    print(f"\nCO-PRIMARY (healthy-ruler): interpretable={co_a}, label-free={co_b} "
+          f"(overall-best eligible={overall_best}) -> wrote selected_frozen + selected_set_decision.txt")
 
 
 if __name__ == "__main__":

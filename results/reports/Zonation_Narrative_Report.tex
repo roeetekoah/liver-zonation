@@ -2,7 +2,7 @@
 \usepackage[margin=1in]{geometry}\usepackage{graphicx}\usepackage{parskip}\usepackage{hyperref}
 \title{Spatial Degradation of Hepatocyte Zonation in Human MASLD\\
 \large An analysis report: building, validating and transferring a zonation ruler}
-\author{}\date{2026-06-21}
+\author{}\date{2026-06-22}
 \begin{document}\maketitle
 
 \section{Background and question}
@@ -76,23 +76,31 @@ $\sim$2000 weakly-zonated genes lets a shared technical/expression factor domina
 Every ruler is scored on \textbf{healthy} quality alone --- a quality score of
 (split-half reproducibility) $+\,\max(0,-$healthy PC--PP anticorrelation$)$ --- and the table below
 is \textbf{ordered by it}. Disease-collapse strength is deliberately \emph{excluded} from selection:
-using the test cohort to choose the instrument would be leakage. The frozen primary is the
-top-ranked \emph{published-signature} set; learned rulers are shown for comparison but do not compete
-in the auto-selection. We keep the whole spectrum (curated, data-ranked, learned PCA, regularized,
-supervised) because agreement of \emph{independent construction mechanisms} is the robustness
-evidence --- not because any one is cherry-picked.
+using the test cohort to choose the instrument would be leakage.
+
+\textbf{Eligibility is by leakage, not by publishability.} A ruler may compete for the frozen
+primary slot iff its axis was \emph{not} fit on Paper-1 cells. This matters because two learned
+rulers (\texttt{unsupervised}, \texttt{unsupervised\_combined}) are fit by PCA on Paper-1 healthy
+cells --- so their healthy anticorrelation/split-half are computed on the very cells the axis was
+fit to (\emph{in-sample}, and therefore optimistically inflated; that is exactly why they top the
+raw table). They remain valid H1 robustness checks --- the Paper-1 \emph{disease} cells are never
+used to fit them --- so we keep and show them, marked \emph{control (Paper1-fit)}, but they do not
+compete. Every other ruler (published gene lists, which fit nothing; and the Paper-2-trained learned
+axes \texttt{unsupervised\_p2}/\texttt{supervised}/\texttt{lasso}/\texttt{elasticnet}, external to
+Paper 1) is leakage-clean and eligible regardless of whether it is a curated list or a label-free
+axis.
 
 \begin{tabular}{l r r r r r l}
 \hline
 ruler & PC & PP & healthy anticorr & split-half & H1 spread $\rho$ & role \\
 \hline
-unsupervised\_combined & 4769 & 3719 & -0.50 & 0.72 & -0.51 & primary\_candidate \\
-unsupervised\_p2 & 5177 & 3302 & -0.47 & 0.69 & -0.50 & primary\_candidate \\
-expanded\_curated & 26 & 23 & -0.48 & 0.67 & -0.43 & primary\_candidate \\
+unsupervised\_combined & 4769 & 3719 & -0.50 & 0.72 & -0.51 & control (Paper1-fit) \\
+unsupervised\_p2 & 5177 & 3302 & -0.47 & 0.69 & -0.50 & PRIMARY (label-free) \\
+expanded\_curated & 26 & 23 & -0.48 & 0.67 & -0.43 & PRIMARY (interpretable) \\
 selected\_frozen & 26 & 23 & -0.48 & 0.67 & -0.43 & primary\_candidate \\
 unsupervised\_top100 & 100 & 100 & -0.29 & 0.82 & -0.61 & primary\_candidate \\
 unsupervised\_top50 & 50 & 50 & -0.31 & 0.79 & -0.62 & primary\_candidate \\
-unsupervised & 4585 & 3903 & -0.31 & 0.78 & -0.56 & primary\_candidate \\
+unsupervised & 4585 & 3903 & -0.31 & 0.78 & -0.56 & control (Paper1-fit) \\
 paper2\_landmark & 20 & 20 & -0.45 & 0.63 & -0.38 & primary\_candidate \\
 unsupervised\_top250 & 250 & 250 & -0.23 & 0.85 & -0.57 & primary\_candidate \\
 paper2\_top50 & 50 & 50 & -0.40 & 0.57 & -0.32 & primary\_candidate \\
@@ -108,17 +116,24 @@ supervised & 4504 & 3935 & -0.01 & 0.45 & 0.12 & exploratory \\
 \hline
 \end{tabular}
 
-\subsection{Which ruler we selected, and why it is not the strongest-on-disease one}
-By healthy-ruler quality the selected primary set is \texttt{expanded\_curated}. Notably this is \emph{not} the
-set with the strongest disease trend (the small curated \texttt{core\_curated} set has a steeper collapse) ---
-choosing that would be cherry-picking. Selection used healthy metrics only; the disease result is
-the independent confirmation.
+\subsection{Two co-primary rulers, and why we report both}
+Among the leakage-clean rulers we freeze \textbf{two co-primaries} of deliberately different
+construction, then transfer \emph{both} to disease: an \textbf{interpretable} published anchor
+(\texttt{expanded\_curated}) and a \textbf{label-free} learned axis (\texttt{unsupervised\_p2}, trained entirely on the external
+Paper~2 healthy atlas). On healthy quality they are statistically indistinguishable
+(healthy-quality scores 1.15 vs 1.16, a gap of 0.012 --- within the 0.02 tie band), so picking one over the other would be arbitrary --- and the label-free axis is in
+fact the \emph{highest}-scoring eligible ruler, so the result is not an artefact of insisting on a
+hand-curated gene list. The headline rests on the two \emph{agreeing}: a curated signature and an
+unsupervised axis built with no marker genes both reconstruct the same coordinate and both show the
+same collapse. We also note the selected rulers are \emph{not} the steepest-collapsing ones (the
+tiny curated \texttt{core\_curated} set collapses harder) --- choosing by disease strength would be
+cherry-picking; selection used healthy metrics only, and disease is the independent confirmation.
 
 \subsection{H1 --- zonation collapses (and it is robust)}
 On every \emph{valid} ruler, per-donor coordinate spread falls and the PC--PP anti-correlation
 rises toward zero across stages. The signal is concentrated and reproducible:
 landmark spread $\rho=-0.380$ (perm $p=0.0085$); expanded $\rho=-0.434$; the label-free dense
-PCA axis $\rho=-0.562$ (perm $p=0.0005$). The broken ``full'' ruler is null ($\rho=-0.042$),
+PCA axis $\rho=-0.504$ (perm $p=0.0005$). The broken ``full'' ruler is null ($\rho=-0.042$),
 exactly as its healthy diagnostics predicted. The agreement of the published-signature ruler and a
 \emph{label-free} ruler is the key point: the collapse is a property of the data, not of any one
 gene list.
@@ -191,7 +206,7 @@ Within donors, de-zonation correlates positively with plasticity-marker expressi
 effect is small (mean $\rho\approx0.02$). This is the weakest of the three hypotheses: directionally
 consistent with Paper~1's transdifferentiation theme, but not a strong donor-level effect here.
 
-\begin{center}\includegraphics[width=\textwidth]{figures/ruler_panel.png}\end{center}
+\begin{center}\includegraphics[width=\textwidth]{C:/liver-zonation/results/figures/ruler_panel.png}\end{center}
 
 \section{Discussion}
 Three independent constructions --- a published landmark signature, a label-free PCA axis (trained
