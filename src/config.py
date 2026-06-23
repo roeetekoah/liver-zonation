@@ -7,7 +7,7 @@ DATA_RAW   = ROOT / "data" / "raw"
 DATA_PROC  = ROOT / "data" / "processed"
 PAPER1     = DATA_PROC / "paper1"                        # counts.mtx, genes.txt, barcodes.txt, *_metadata.csv
 PAPER2_TRAIN = DATA_PROC / "paper2_train.npz"
-SIGNATURES = ROOT / "signatures"
+SIGNATURES = ROOT / "data" / "signatures"   # moved under data/ 2026-06-23
 # ---- signature sets (pericentral, periportal) ----------------------------------------
 # PRIMARY = "full": the transcriptome-wide zonation program (~1,640 significantly-zonated
 # hepatocyte genes from Paper 2, q<0.05). This matches the project's motivation — read

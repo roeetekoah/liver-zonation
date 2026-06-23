@@ -58,5 +58,8 @@ node_modules/
 # ============================================================
 
 # ---- deck build scratch ----
+presentation/qa/
 reports/deck/qa/
-reports/deck/node_modules/
+~$*
+*.html.tmp
+reports/*.html
