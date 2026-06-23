@@ -200,15 +200,17 @@ within-explant dose-response (3/5 donors, `review_checks.py`)*, **never as prove
 does **not** need the causal claim — the perfect stage⟂tissue-source **collinearity carries it**.
 
 ## OPEN queue (raised, not yet run — do NOT treat as findings)
-- **O1 — Explant ischemia: housekeeping-retained vs identity-lost test** (alt-explanation row 2). Within
+**Designated FUTURE WORK (present as future work, do not run now): O1, O2, O4, O11, O13** (lead, 2026-06-23).
+The remainder are either DONE (O7/O8/O12), quarantined/optional (O3/O6/O10), or background (O5/O9).
+- **O1 — [FUTURE WORK] Explant ischemia: housekeeping-retained vs identity-lost test** (alt-explanation row 2). Within
   explant PC cells, do housekeeping genes stay while identity genes drop (selective loss = biology) or do
   both drop together (global degradation = technical)? Never executed; flagged "killer, definitional."
-- **O2 — Why is stress high in both deceased-donor groups but ~6× higher in end-stage than healthy?**
+- **O2 — [FUTURE WORK] Why is stress high in both deceased-donor groups but ~6× higher in end-stage than healthy?**
   Both are deceased-donor procurement (ischemia/dissociation) → baseline stress; end-stage sicker/longer
   ischemia → much higher. Needs procurement-time data (absent here) or ischemic-time↔IEG/HSP literature.
 - **O3 — Optional robust re-run of the full per-gene fraction-by-stage table** with det2 + depth-matching
   across ALL panel genes (partly done in Items 3–4 for key genes; extend if we want the complete table).
-- **O4 — NAS as a disease axis (recover what it was for).** Inflammation→detox done (Item 7). Still to do:
+- **O4 — [FUTURE WORK] NAS as a disease axis (recover what it was for).** Inflammation→detox done (Item 7). Still to do:
   run the zonation/anchor-classification endpoints (PC-anchor, dual, null, gradient) against NAS and its components within
   biopsies, as the histology-graded second axis (orthogonal to fibrosis), per the screenshot-1 pivot.
 - **O5 — VERIFY + EXPAND the strong claim "end-stage isn't zonation, it's cytokine/cholestatic CYP-
@@ -235,7 +237,7 @@ does **not** need the causal claim — the perfect stage⟂tissue-source **colli
 - **O10 — (optional) clean anchor-based 2D joint-count figure** (F13): rebuild on strict anchors at ≥2 UMI
   so the high-amount co-expression corner (empty in biopsy, fills in explant) is shown directly, replacing
   the misleading broad-program 2D as a co-expression visual.
-- **O11 — Deepen the per-donor END-STAGE analysis** (F14 is not exhausted). Build a per-explant INTEGRATED
+- **O11 — [FUTURE WORK] Deepen the per-donor END-STAGE analysis** (F14 is not exhausted). Build a per-explant INTEGRATED
   profile (anchors + stress + biliary/transdiff + QC/depth + within-explant dose-response in one view); test
   the **between-explant** question — does each organ's collapse magnitude track its procurement-stress
   severity (CL16 most-collapsed = most-stressed? CL104 retains-PC = least?); per-explant biliary/transdiff.
@@ -246,7 +248,7 @@ does **not** need the causal claim — the perfect stage⟂tissue-source **colli
   at n=4); we rule out *large/dramatic* re-zonation (explant-collapse scale), not subtle change. This converts
   D3 from "nothing significant" into a quantified exclusion bound; it bounds donor-level STRUCTURE, not per-gene.
 
-- **O13 — Gene-set / pathway-level DGE (the KEY open test for "no other hepatocyte program").** Gene-level
+- **O13 — [FUTURE WORK] Gene-set / pathway-level DGE (the KEY open test for "no other hepatocyte program").** Gene-level
   FDR (Plan A) can miss a *coordinated weak program* — tens-to-hundreds of genes each shifting modestly without
   any single one crossing FDR. To make the Level-1 "nothing else moves" claim fully defensible we need
   **CAMERA** (competitive enrichment) + **ROAST/mroast** (self-contained, pre-specified) over standard
