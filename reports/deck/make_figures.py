@@ -33,7 +33,7 @@ SG=["FOS","JUN","JUNB","JUND","ATF3","DUSP1","HSPA1A","HSPA1B"]
 mod = (sd[sd.gene.isin(SG)].groupby(["donor","source"])["dm_mean"].sum().reset_index())
 order=["needle_biopsy","healthy(deceased-donor)","explant"]; labels=["Needle biopsy\n(F0–F4)","Healthy\ndeceased-donor","End-stage\nexplant"]
 cols=[BIOPSY,CONFOUND,ENDSTAGE]
-fig,(ax,ax2)=plt.subplots(1,2,figsize=(11,5),gridspec_kw={"width_ratios":[2.1,1]})
+fig,(ax,ax2)=plt.subplots(1,2,figsize=(11,5),gridspec_kw={"width_ratios":[1.55,1.45]})
 means=[]
 for i,s in enumerate(order):
     v=mod[mod.source==s]["dm_mean"].values; means.append(v.mean())
@@ -51,8 +51,9 @@ ax2.bar([0,1],[18.5,18.2], color=[PC if False else "#475569","#475569"], width=0
 ax2.bar([0],[18.5], color=STRESS, width=0.6); ax2.bar([1],[18.2], color="#475569", width=0.6)
 ax2.set_xticks([0,1]); ax2.set_xticklabels(["Hepatocytes","Endothelial\n(no zonation)"])
 ax2.set_ylabel("Immediate-early stress\nfold (end-stage vs biopsy)")
-ax2.set_title("Organ-wide, not zonation-\nspecific", fontweight="bold", loc="left", fontsize=13)
-for i,v in enumerate([18.5,18.2]): ax2.text(i,v+0.4,f"{v}×",ha="center",fontweight="bold")
+ax2.set_title("Same spike in a non-zonated\nlineage → organ-wide handling", fontweight="bold", loc="left", fontsize=12.5)
+for i,v in enumerate([18.5,18.2]): ax2.text(i,v+0.5,f"{v}×",ha="center",fontweight="bold",fontsize=20)
+ax2.set_ylim(0,21)
 ax2.text(0.5,-0.30,"summary statistic (finding F5)", transform=ax2.transAxes, ha="center", fontsize=10, color=MUTE)
 fig.tight_layout(); fig.savefig(f"{OUT}/fig_stress.png", bbox_inches="tight"); plt.close(fig)
 
@@ -77,6 +78,24 @@ panel(axes[1,1],"pppc","#B45309","No composition shift", ratio=True); axes[1,1].
 fig.suptitle("Across biopsy F0–F4, no large de-zonation route appears   ·   donor = point, line = median",
              fontsize=13, color=MUTE, x=0.5, y=1.005)
 fig.tight_layout(); fig.savefig(f"{OUT}/fig_anchor2x2.png", bbox_inches="tight"); plt.close(fig)
+
+# ---- two-panel headline result (PC-anchor + dual, enlarged) ----
+fig,(a1,a2)=plt.subplots(1,2,figsize=(11,5.2))
+def bigpanel(ax,col,color,title,ylab):
+    for i,st in enumerate(STAGES):
+        v=bio[bio.Fs==st][col].values*100
+        ax.scatter(np.full(len(v),i)+jitter(len(v),0.12), v, s=85, color=color, alpha=0.55,
+                   edgecolor="white", linewidth=0.8, zorder=3)
+        ax.plot([i-0.3,i+0.3],[np.median(v)]*2,color=color,lw=4,zorder=4)
+    ax.set_xticks(range(5)); ax.set_xticklabels(STAGES, fontsize=15)
+    ax.set_title(title, fontweight="bold", loc="left", fontsize=17); ax.set_ylabel(ylab, fontsize=15)
+    ax.grid(axis="y", color=GRID); ax.set_axisbelow(True)
+bigpanel(a1,"PC_f",PC,"No pericentral depletion","PC-anchor % of hepatocyte nuclei")
+bigpanel(a2,"dual2_f",DUAL,"Co-expression stays rare","Dual (≥2 UMI) %")
+a2.axhline(2.9, color=CONFOUND, ls="--", lw=2)
+a2.text(4.05,2.95,"confounded explants ≈ 2.9%  (~7×)", color=CONFOUND, fontsize=12, va="bottom", ha="right", fontweight="bold")
+a1.text(0.02,0.97,"donor = point, line = median", transform=a1.transAxes, fontsize=12, color=MUTE, va="top")
+fig.tight_layout(); fig.savefig(f"{OUT}/fig_result2.png", bbox_inches="tight"); plt.close(fig)
 
 # ===================== FIG 3 — TOST equivalence (F4 vs F1 PC-anchor) =====================
 eq=pd.read_csv(f"{T}/equivalence_bound.csv")
