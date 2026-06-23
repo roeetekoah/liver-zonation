@@ -7,7 +7,7 @@ import os, numpy as np, pandas as pd
 import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-T   = "results/tables/analysis"
+T   = next((c for c in ["results/tables/analysis","archive/results/tables/analysis"] if os.path.isdir(c)), "results/tables/analysis")
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets"); os.makedirs(OUT, exist_ok=True)
 
 # ---- palette (deck spec) ----
@@ -33,7 +33,7 @@ SG=["FOS","JUN","JUNB","JUND","ATF3","DUSP1","HSPA1A","HSPA1B"]
 mod = (sd[sd.gene.isin(SG)].groupby(["donor","source"])["dm_mean"].sum().reset_index())
 order=["needle_biopsy","healthy(deceased-donor)","explant"]; labels=["Needle biopsy\n(F0–F4)","Healthy\ndeceased-donor","End-stage\nexplant"]
 cols=[BIOPSY,CONFOUND,ENDSTAGE]
-fig,(ax,ax2)=plt.subplots(1,2,figsize=(11,5),gridspec_kw={"width_ratios":[1.55,1.45]})
+fig,(ax,ax2)=plt.subplots(1,2,figsize=(12.2,5),gridspec_kw={"width_ratios":[1.2,1.85]})
 means=[]
 for i,s in enumerate(order):
     v=mod[mod.source==s]["dm_mean"].values; means.append(v.mean())
@@ -46,15 +46,23 @@ ax.set_title("Procurement stress by tissue source", fontweight="bold", loc="left
 ax.annotate(f"{means[1]/means[0]:.1f}×", (1, means[1]), xytext=(1.15,means[1]+0.15), color=CONFOUND, fontweight="bold")
 ax.annotate(f"{means[2]/means[0]:.0f}× biopsy", (2, means[2]), xytext=(1.55,means[2]-0.15), color=ENDSTAGE, fontweight="bold")
 ax.text(0.02,0.96,"donor = point", transform=ax.transAxes, fontsize=11, color=MUTE, va="top")
-# cross-lineage IEG fold (summary stat, F5)
-ax2.bar([0,1],[18.5,18.2], color=[PC if False else "#475569","#475569"], width=0.6)
-ax2.bar([0],[18.5], color=STRESS, width=0.6); ax2.bar([1],[18.2], color="#475569", width=0.6)
-ax2.set_xticks([0,1]); ax2.set_xticklabels(["Hepatocytes","Endothelial\n(no zonation)"])
-ax2.set_ylabel("Immediate-early stress\nfold (end-stage vs biopsy)")
-ax2.set_title("Same spike in a non-zonated\nlineage → organ-wide handling", fontweight="bold", loc="left", fontsize=12.5)
-for i,v in enumerate([18.5,18.2]): ax2.text(i,v+0.5,f"{v}×",ha="center",fontweight="bold",fontsize=20)
-ax2.set_ylim(0,21)
-ax2.text(0.5,-0.30,"summary statistic (finding F5)", transform=ax2.transAxes, ha="center", fontsize=10, color=MUTE)
+# cross-lineage IEG stress: ALL 6 lineages, biopsy vs end-stage (F5)
+bl=pd.read_csv("findings/stress_celltype_segmented/by_lineage.csv")
+ig=bl[bl.program=="IEG"].pivot_table(index="cell_type",columns="source",values="dm_mean")
+ig["fold"]=ig["explant"]/ig["biopsy"]; ig=ig.sort_values("fold",ascending=False)
+short={"Hepatocytes":"Hepatocyte","Endothelial":"Endothelial","Stellate":"Stellate","Cholangiocytes":"Cholangiocyte","Macrophages":"Macrophage","Lymphocytes":"Lymphocyte"}
+names=[short.get(c,c) for c in ig.index]; xx=np.arange(len(ig)); w=0.38
+ax2.bar(xx-w/2, ig["biopsy"], w, color=BIOPSY, label="biopsy")
+ax2.bar(xx+w/2, ig["explant"], w, color=ENDSTAGE, label="end-stage")
+for i,(c,row) in enumerate(ig.iterrows()):
+    ax2.text(i+w/2, row["explant"]+0.03, f"{row['fold']:.0f}×", ha="center", fontsize=11, fontweight="bold", color=ENDSTAGE)
+ax2.set_xticks(xx); ax2.set_xticklabels(names, fontsize=10.5, rotation=20, ha="right")
+ax2.set_ylabel("Immediate-early stress\n(mean UMIs / nucleus)")
+ax2.set_title("Elevated in EVERY lineage at end-stage (3–18×) — organ-wide, not zonation-specific",
+              fontweight="bold", loc="left", fontsize=12)
+ax2.legend(frameon=False, fontsize=11, loc="upper right")
+ax2.text(0.5,-0.42,"hepatocyte 18× ≈ endothelial 18× (a non-zonated lineage)   ·   finding F5",
+         transform=ax2.transAxes, ha="center", fontsize=10, color=MUTE)
 fig.tight_layout(); fig.savefig(f"{OUT}/fig_stress.png", bbox_inches="tight"); plt.close(fig)
 
 # ===================== FIG 2 — anchor 2x2 (biopsy F0-F4) =====================

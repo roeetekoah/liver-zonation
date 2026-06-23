@@ -21,9 +21,10 @@ function head(s,kicker,headline){
   s.addText(kicker,{x:0.74,y:0.30,w:12.0,h:0.35,fontSize:13,bold:true,color:ORANGE,charSpacing:3,align:"left",margin:0});
   s.addText(headline,{x:0.48,y:0.64,w:12.4,h:0.85,fontSize:28,bold:true,color:SLATE,fontFace:SERIF,align:"left",valign:"top",margin:0});
 }
-function foot(s,n){
+let _pg=1;  // slide 1 (title) has no footer; first foot() call is slide 2
+function foot(s){ _pg++;
   s.addText(COURSE,{x:0.5,y:7.12,w:10.5,h:0.3,fontSize:10.5,color:MUTE,align:"left",margin:0});
-  s.addText(String(n),{x:12.2,y:7.12,w:0.6,h:0.3,fontSize:10.5,color:MUTE,align:"right",margin:0});
+  s.addText(String(_pg),{x:12.2,y:7.12,w:0.6,h:0.3,fontSize:10.5,color:MUTE,align:"right",margin:0});
 }
 function img(s,file,box){ s.addImage({path:A+file,x:box.x,y:box.y,w:box.w,h:box.h,sizing:{type:"contain",w:box.w,h:box.h}}); }
 function figcap(s,x,y,w,txt){ s.addText(txt,{x,y,w,h:0.4,fontSize:12,italic:true,color:MUTE,align:"center",margin:0}); }
@@ -86,6 +87,28 @@ s.addText([
   {x:1.4,y:4.25,w:10.0,h:2.0,fontSize:18,color:INK,align:"left",paraSpaceAfter:8});
 foot(s,3);
 s.addNotes("The research question, posed as in our own project framing: does hepatocyte zonation degrade across MASLD, and is that linked to the transdifferentiation Paper 1 reported? The pivot is methodological — we abandoned a relative/correlation ruler (which conflates depth, tissue and biology) for raw molecule counts at the donor level, and we restrict to the acquisition-matched biopsy axis, which the next slide motivates.");
+
+// ============================================================ SLIDE 3b — THE LEGACY APPROACH
+s=p.addSlide(); s.background={color:BG};
+head(s,"THE LEGACY APPROACH","The metric that produced the collapse");
+s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:0.7,y:1.85,w:6.4,h:1.35,fill:{color:LIGHT},rectRadius:0.07});
+s.addText("WHAT WE FIRST USED",{x:0.95,y:1.98,w:5.9,h:0.3,fontSize:12,bold:true,color:MUTE,charSpacing:2,align:"left"});
+s.addText("A z-scored zonation coordinate, marker–marker correlations, and spread / slope-loss plots — pooled across all samples.",
+  {x:0.95,y:2.3,w:5.9,h:0.85,fontSize:15,color:INK,align:"left",valign:"top"});
+s.addShape(p.shapes.LINE,{x:3.9,y:3.35,w:0,h:0.35,line:{color:MUTE,width:1.6,endArrowType:"triangle"}});
+s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:0.7,y:3.85,w:6.4,h:1.5,fill:{color:"FBEEE9"},line:{color:CONFOUND,width:1},rectRadius:0.07});
+s.addText("THE CLAIM IT PRODUCED",{x:0.95,y:3.98,w:5.9,h:0.3,fontSize:12,bold:true,color:CONFOUND,charSpacing:2,align:"left"});
+s.addText("“Hepatocytes lose their zonation; the pericentral program turns off, strongest at end-stage.”",
+  {x:0.95,y:4.3,w:5.9,h:0.95,fontSize:16,italic:true,bold:true,color:SLATE,align:"left",valign:"top"});
+s.addText("THE TRAP",{x:7.6,y:1.95,w:5.0,h:0.3,fontSize:13,bold:true,color:ORANGE,charSpacing:2,align:"left"});
+s.addText([
+  {text:"Every metric is a relative summary — it hides who moved, how many, and from where.",options:{bullet:true,breakLine:true}},
+  {text:"They pool healthy + biopsy + end-stage across a hidden sampling discontinuity.",options:{bullet:true,breakLine:true}},
+  {text:"Depth, cell number and tissue source all bend a z-score or correlation.",options:{bullet:true,breakLine:true}},
+  {text:"→ so we switched to raw molecule counts (next slide: why the samples differ).",options:{bullet:true,bold:true,color:BIOPSY}}],
+  {x:7.85,y:2.45,w:5.0,h:3.0,fontSize:17,color:INK,align:"left",paraSpaceAfter:9});
+foot(s);
+s.addNotes("Show the legacy approach and the claim it produced, then dismantle it. We first read the data with a z-scored relative ruler and marker correlations — which produced the headline 'hepatocytes lose zonation, pericentral turns off.' But every such metric is a relative summary pooled across all samples; it hides who moved and is bent by depth, cell number and tissue source. That motivated the pivot to raw molecule counts on the matched axis.");
 
 // ============================================================ SLIDE 4 — FAILURE MODES
 s=p.addSlide(); s.background={color:BG};
@@ -303,5 +326,23 @@ bbul(b,["Gene-level FDR can miss a coordinated WEAK program (many genes, small s
   "CAMERA + ROAST on pre-specified sets: PC, PP, detox, urea cycle, bile-acid/lipid,",
   "mitochondrial, ER stress, interferon, hypoxia, EMT/fetal/progenitor, cholangiocyte/ductular.",
   "Closes the caveat behind “no other large hepatocyte program.”"]);
+
+b=back("SCENARIO COVERAGE","Every de-zonation route, tested by count signature");
+const TAX=[
+  [{text:"Mechanism",options:{bold:true}},{text:"Count signature",options:{bold:true}},{text:"Biopsy F0→F4 (donor-median)",options:{bold:true}},{text:"Verdict",options:{bold:true}}],
+  ["Pericentral depletion","PC-anchor fraction ↓","36 / 19 / 23 / 22 / 21 %","flat → no depletion"],
+  ["Periportal depletion","PP-anchor fraction ↓","20 / 21 / 22 / 24 / 24 %","flat → no depletion"],
+  ["Co-expression","dual (≥2 UMI) fraction ↑","~0.0 / 0.2 / 0.4 / 0.2 / 0.2 %","ambient soup → no"],
+  ["Gradient compression","per-cell balance → middle","mild, non-monotone (peak F3)","gradient present"],
+  ["Turn-off","null (double-neg) fraction ↑","34 / 44 / 36 / 39 / 39 %","flat → no turn-off"],
+  ["Composition shift","PP : PC anchor ratio","0.62 / 1.16 / 1.01 / 1.10 / 1.18","~flat → no shift"],
+  ["Induction","program burden ↑","flat in biopsy; rises only end-stage","explant-only"],
+];
+b.addTable(TAX,{x:0.7,y:1.7,w:12.0,colW:[2.6,3.0,4.0,2.4],fontSize:13.5,color:INK,
+  border:{pt:0.5,color:"C9BFAE"}, fill:{color:"FFFFFF"},
+  rowH:0.52, valign:"middle", align:"left",
+  margin:[3,5,3,5]});
+b.addText("Each row is a distinct way zonation could fail, mapped to an absolute-count signature on depth-normalized counts; only the null (all stable) survives across biopsy F1–F4.",
+  {x:0.7,y:6.4,w:12.0,h:0.5,fontSize:13,italic:true,color:MUTE,align:"left"});
 
 p.writeFile({fileName:__dirname+"/MASLD_zonation.pptx"}).then(f=>console.log("WROTE",f));
