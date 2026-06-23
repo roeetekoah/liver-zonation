@@ -3,11 +3,12 @@
 const pptxgen = require("pptxgenjs");
 const A = __dirname + "/assets/";
 
+// exact palette + fonts from the project's old build_deck.js (archive/legacy_reports/)
 const PC="1D4ED8", PP="EA580C", DUAL="7C3AED", NULL="9CA3AF",
       BIOPSY="0D9488", CONFOUND="BE123C", ENDSTAGE="86198F", STRESS="DC2626", BILIARY="7C3AED",
-      INK="1E293B", MUTE="6B6256", WHITE="FFFFFF",
-      SLATE="1F3A3D", ORANGE="C0562B", CREAM="F7F3EB",
-      KICK="C0562B", BG="F7F3EB", LIGHT="ECE6DA", DARK="14292C";
+      WHITE="FFFFFF", MUTE="5C6E73", LINE="DAD4CA",
+      INK="1B2B31", TEAL="1B6E78", TEALD="123F47", AMBER="C0561B", CREAM="F7F5F1", PALE="ECF1F1",
+      SLATE="123F47", ORANGE="C0561B", KICK="C0561B", BG="F7F5F1", LIGHT="ECF1F1", DARK="16242B";
 const SERIF="Georgia";
 const COURSE="Computational Genomics 76553  ·  HUJI  ·  MASLD snRNA-seq hackathon";
 const sh=()=>({type:"outer",color:"000000",blur:7,offset:3,angle:90,opacity:0.12});
@@ -19,7 +20,7 @@ p.title="Matched biopsies preserve hepatocyte transcriptional zonation in MASLD"
 function head(s,kicker,headline){
   s.addShape(p.shapes.RECTANGLE,{x:0.5,y:0.34,w:0.16,h:0.26,fill:{color:ORANGE}});
   s.addText(kicker,{x:0.74,y:0.30,w:12.0,h:0.35,fontSize:13,bold:true,color:ORANGE,charSpacing:3,align:"left",margin:0});
-  s.addText(headline,{x:0.48,y:0.64,w:12.4,h:0.85,fontSize:28,bold:true,color:SLATE,fontFace:SERIF,align:"left",valign:"top",margin:0});
+  s.addText(headline,{x:0.48,y:0.64,w:12.4,h:0.85,fontSize:28,bold:true,color:INK,fontFace:SERIF,align:"left",valign:"top",margin:0});
 }
 let _pg=1;  // slide 1 (title) has no footer; first foot() call is slide 2
 function foot(s){ _pg++;
@@ -35,9 +36,10 @@ function chip(s,x,y,w,h,txt,fill,tcol){
 
 // ============================================================ SLIDE 1 — TITLE
 let s=p.addSlide(); s.background={color:DARK};
-s.addShape(p.shapes.RECTANGLE,{x:0,y:0,w:0.22,h:7.5,fill:{color:ORANGE}});
+s.addShape(p.shapes.RECTANGLE,{x:0,y:0,w:0.28,h:7.5,fill:{color:TEAL}});
+s.addShape(p.shapes.RECTANGLE,{x:0.28,y:0,w:0.12,h:7.5,fill:{color:AMBER}});
 s.addText("LIVER GENOMICS  ·  SINGLE-NUCLEUS RE-ANALYSIS",
-  {x:0.85,y:1.15,w:11.9,h:0.4,fontSize:15,bold:true,color:"9CB0AC",charSpacing:3,align:"left"});
+  {x:0.85,y:1.15,w:11.9,h:0.4,fontSize:15,bold:true,color:"9FC0C4",charSpacing:3,align:"left"});
 s.addText("Matched biopsies preserve hepatocyte transcriptional zonation in MASLD",
   {x:0.85,y:1.7,w:11.6,h:1.7,fontSize:38,bold:true,color:WHITE,fontFace:SERIF,align:"left",valign:"top"});
 s.addText("A critical re-analysis of the single-nucleus RNA-seq in Gribben et al., Nature 2024 (GSE202379)",
@@ -210,6 +212,29 @@ s.addText("Anchor fractions do not support large biopsy-axis de-zonation.",
 foot(s,8);
 s.addNotes("The core result. Pericentral-anchor fraction is flat/non-monotone across F0-F4 — no depletion. Dual co-expression at the ambient-robust >=2-UMI cut stays ~0.4% and does not trend (vs ~2.9% in the confounded explants). Null and PP:PC are also flat. The equivalence bound excludes a large ~20-percentage-point shift but cannot exclude subtle drift below ~10 points (F4 n=4).");
 
+// ============================================================ SLIDE 8b — THE CONFOUNDER AUDIT
+s=p.addSlide(); s.background={color:BG};
+head(s,"THE CONFOUNDER AUDIT","Every confounder we could test, tested in counts");
+s.addText("Two jobs: (a) the structural confounds that make the original trajectory uninterpretable, and (b) the within-biopsy checks that the preserved-zonation null is not itself an artifact.",
+  {x:0.7,y:1.55,w:12.2,h:0.55,fontSize:14,italic:true,color:MUTE,align:"left"});
+const AUD=[
+  [{text:"Confounder",options:{bold:true}},{text:"What we did  (test · numbers)",options:{bold:true}},{text:"Verdict",options:{bold:true}}],
+  ["Tissue source","organ-cube / explant ends are not acquisition-matched to needle biopsy","excluded → biopsy-only F1–F4"],
+  ["Procurement stress","IEG+HSP across 6 lineages; hep 18× ≈ endothelial 18× (no zonation)","organ-wide handling, not zonation"],
+  ["Sequencing batch","run × source Cramér’s V = 0.84; run × F (biopsy) = 0.40","ends confounded; biopsy estimable"],
+  ["Lobe (caudate)","marker detection R / C / L within explants","lobe-invariant"],
+  ["Sequencing depth","binomial down-thin to B = 1,000 / 1,500 / 3,000 UMIs","PC-share flat at every B (SD 0.006–0.010)"],
+  ["Ambient RNA (“soup”)","corr( ALB burden , dual fraction ) across 38 donors = +0.04","does not drive co-expression"],
+  ["Cholangiocyte mis-annotation","KRT19⁺ ≤ 0.001, EPCAM⁺ ≤ 0.003 in every anchor class","not contaminating cholangiocytes"],
+  ["Ploidy / complexity","nFeatures by stage: 2218 / 3063 / 3169 / 2641 / 1984","non-monotone — does not track stage"],
+  ["Depth-match discard","3.5–7.8 % dropped below B, uniformly lower-detection","depth-driven, not PC-biased"],
+  ["Clinical covariates","partial corr( detox , F | Age ) = −0.32; Age–F = +0.43","demographics do not explain trends"],
+];
+s.addTable(AUD,{x:0.7,y:2.2,w:12.2,colW:[2.7,6.6,2.9],fontSize:11,color:INK,
+  border:{pt:0.5,color:"D7D0C4"}, fill:{color:"FFFFFF"}, rowH:0.4, valign:"middle", align:"left", margin:[2,5,2,5]});
+foot(s);
+s.addNotes("Show the full extent of the confounder work. Top four are the structural confounds that make the original full-trajectory comparison uninterpretable (source, stress, batch, lobe). The remaining six are within-biopsy checks that our preserved-zonation null is not an artifact — depth, ambient RNA, cholangiocyte mis-annotation, ploidy, the depth-match discard, and clinical covariates. Every one was tested in counts at the donor level; none manufactures the result. Batch at the single-experiment-label level is perfectly confounded and we flag it as untestable rather than absent.");
+
 // ============================================================ SLIDE 9 — GENOME-WIDE
 s=p.addSlide(); s.background={color:BG};
 head(s,"GENOME-WIDE","One signal: biliary markers");
@@ -243,9 +268,10 @@ s.addNotes("Distinguish evidence levels. Strong: the genes are 5-78x more abunda
 
 // ============================================================ SLIDE 11 — CONCLUSION
 s=p.addSlide(); s.background={color:DARK};
-s.addShape(p.shapes.RECTANGLE,{x:0,y:0,w:0.22,h:7.5,fill:{color:ORANGE}});
-s.addShape(p.shapes.RECTANGLE,{x:0.85,y:0.5,w:0.16,h:0.26,fill:{color:ORANGE}});
-s.addText("CONCLUSION",{x:1.08,y:0.46,w:11.5,h:0.4,fontSize:14,bold:true,color:ORANGE,charSpacing:3,align:"left"});
+s.addShape(p.shapes.RECTANGLE,{x:0,y:0,w:0.28,h:7.5,fill:{color:TEAL}});
+s.addShape(p.shapes.RECTANGLE,{x:0.28,y:0,w:0.12,h:7.5,fill:{color:AMBER}});
+s.addShape(p.shapes.RECTANGLE,{x:0.85,y:0.5,w:0.16,h:0.26,fill:{color:AMBER}});
+s.addText("CONCLUSION",{x:1.08,y:0.46,w:11.5,h:0.4,fontSize:14,bold:true,color:AMBER,charSpacing:3,align:"left"});
 s.addText("Preservation, not progressive collapse",
   {x:0.85,y:0.85,w:11.6,h:0.8,fontSize:30,bold:true,color:WHITE,fontFace:SERIF,align:"left",valign:"middle"});
 const cols=[
