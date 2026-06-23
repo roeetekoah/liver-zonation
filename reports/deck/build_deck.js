@@ -30,20 +30,19 @@ s.addText("Matched biopsies preserve hepatocyte transcriptional zonation in MASL
 s.addText("A critical re-analysis of Gribben et al., Nature 2024 — snRNA-seq, GSE202379",
   {x:0.7,y:2.2,w:11.9,h:0.5,fontSize:18,italic:true,color:"CBD5E1",align:"left"});
 s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:0.7,y:3.0,w:5.5,h:1.7,fill:{color:"3F1D2B"},line:{color:CONFOUND,width:1.5},rectRadius:0.1});
-s.addText([{text:"Published claim — Gribben et al.\n",options:{bold:true,color:"FCA5A5",fontSize:16}},
-  {text:"“Hepatocytes lose their zonation” as MASLD progresses, and de-zonated hepatocytes transdifferentiate toward cholangiocytes (epithelial plasticity).",options:{color:"FECACA",fontSize:13.5}}],
-  {x:0.9,y:3.12,w:5.1,h:1.45,align:"left",valign:"middle"});
+s.addText([{text:"The research question (Gribben et al., Nature 2024)\n",options:{bold:true,color:"FCA5A5",fontSize:14.5}},
+  {text:"Published claim: “Hepatocytes lose their zonation.”  Does hepatocyte zonation degrade across MASLD — and is that degradation linked to the hepatocyte→cholangiocyte transdifferentiation Paper 1 reported?",options:{color:"FECACA",fontSize:13}}],
+  {x:0.9,y:3.1,w:5.1,h:1.5,align:"left",valign:"middle"});
 s.addShape(p.shapes.RIGHT_TRIANGLE,{x:6.35,y:3.65,w:0.55,h:0.35,fill:{color:"94A3B8"}});
 s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:7.1,y:3.0,w:5.5,h:1.7,fill:{color:"0B3B38"},line:{color:BIOPSY,width:1.5},rectRadius:0.1});
-s.addText([{text:"This re-analysis — matched biopsies\n",options:{bold:true,color:"5EEAD4",fontSize:16}},
-  {text:"transcriptional zonation preserved; the reported de-zonation tracks tissue-source confounding; the biliary signal is most consistent with composition / ambient RNA.",options:{color:"99F6E4",fontSize:13.5}}],
-  {x:7.3,y:3.12,w:5.1,h:1.45,align:"left",valign:"middle"});
+s.addText([{text:"Our answer — matched biopsies\n",options:{bold:true,color:"5EEAD4",fontSize:14.5}},
+  {text:"No detectable biopsy-stage degradation (F1→cirrhotic F4); the “healthy→end-stage” drop is the tissue-acquisition axis; the transdifferentiation link can’t be established (biliary markers rise only in explants).",options:{color:"99F6E4",fontSize:13}}],
+  {x:7.3,y:3.1,w:5.1,h:1.5,align:"left",valign:"middle"});
 s.addText([
-  {text:"Question  ",options:{bold:true,color:"93C5FD"}},{text:"is the snRNA-seq evidence for progressive de-zonation robust?\n",options:{color:"E2E8F0",breakLine:true}},
-  {text:"Answer  ",options:{bold:true,color:"5EEAD4"}},{text:"not across matched biopsy F1–F4 tissue.\n",options:{color:"E2E8F0",breakLine:true}},
+  {text:"In one line  ",options:{bold:true,color:"5EEAD4"}},{text:"the apparent de-zonation is a tissue-acquisition artifact; matched biopsies stay transcriptionally zonated.\n",options:{color:"E2E8F0",breakLine:true}},
   {text:"Scope  ",options:{bold:true,color:"CBD5E1"}},{text:"transcriptomic re-analysis only; imaging / organoids not re-tested.",options:{color:"E2E8F0"}}],
-  {x:0.7,y:5.05,w:11.9,h:1.7,fontSize:18,align:"left",valign:"top",paraSpaceAfter:8});
-s.addNotes("Open: the paper's claim is exciting — as chronic liver disease progresses, hepatocytes lose their zonation, and the most de-zonated ones move toward a biliary/cholangiocyte identity (the headline plasticity finding). Note these are two distinct axes: de-zonation = losing your position along the lobule (still a hepatocyte); transdifferentiation = losing your cell-type identity. We asked whether the single-nucleus EXPRESSION evidence for progressive de-zonation survives once acquisition differences are controlled. Answer up front: in matched needle biopsies, transcriptional zonation is preserved.");
+  {x:0.7,y:5.15,w:11.9,h:1.5,fontSize:18,align:"left",valign:"top",paraSpaceAfter:10});
+s.addNotes("Frame it as the project's research question (from the Zonation_Reanalysis framing): the published claim is 'hepatocytes lose their zonation,' and our formal question was whether we can measure how much hepatocyte zonation degrades across MASLD and whether that is linked to the transdifferentiation Paper 1 reported. Answer, clause by clause: the relative ruler is the wrong instrument; there is no detectable biopsy-stage degradation (F1→cirrhotic F4); the healthy→end-stage drop is the tissue-acquisition axis, not disease; and the transdifferentiation link can't be established because biliary markers stay ~0 across biopsy disease and rise only in explants — the same confound.");
 
 // ===================================================================== SLIDE 2
 s=p.addSlide(); s.background={color:BG};
