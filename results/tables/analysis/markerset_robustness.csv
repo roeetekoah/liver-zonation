@@ -1,4 +1,0 @@
-marker_set,n_PC,n_PP,polar_F0,polar_F1,polar_F2,polar_F3,polar_F4,polar_F1_minus_F4,share_F1,share_F4,share_F1_minus_F4
-A canonical anchors,2,4,0.67,0.777,0.718,0.754,0.724,0.053,0.187,0.262,-0.075
-B curated program,7,6,0.533,0.48,0.456,0.421,0.424,0.056,0.646,0.586,0.06
-C paper2 landmark(40),20,20,0.261,0.208,0.228,0.223,0.171,0.038,0.542,0.492,0.05

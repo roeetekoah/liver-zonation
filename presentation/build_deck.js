@@ -5,7 +5,10 @@ const A = __dirname + "/assets/";
 
 const PC="1D4ED8", PP="EA580C", DUAL="7C3AED", NULL="9CA3AF",
       BIOPSY="0D9488", CONFOUND="BE123C", ENDSTAGE="86198F", STRESS="DC2626", BILIARY="7C3AED",
-      INK="1E293B", MUTE="64748B", KICK="0F766E", BG="FFFFFF", LIGHT="F1F5F9", DARK="0F172A", WHITE="FFFFFF";
+      INK="1E293B", MUTE="6B6256", WHITE="FFFFFF",
+      SLATE="1F3A3D", ORANGE="C0562B", CREAM="F7F3EB",
+      KICK="C0562B", BG="F7F3EB", LIGHT="ECE6DA", DARK="14292C";
+const SERIF="Georgia";
 const COURSE="Computational Genomics 76553  ·  HUJI  ·  MASLD snRNA-seq hackathon";
 const sh=()=>({type:"outer",color:"000000",blur:7,offset:3,angle:90,opacity:0.12});
 
@@ -14,8 +17,9 @@ p.title="Matched biopsies preserve hepatocyte transcriptional zonation in MASLD"
 
 // --- helpers: kicker + short headline; footer; figure caption; classification chip ---
 function head(s,kicker,headline){
-  s.addText(kicker,{x:0.5,y:0.30,w:12.3,h:0.35,fontSize:13,bold:true,color:KICK,charSpacing:2,align:"left",margin:0});
-  s.addText(headline,{x:0.5,y:0.64,w:12.3,h:0.72,fontSize:27,bold:true,color:INK,align:"left",valign:"top",margin:0});
+  s.addShape(p.shapes.RECTANGLE,{x:0.5,y:0.34,w:0.16,h:0.26,fill:{color:ORANGE}});
+  s.addText(kicker,{x:0.74,y:0.30,w:12.0,h:0.35,fontSize:13,bold:true,color:ORANGE,charSpacing:3,align:"left",margin:0});
+  s.addText(headline,{x:0.48,y:0.64,w:12.4,h:0.85,fontSize:28,bold:true,color:SLATE,fontFace:SERIF,align:"left",valign:"top",margin:0});
 }
 function foot(s,n){
   s.addText(COURSE,{x:0.5,y:7.12,w:10.5,h:0.3,fontSize:10.5,color:MUTE,align:"left",margin:0});
@@ -30,19 +34,20 @@ function chip(s,x,y,w,h,txt,fill,tcol){
 
 // ============================================================ SLIDE 1 — TITLE
 let s=p.addSlide(); s.background={color:DARK};
+s.addShape(p.shapes.RECTANGLE,{x:0,y:0,w:0.22,h:7.5,fill:{color:ORANGE}});
 s.addText("LIVER GENOMICS  ·  SINGLE-NUCLEUS RE-ANALYSIS",
-  {x:0.7,y:1.15,w:11.9,h:0.4,fontSize:15,bold:true,color:"5EEAD4",charSpacing:3,align:"left"});
+  {x:0.85,y:1.15,w:11.9,h:0.4,fontSize:15,bold:true,color:"9CB0AC",charSpacing:3,align:"left"});
 s.addText("Matched biopsies preserve hepatocyte transcriptional zonation in MASLD",
-  {x:0.7,y:1.7,w:11.9,h:1.6,fontSize:38,bold:true,color:WHITE,align:"left",valign:"top"});
+  {x:0.85,y:1.7,w:11.6,h:1.7,fontSize:38,bold:true,color:WHITE,fontFace:SERIF,align:"left",valign:"top"});
 s.addText("A critical re-analysis of the single-nucleus RNA-seq in Gribben et al., Nature 2024 (GSE202379)",
-  {x:0.7,y:3.5,w:11.9,h:0.5,fontSize:18,italic:true,color:"CBD5E1",align:"left"});
-s.addShape(p.shapes.LINE,{x:0.7,y:4.5,w:5.0,h:0,line:{color:"334155",width:1.5}});
-s.addText([{text:"Roee Tekoah",options:{bold:true}},{text:"   ·   ",options:{color:"64748B"}},{text:"Shira Gelbstein",options:{bold:true}}],
-  {x:0.7,y:4.7,w:11.9,h:0.45,fontSize:20,color:"E2E8F0",align:"left"});
+  {x:0.85,y:3.55,w:11.6,h:0.5,fontSize:18,italic:true,color:"C9D6D3",align:"left"});
+s.addShape(p.shapes.LINE,{x:0.85,y:4.55,w:5.0,h:0,line:{color:ORANGE,width:1.5}});
+s.addText([{text:"Roee Tekoah",options:{bold:true}},{text:"   ·   ",options:{color:"7E8F8B"}},{text:"Shira Gelbstein",options:{bold:true}}],
+  {x:0.85,y:4.75,w:11.6,h:0.45,fontSize:20,color:"EDE7DB",align:"left"});
 s.addText("Computational Genomics (76553)  ·  Hebrew University of Jerusalem  ·  Hackathon",
-  {x:0.7,y:5.25,w:11.9,h:0.4,fontSize:15,color:"94A3B8",align:"left"});
+  {x:0.85,y:5.3,w:11.6,h:0.4,fontSize:15,color:"9CB0AC",align:"left"});
 s.addText("47 donors  ·  ~99,809 nuclei  ·  69,426 hepatocytes  ·  raw-count, donor-level analysis",
-  {x:0.7,y:6.3,w:11.9,h:0.4,fontSize:13,color:"64748B",align:"left"});
+  {x:0.85,y:6.35,w:11.6,h:0.4,fontSize:13,color:"7E8F8B",align:"left"});
 s.addNotes("Title slide. We are Roee Tekoah and Shira Gelbstein; this is our hackathon re-analysis of the single-nucleus RNA-seq in Gribben et al., Nature 2024, asking whether the evidence for progressive hepatocyte de-zonation in MASLD survives once tissue acquisition is controlled. One-line answer in the title: matched biopsies preserve transcriptional zonation.");
 
 // ============================================================ SLIDE 2 — BACKGROUND
@@ -168,16 +173,17 @@ s.addNotes("Why raw counts: a single marker molecule may be ambient, so absolute
 // ============================================================ SLIDE 8 — RESULT
 s=p.addSlide(); s.background={color:BG};
 head(s,"THE RESULT","Matched biopsies stay zonated");
-img(s,"fig_result2.png",{x:0.3,y:1.5,w:8.6,h:4.3});
-figcap(s,0.3,5.85,8.6,"Figure 2.  Donor-level pericentral-anchor (left) and dual co-expression (right) fractions across biopsy fibrosis F0–F4.");
+img(s,"fig_result3.png",{x:0.2,y:1.55,w:9.1,h:4.1});
+figcap(s,0.2,5.75,9.1,"Figure 2.  Pericentral and periportal depletion and dual co-expression across matched biopsy F1–F4 (donor=point, value-labelled; F0 n=2 in backup).");
 s.addText([
-  {text:"Null fraction (turn-off): ",options:{bold:true,color:"475569"}},{text:"stable.\n\n",options:{breakLine:true}},
-  {text:"PP : PC ratio: ",options:{bold:true,color:PP}},{text:"non-monotone, no drift.\n\n",options:{breakLine:true}},
+  {text:"The other two mechanisms (F1→F4 donor-median):\n",options:{bold:true,color:SLATE,breakLine:true}},
+  {text:"Null (turn-off): ",options:{bold:true,color:"475569"}},{text:"44 / 36 / 39 / 39% — stable.\n",options:{breakLine:true}},
+  {text:"PP : PC ratio: ",options:{bold:true,color:PP}},{text:"1.16 / 1.01 / 1.10 / 1.18 — flat.\n\n",options:{breakLine:true}},
   {text:"Bound: ",options:{bold:true,color:PC}},{text:"a large shift (~20 pp) is excluded; a subtle drift ≤10 pp is not (F4 n=4).",options:{italic:true,color:MUTE}}],
-  {x:9.1,y:1.85,w:4.0,h:3.3,fontSize:16.5,color:INK,align:"left",valign:"top"});
-s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:9.1,y:4.85,w:4.0,h:1.25,fill:{color:"ECFDF5"},rectRadius:0.08,shadow:sh()});
-s.addText("Donor-level anchor fractions do not support large biopsy-axis de-zonation.",
-  {x:9.25,y:4.92,w:3.7,h:1.1,fontSize:16,bold:true,color:"065F46",align:"left",valign:"middle"});
+  {x:9.45,y:1.65,w:3.65,h:3.5,fontSize:15,color:INK,align:"left",valign:"top"});
+s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:9.45,y:5.35,w:3.65,h:0.95,fill:{color:SLATE},rectRadius:0.08,shadow:sh()});
+s.addText("Anchor fractions do not support large biopsy-axis de-zonation.",
+  {x:9.6,y:5.4,w:3.35,h:0.85,fontSize:15,bold:true,color:"FFFFFF",align:"left",valign:"middle"});
 foot(s,8);
 s.addNotes("The core result. Pericentral-anchor fraction is flat/non-monotone across F0-F4 — no depletion. Dual co-expression at the ambient-robust >=2-UMI cut stays ~0.4% and does not trend (vs ~2.9% in the confounded explants). Null and PP:PC are also flat. The equivalence bound excludes a large ~20-percentage-point shift but cannot exclude subtle drift below ~10 points (F4 n=4).");
 
@@ -214,17 +220,19 @@ s.addNotes("Distinguish evidence levels. Strong: the genes are 5-78x more abunda
 
 // ============================================================ SLIDE 11 — CONCLUSION
 s=p.addSlide(); s.background={color:DARK};
-s.addText("CONCLUSION",{x:0.7,y:0.45,w:11.9,h:0.4,fontSize:14,bold:true,color:"5EEAD4",charSpacing:3,align:"left"});
+s.addShape(p.shapes.RECTANGLE,{x:0,y:0,w:0.22,h:7.5,fill:{color:ORANGE}});
+s.addShape(p.shapes.RECTANGLE,{x:0.85,y:0.5,w:0.16,h:0.26,fill:{color:ORANGE}});
+s.addText("CONCLUSION",{x:1.08,y:0.46,w:11.5,h:0.4,fontSize:14,bold:true,color:ORANGE,charSpacing:3,align:"left"});
 s.addText("Preservation, not progressive collapse",
-  {x:0.7,y:0.85,w:11.9,h:0.8,fontSize:28,bold:true,color:WHITE,align:"left",valign:"middle"});
+  {x:0.85,y:0.85,w:11.6,h:0.8,fontSize:30,bold:true,color:WHITE,fontFace:SERIF,align:"left",valign:"middle"});
 const cols=[
-  {h:"Conclusions",c:"5EEAD4",items:["Full healthy→end-stage trajectory is source-confounded.","In biopsy F1–F4, hepatocyte transcriptional zonation is preserved.","Main DGE signal = biliary/ductular burden, most consistent with composition / ambient RNA."]},
+  {h:"Conclusions",c:"F0B27A",items:["Full healthy→end-stage trajectory is source-confounded.","In biopsy F1–F4, hepatocyte transcriptional zonation is preserved.","Main DGE signal = biliary/ductular burden, most consistent with composition / ambient RNA."]},
   {h:"Limits",c:"FCA5A5",items:["snRNA-seq ≠ lobule geometry / spatial architecture.","Imaging / protein / organoid evidence not re-analyzed.","F4 has only 4 biopsy donors.","Gene-level DGE can miss weak coordinated pathways."]},
-  {h:"Next",c:"93C5FD",items:["CAMERA / ROAST gene-set tests.","Leave-one-F4-donor-out DGE.","Quantitative contamination model.","Spatial / independent biopsy validation."]}
+  {h:"Next",c:"9CC6CC",items:["CAMERA / ROAST gene-set tests.","Leave-one-F4-donor-out DGE.","Quantitative contamination model.","Spatial / independent biopsy validation."]}
 ];
-let cx=0.7; for(const col of cols){ const cw=3.9;
-  s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:cx,y:1.75,w:cw,h:4.3,fill:{color:"1E293B"},rectRadius:0.08,shadow:sh()});
-  s.addText(col.h,{x:cx,y:1.9,w:cw,h:0.5,fontSize:20,bold:true,color:col.c,align:"center"});
+let cx=0.85; for(const col of cols){ const cw=3.85;
+  s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:cx,y:1.75,w:cw,h:4.3,fill:{color:"1E3A3D"},rectRadius:0.08,shadow:sh()});
+  s.addText(col.h,{x:cx,y:1.9,w:cw,h:0.5,fontSize:20,bold:true,color:col.c,fontFace:SERIF,align:"center"});
   s.addText(col.items.map(t=>({text:t,options:{bullet:true,color:"E2E8F0",breakLine:true,paraSpaceAfter:9}})),
     {x:cx+0.25,y:2.5,w:cw-0.45,h:3.4,fontSize:14.5,align:"left",valign:"top"});
   cx+=cw+0.25; }
@@ -235,8 +243,9 @@ s.addNotes("Close on the methodological lesson: in single-cell disease atlases, 
 
 // ============================================================ BACKUPS
 function back(kicker,t){ const b=p.addSlide(); b.background={color:BG};
-  b.addText("BACKUP  ·  "+kicker,{x:0.5,y:0.30,w:12.3,h:0.35,fontSize:13,bold:true,color:BIOPSY,charSpacing:2});
-  b.addText(t,{x:0.5,y:0.64,w:12.3,h:0.72,fontSize:26,bold:true,color:INK,align:"left"}); return b; }
+  b.addShape(p.shapes.RECTANGLE,{x:0.5,y:0.34,w:0.16,h:0.26,fill:{color:ORANGE}});
+  b.addText("BACKUP  ·  "+kicker,{x:0.74,y:0.30,w:12.0,h:0.35,fontSize:13,bold:true,color:ORANGE,charSpacing:3});
+  b.addText(t,{x:0.48,y:0.64,w:12.4,h:0.8,fontSize:26,bold:true,color:SLATE,fontFace:SERIF,align:"left"}); return b; }
 function bbul(b,items,y){ b.addText(items.map(t=>({text:t,options:{bullet:true,breakLine:true,paraSpaceAfter:9}})),
   {x:0.8,y:y||1.6,w:11.6,h:5.0,fontSize:20,color:INK,align:"left",valign:"top"}); }
 let b;

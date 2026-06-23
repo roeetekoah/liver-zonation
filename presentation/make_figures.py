@@ -8,7 +8,7 @@ import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 T   = "results/tables/analysis"
-OUT = "reports/deck/assets"; os.makedirs(OUT, exist_ok=True)
+OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets"); os.makedirs(OUT, exist_ok=True)
 
 # ---- palette (deck spec) ----
 PC="#1D4ED8"; PP="#EA580C"; DUAL="#7C3AED"; NULL="#9CA3AF"
@@ -65,6 +65,9 @@ def panel(ax, col, color, title, pct=True, ratio=False):
         ax.scatter(np.full(len(v),i)+jitter(len(v)), v, s=45, color=color, alpha=0.5,
                    edgecolor="white", linewidth=0.6, zorder=3)
         med=np.median(v); ax.plot([i-0.28,i+0.28],[med]*2,color=color,lw=3,zorder=4)
+        lbl=f"{med:.0f}" if (pct and not ratio) else f"{med:.2f}"
+        ax.text(i,med,lbl,ha="center",va="center",fontsize=9,fontweight="bold",color=color,zorder=6,
+                bbox=dict(boxstyle="round,pad=0.15",fc="white",ec="none",alpha=0.88))
     ax.set_xticks(range(5)); ax.set_xticklabels(STAGES)
     ax.set_title(title, fontweight="bold", loc="left", fontsize=14)
     ax.grid(axis="y", color=GRID); ax.set_axisbelow(True)
@@ -96,6 +99,30 @@ a2.axhline(2.9, color=CONFOUND, ls="--", lw=2)
 a2.text(4.05,2.95,"confounded explants ≈ 2.9%  (~7×)", color=CONFOUND, fontsize=12, va="bottom", ha="right", fontweight="bold")
 a1.text(0.02,0.97,"donor = point, line = median", transform=a1.transAxes, fontsize=12, color=MUTE, va="top")
 fig.tight_layout(); fig.savefig(f"{OUT}/fig_result2.png", bbox_inches="tight"); plt.close(fig)
+
+# ---- headline result v3: PC depletion + PP depletion + dual, F1-F4 (F0 n=2 dropped), value-labelled ----
+SR=["F1","F2","F3","F4"]
+fig,axs=plt.subplots(1,3,figsize=(13.2,5.0))
+def rpanel(ax,col,color,title,ylab,explant_line=None,dec=0):
+    for i,st in enumerate(SR):
+        v=bio[bio.Fs==st][col].values*100
+        ax.scatter(np.full(len(v),i)+jitter(len(v),0.12), v, s=80, color=color, alpha=0.5,
+                   edgecolor="white", linewidth=0.8, zorder=3)
+        med=np.median(v); ax.plot([i-0.3,i+0.3],[med]*2,color=color,lw=4,zorder=4)
+        ax.text(i,med,f"{med:.{dec}f}%",ha="center",va="center",fontsize=11.5,fontweight="bold",color=color,zorder=6,
+                bbox=dict(boxstyle="round,pad=0.18",fc="white",ec="none",alpha=0.9))
+    ax.set_xticks(range(4)); ax.set_xticklabels(SR, fontsize=15)
+    ax.set_title(title, fontweight="bold", loc="left", fontsize=16); ax.set_ylabel(ylab, fontsize=14)
+    ax.grid(axis="y", color=GRID); ax.set_axisbelow(True)
+    if explant_line is not None:
+        ax.axhline(explant_line, color=CONFOUND, ls="--", lw=2)
+        ax.text(3.05,explant_line+0.05,"explants ≈2.9% (~7×)",color=CONFOUND,fontsize=10.5,va="bottom",ha="right",fontweight="bold")
+rpanel(axs[0],"PC_f",PC,"No pericentral depletion","PC-anchor %")
+rpanel(axs[1],"PP_f",PP,"No periportal depletion","PP-anchor %")
+rpanel(axs[2],"dual2_f",DUAL,"Co-expression stays rare","Dual (≥2 UMI) %",explant_line=2.9,dec=1)
+fig.suptitle("Matched biopsy F1–F4   ·   donor = point, line = median, value labelled   (F0 n=2 omitted; full F0–F4 in backup)",
+             fontsize=12, color=MUTE, x=0.5, y=1.01)
+fig.tight_layout(); fig.savefig(f"{OUT}/fig_result3.png", bbox_inches="tight"); plt.close(fig)
 
 # ===================== FIG 3 — TOST equivalence (F4 vs F1 PC-anchor) =====================
 eq=pd.read_csv(f"{T}/equivalence_bound.csv")
