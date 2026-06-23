@@ -51,9 +51,10 @@ any one gene reaching significance. To claim "no other hepatocyte program" with 
 **gene-set / pathway-level layer** (CAMERA for competitive enrichment; ROAST/mroast for self-contained
 pre-specified signatures) over the standard hepatocyte programs — detoxification, urea cycle, bile-acid and
 lipid metabolism, ER stress, interferon/inflammation, hypoxia, mitochondrial, cell-cycle, senescence, EMT,
-fetal/progenitor, cholangiocyte/ductular. **Until that runs, the honest claim is: "no single-gene program and
-no large coordinated change (> ~2-fold); a coordinated *weak* program is not yet formally excluded."**
-[OPEN — O13; decision pending: future work vs run now.]
+fetal/progenitor, cholangiocyte/ductular. **Until that runs, the honest claim is — and stays — "no single-gene
+program and no large coordinated change (> ~2-fold); a coordinated *weak* program is not yet formally
+excluded."** This gene-set layer is **deferred to future work** (lead's call, 2026-06-23) — see O13; the
+gene-level-only caveat above must travel with the "nothing else moves" claim until O13 is done.
 
 **Power note (bounds the single-gene null).** "No other program" at the gene level means **none larger than
 ~2-fold** (log2 ≈ 1): at common biological-variation 0.405 with F4 n=4 / F1 n=8 the realized detection floor

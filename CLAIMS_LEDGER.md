@@ -254,8 +254,10 @@ does **not** need the causal claim — the perfect stage⟂tissue-source **colli
   inflammation, hypoxia, mitochondrial, cell-cycle, senescence, EMT, fetal/progenitor, cholangiocyte/ductular.
   Claim becomes defensible only if, after excluding zonation sets and the ductular/biliary axis, **no
   hepatocyte program shows robust donor-level enrichment F1→F4.** Raised by ChatGPT review (item 3) + flagged
-  by the user as KEY. **DECISION PENDING: future work vs run now** (bounded analysis; reuses the Plan A edgeR
-  fit). This is central (not the downweighted plasticity sub-leg) — recommend running it.
+  by the user as KEY. **DECISION (lead, 2026-06-23): DEFERRED to future work.** The method is specified above and
+  the bounded analysis (CAMERA + ROAST over the listed sets, reusing the Plan A edgeR fit) is ready to run when
+  picked up. Until then the **gene-level-only caveat must travel with the "nothing else moves" claim** — do not
+  state "no other hepatocyte program" unqualified.
 
 ## Note N5 — DGE framing locked with the lead (2026-06-23): Plan A is the finding; plasticity is a side lead
 - **Level-1 DGE conclusion (the point), two parts:** (1) **zonation kept — and the genome-wide DGE INDEPENDENTLY
