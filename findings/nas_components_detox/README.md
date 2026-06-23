@@ -8,7 +8,7 @@ is confusing and may reflect collinearity, small n, or a metric issue). DO NOT U
 _(original write-up retained below for that discussion)_
 
 **Original framing — does NOT support the inflammation hypothesis; detox tracks ballooning instead.**
-Data: [`nas_components_detox.csv`](nas_components_detox.csv). Script: `src/analysis/nas_components_detox.py`.
+Data: [`nas_components_detox.csv`](nas_components_detox.csv). Script: `src/confound/nas_components_detox.py`.
 
 ## The question (recovering the NAS analysis)
 The disease axis we mostly used was fibrosis F0–F4. But NAS (and its **components** — Steatosis,

@@ -1,7 +1,7 @@
 # FINDINGS — hepatocyte zonation & epithelial plasticity in MASLD snRNA-seq
 
 Re-analysis of Gribben et al., Nature 2024 (GSE202379), single-nucleus transcriptomic component only.
-This file is the **story-ordered summary**. The full narrative is [`writeup/FULL_STORY.txt`](writeup/FULL_STORY.txt);
+This file is the **story-ordered summary**. The full narrative is [`reports/FULL_STORY.txt`](reports/FULL_STORY.txt);
 each finding is documented with numbers + method + caveats under [`findings/`](findings/README.md); the audited
 claim-by-claim trail with decisions and the future-work queue is [`CLAIMS_LEDGER.md`](CLAIMS_LEDGER.md).
 
@@ -30,7 +30,7 @@ the strong signal is an end-stage phenomenon.
 healthy = deceased-donor organ cubes; end-stage = explanted organs (multi-lobe). So "healthy → MASLD → end-stage"
 is also "organ cube → needle → explant" — disease stage is collinear with acquisition method. This is the
 load-bearing issue; it motivates excluding the ends and re-testing biopsy-only.
-→ grounded in Paper 1 Methods; see [`writeup/SYNTHESIS.md`](writeup/SYNTHESIS.md) §1 and ledger Item 1 / Decision D1.
+→ grounded in Paper 1 Methods; see [`reports/SYNTHESIS.md`](reports/SYNTHESIS.md) §1 and ledger Item 1 / Decision D1.
 
 **2. Lobe invariance — one sub-confound cleared.** Within end-stage explants (sampled Right/Caudate/Left), the
 zonation-marker **detection** pattern is lobe-invariant (e.g. GLUL 0.350/0.343/0.297; ALDOB 0.821/0.837/0.838).
@@ -69,7 +69,7 @@ abandoned because (a) it was source-confounded, and (b) it is intrinsically dept
 (turn-off, co-expression, and noise all shrink its spread). The count anchor classification separates the
 mechanisms; the ruler cannot.
 → [`findings/relative_ruler_postmortem/`](findings/relative_ruler_postmortem/README.md) (F12). The Simpson/
-aggregation reversal that this produced is documented in [`writeup/SYNTHESIS.md`](writeup/SYNTHESIS.md).
+aggregation reversal that this produced is documented in [`reports/SYNTHESIS.md`](reports/SYNTHESIS.md).
 
 **6. The 2D joint-count view — and its correction.** The broad-program 2D plot is a **pole-collapse**
 visualization, not a co-expression test (the program sums include genes ON in most normal hepatocytes). The clean

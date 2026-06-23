@@ -35,6 +35,9 @@ __pycache__/
 *.pyc
 *.tmp
 .~lock*#
+
+# ---- node deps (regenerable; never commit) ----
+node_modules/
 .Rhistory
 
 # ---- LaTeX build artifacts (disposable; keep .tex + .pdf) ----

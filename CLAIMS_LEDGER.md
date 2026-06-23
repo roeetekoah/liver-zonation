@@ -21,7 +21,7 @@ re-verified live), and notes from the discussion (incl. what changed if REVISED/
 
 ## Story map (read the ledger in story order)
 The detailed Items below are in **audit order** (the order we raised them). For the **story order**, read them
-in this sequence — matching [`../FINDINGS.md`](FINDINGS.md) and [`writeup/FULL_STORY.txt`](writeup/FULL_STORY.txt):
+in this sequence — matching [`../FINDINGS.md`](FINDINGS.md) and [`reports/FULL_STORY.txt`](reports/FULL_STORY.txt):
 
 | Story part | Claims / findings / decisions here |
 |---|---|
@@ -54,7 +54,7 @@ confounder section as structural, not correlational. Re-verified per row against
 
 ## Item 2 — Lobe sampling: zonation pattern is lobe-invariant; primary analysis is right-lobe-only
 **STATUS: LIVE (caveated).** Full write-up + numbers: [`findings/lobe_invariance/`](findings/lobe_invariance/README.md)
-(data `findings/lobe_invariance/lobe_invariance.csv`, reproduced by `src/analysis/lobe_invariance.py`).
+(data `findings/lobe_invariance/lobe_invariance.csv`, reproduced by `src/confound/lobe_invariance.py`).
 - Within end-stage explants the zonation **detection** pattern is lobe-invariant (R/C/L); e.g. GLUL frac
   0.350/0.343/0.297, ALDOB 0.821/0.837/0.838. The pattern is fully present in **Right-lobe-only** cells →
   caudate/multi-lobe sampling does **not** manufacture the de-zonation signal.
@@ -113,7 +113,7 @@ Biopsy PC-anchor% 36/19/23/22/21 (F0–F4), flat/non-monotone; explants heteroge
 count-based canonical anchor-classification.
 
 ## Item 9 — UMIs/10k denominator concern (screenshot 4), closed
-**STATUS: LIVE (concern addressed).** `src/analysis/umi10k_validation.py`. The worry (ALB/dominant-gene
+**STATUS: LIVE (concern addressed).** `src/confound/umi10k_validation.py`. The worry (ALB/dominant-gene
 share drift inflates per-10k of everything else) is **empirically minor here**: ALB share ≈ 0.004 (0.4% of
 nuclear UMIs) and FLAT across F0–F4 (Spearman +0.16, p=0.34 n.s.); TTR ns; APOA1 drifts but share ≈ 0.0003
 (negligible). And the robust fix is already used everywhere: **depth-matched ABSOLUTE counts** (binomial
@@ -138,7 +138,7 @@ The B-sweep WAS run for the headline co-expression endpoint: `review_checks.py:7
 fixed **B=1500**; a B-sweep on those is optional (queue O7 if wanted).
 
 ## Item 5 — Right-lobe-only raw-panel tables (provenance)
-**STATUS: LIVE (superseded for conclusions by the robust rebuild, Items 3–4).** `src/analysis/raw_counts.py`
+**STATUS: LIVE (superseded for conclusions by the robust rebuild, Items 3–4).** `src/confound/raw_counts.py`
 → `results/tables/analysis/rawA_donor_lobe_stage_gene.csv`, `rawA_donor_stage_{alllobe,right}.csv`,
 `rawF_qc_source.csv`. Metrics = `frac_raw_pos` (≥1 detection) and `UMIs_per_10k` — **both deprecated**; kept
 for provenance. Note F1 (lobe) was computed from `rawA` and inherits the pre-robust metric caveat.
@@ -365,7 +365,7 @@ survived; the following real problems were caught and corrected (all verified ag
   fact. The procurement confound (endothelial stress 20.2× ≈ hepatocyte 21.0×) remains the strongest result.
 
 ## Known doc-debt (to fix when un-freezing the report) — confirmed by cross-check agent 2026-06-23
-Agent compared findings/ + ledger vs writeup/. Two real problems repeat; everything else is consistent.
+Agent compared findings/ + ledger vs reports/. Two real problems repeat; everything else is consistent.
 - **(A) "surgical / atlas" healthy source — WRONG (4 spots):** `MANUSCRIPT.md` Table 1 (:48), Methods (:158),
   abstract (:16); `build_deck.js` (:116). Fix → "deceased-donor organ cube (mixed; one biliary-stone)".
   (SYNTHESIS.md §1a already correct.)

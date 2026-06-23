@@ -3,7 +3,7 @@
 **Status: LIVE.** Robust rebuild of the old cross-lineage stress table (which used deprecated
 UMIs/10k donor-medians — those genes are KEPT, only the metric is upgraded). Data:
 [`per_donor.csv`](per_donor.csv), [`by_lineage.csv`](by_lineage.csv). Script:
-`src/analysis/stress_celltype_segmented.py`. Per-gene (hepatocytes) in `../stress_and_panel_by_stage/`.
+`src/confound/stress_celltype_segmented.py`. Per-gene (hepatocytes) in `../stress_and_panel_by_stage/`.
 
 ## Stress definition (precise — per project definition)
 Two **acute** classes form the stress signal; HIF is kept **separate** (chronic low-O2 ≠ acute handling):

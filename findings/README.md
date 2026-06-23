@@ -5,7 +5,7 @@ precisely: what the finding is, **what every number means and how it was compute
 caveats, the verdict/status, and the grounding.
 
 This index is now ordered to follow the **story** (see [`../FINDINGS.md`](../FINDINGS.md) for the summary and
-[`../writeup/FULL_STORY.txt`](../writeup/FULL_STORY.txt) for the full narrative). The audited claim-by-claim trail
+[`../reports/FULL_STORY.txt`](../reports/FULL_STORY.txt) for the full narrative). The audited claim-by-claim trail
 with decisions and the future-work queue is [`../CLAIMS_LEDGER.md`](../CLAIMS_LEDGER.md).
 
 **Terminology:** "down-thinned to B=1,500" = binomial down-thinning of raw UMIs to a common budget (1,500), cells
@@ -17,7 +17,7 @@ dimming / co-expression / gradient compression / turn-off / composition shift / 
 
 ## Part 1 — The central confound (tissue source ⟂ disease stage)
 The load-bearing reframe. There is no single folder — it is grounded in Paper 1's Methods and quantified in
-[`../writeup/SYNTHESIS.md`](../writeup/SYNTHESIS.md) §1 and [`../CLAIMS_LEDGER.md`](../CLAIMS_LEDGER.md) Item 1 /
+[`../reports/SYNTHESIS.md`](../reports/SYNTHESIS.md) §1 and [`../CLAIMS_LEDGER.md`](../CLAIMS_LEDGER.md) Item 1 /
 Decision D1. Disease F0–F4 = needle biopsies; healthy + end-stage = deceased-donor organ tissue.
 
 ## Part 2 — Lobe invariance (clears one sub-confound)

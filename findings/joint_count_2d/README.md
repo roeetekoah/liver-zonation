@@ -1,7 +1,7 @@
 # F13 — The 2D joint-count "amount" view: what it does and does NOT show
 
 **Status: LIVE, with an important correction.** Figure: `results/figures/h2/census_2d_joint.png`
-(1934×1254). Script: `src/analysis/census_2d.py`. This is the "amount conviction" view the lead asked
+(1934×1254). Script: `src/census/census_2d.py`. This is the "amount conviction" view the lead asked
 about (real co-expression = high amounts of BOTH poles, not 1+1 ambient).
 
 ## What it is

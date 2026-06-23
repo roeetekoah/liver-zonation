@@ -2,7 +2,7 @@
 
 **Status: LIVE.** The "most-information-per-analysis" table: one donor-level row folds depletion,
 co-expression, turn-off, and stress-coupling, separating biopsy vs explant. Data:
-`results/tables/analysis/load_bearing_donor_table.csv`. Script: `src/analysis/load_bearing.py`.
+`results/tables/analysis/load_bearing_donor_table.csv`. Script: `src/census/load_bearing.py`.
 
 ## What every column is, and its scale
 Down-thinned to B=1,500: each nucleus down-thinned (binomial) to budget **B=1500**; cells below B dropped;

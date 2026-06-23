@@ -1,6 +1,6 @@
 # F15 — Genome-wide differential expression: explicit method + result
 
-**Status: LIVE.** Script: `src/analysis/dge_genomewide.py`; input `pseudobulk_hep_by_donor.csv` (from
+**Status: LIVE.** Script: `src/dge/dge_genomewide.py`; input `pseudobulk_hep_by_donor.csv` (from
 `src/prep/09_extract_full_and_union.R`); compositional audit `dge_compositional.py` (+ `prep/10`).
 
 ## Method — written out explicitly (no hand-waving)

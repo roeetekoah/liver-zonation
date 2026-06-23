@@ -6,7 +6,7 @@ stress-by-stage tables, which used deprecated metrics (raw mean, ≥1 detection,
 **Data** · `per_donor.csv` (right-lobe, all panel genes, per-donor exact) · `per_group.csv` (right-lobe
 group summary: mean across donors + min/max) · `stress_per_donor_alllobe.csv` (all-lobe, every donor's
 exact stress — keeps the 2 no-lobe healthy donors).
-**Scripts** · `src/analysis/panel_by_stage.py` · `src/analysis/stress_exact.py`.
+**Scripts** · `src/confound/panel_by_stage.py` · `src/confound/stress_exact.py`.
 **Source** · raw RNA UMIs `raw_panel_counts.csv` (prep/05) + Disease.status from metadata.
 
 ## Metric definitions (every number's scale)

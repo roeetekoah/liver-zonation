@@ -1,8 +1,8 @@
 # F1 — Lobe sampling: the zonation pattern is lobe-invariant; primary analysis is right-lobe-only
 
 **Status: LIVE (with a caveat on absolute levels).** Data: [`lobe_invariance.csv`](lobe_invariance.csv).
-Reproduced by `src/analysis/lobe_invariance.py` from the saved per-(donor,lobe,stage,gene) table
-`results/tables/analysis/rawA_donor_lobe_stage_gene.csv` (built by `src/analysis/raw_counts.py`).
+Reproduced by `src/confound/lobe_invariance.py` from the saved per-(donor,lobe,stage,gene) table
+`results/tables/analysis/rawA_donor_lobe_stage_gene.csv` (built by `src/confound/raw_counts.py`).
 
 ## Why lobe matters — what the caudate lobe is (sampling context)
 The end-stage explants were sampled from **three lobes (Right + Left + Caudate)**; every disease needle
