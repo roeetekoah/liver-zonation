@@ -15,18 +15,27 @@ PC="#1D4ED8"; PP="#E0701C"; DUAL="#7C5CD8"; NULL="#A8A29E"
 BIOPSY="#1B6E78"; CONFOUND="#B0413C"; ENDSTAGE="#8A2C6B"; STRESS="#C0392B"; BILIARY="#7C5CD8"
 INK="#1B2B31"; MUTE="#5C6E73"; GRID="#E8E2D6"; EDGE="#CFC8BA"
 plt.rcParams.update({
-    "font.family":"sans-serif", "font.sans-serif":["Segoe UI","Calibri","Helvetica Neue","Arial","DejaVu Sans"],
-    "font.size":13, "axes.titlesize":15, "axes.titleweight":"bold", "axes.titlecolor":INK, "axes.titlelocation":"left",
-    "axes.titlepad":10, "axes.labelsize":12, "axes.labelcolor":MUTE,
-    "axes.edgecolor":EDGE, "axes.linewidth":1.1,
-    "xtick.color":MUTE, "ytick.color":MUTE, "xtick.labelsize":11.5, "ytick.labelsize":11,
-    "xtick.major.size":0, "ytick.major.size":3, "xtick.major.pad":7,
+    "font.family":"sans-serif", "font.sans-serif":["Arial","Helvetica","Liberation Sans","DejaVu Sans"],
+    "font.size":14, "axes.titlesize":16, "axes.titleweight":"bold", "axes.titlecolor":INK, "axes.titlelocation":"left",
+    "axes.titlepad":12, "axes.labelsize":13, "axes.labelcolor":MUTE, "axes.labelpad":7,
+    "axes.edgecolor":EDGE, "axes.linewidth":1.0,
+    "xtick.color":MUTE, "ytick.color":MUTE, "xtick.labelsize":13, "ytick.labelsize":12,
+    "xtick.major.size":0, "ytick.major.size":0, "xtick.major.pad":8, "ytick.major.pad":5,
     "axes.spines.top":False, "axes.spines.right":False,
-    "axes.grid":True, "axes.axisbelow":True, "grid.color":GRID, "grid.linewidth":0.9,
+    "axes.grid":True, "axes.grid.axis":"y", "axes.axisbelow":True, "grid.color":"#EBE5D8", "grid.linewidth":1.0,
     "figure.dpi":300, "savefig.dpi":300,
     "figure.facecolor":"none", "axes.facecolor":"none", "savefig.transparent":True,
-    "legend.frameon":False, "legend.fontsize":11, "legend.handlelength":1.4})
+    "legend.frameon":False, "legend.fontsize":12.5, "legend.handlelength":1.3, "legend.handletextpad":0.5})
 STAGES=["F0","F1","F2","F3","F4"]
+from matplotlib.lines import Line2D
+
+def clean(ax):   # consistent minimalist axes: light spines, no ticks, soft y-grid only
+    for sp in ("left","bottom"): ax.spines[sp].set_color(EDGE); ax.spines[sp].set_linewidth(1.0)
+    ax.tick_params(length=0); ax.grid(axis="y", color="#EBE5D8", lw=1.0); ax.grid(axis="x", visible=False)
+    ax.set_axisbelow(True)
+def donor_legend(ax, color, loc="upper left"):
+    ax.legend(handles=[Line2D([0],[0],marker="o",ls="",mfc=color,mec="none",ms=8,alpha=0.55,label="donor"),
+                       Line2D([0],[0],color=color,lw=3,label="median")], loc=loc, fontsize=11.5)
 
 def jitter(n, w=0.13): return (np.random.RandomState(0).rand(n)-0.5)*2*w
 
@@ -76,19 +85,19 @@ fig.tight_layout(); fig.savefig(f"{OUT}/fig_stress.png", bbox_inches="tight"); p
 
 # ===================== FIG 2 — anchor 2x2 (biopsy F0-F4) =====================
 def panel(ax, col, color, title, pct=True, ratio=False):
+    top=0
     for i,st in enumerate(STAGES):
         v=bio[bio.Fs==st][col].values
         if pct and not ratio: v=v*100
-        ax.scatter(np.full(len(v),i)+jitter(len(v)), v, s=45, color=color, alpha=0.5,
-                   edgecolor="white", linewidth=0.6, zorder=3)
-        med=np.median(v); ax.plot([i-0.28,i+0.28],[med]*2,color=color,lw=3,zorder=4)
+        top=max(top,v.max())
+        ax.scatter(np.full(len(v),i)+jitter(len(v)), v, s=40, color=color, alpha=0.4, edgecolor="none", zorder=3)
+        med=np.median(v); ax.plot([i-0.3,i+0.3],[med]*2,color=color,lw=3,solid_capstyle="round",zorder=4)
         lbl=f"{med:.0f}" if (pct and not ratio) else f"{med:.2f}"
-        ax.text(i,med,lbl,ha="center",va="center",fontsize=9,fontweight="bold",color=color,zorder=6,
-                bbox=dict(boxstyle="round,pad=0.15",fc="white",ec="none",alpha=0.88))
-    ax.set_xticks(range(5)); ax.set_xticklabels(STAGES)
-    ax.set_title(title, fontweight="bold", loc="left", fontsize=14)
-    ax.grid(axis="y", color=GRID); ax.set_axisbelow(True)
-fig,axes=plt.subplots(2,2,figsize=(11,7.2))
+        ax.annotate(lbl,(i,med),xytext=(0,7),textcoords="offset points",ha="center",va="bottom",
+                    fontsize=10.5,fontweight="bold",color=color,zorder=6)
+    ax.set_xticks(range(5)); ax.set_xticklabels(STAGES); ax.set_xlim(-0.6,4.6); ax.set_ylim(0,top*1.18)
+    ax.set_title(title, loc="left", fontsize=14.5); clean(ax)
+fig,axes=plt.subplots(2,2,figsize=(11.5,7.4))
 panel(axes[0,0],"PC_f",PC,"No pericentral depletion"); axes[0,0].set_ylabel("PC-anchor %")
 panel(axes[0,1],"dual2_f",DUAL,"Co-expression stays rare"); axes[0,1].set_ylabel("Dual (≥2 UMI) %")
 axes[0,1].axhline(2.9, color=CONFOUND, ls="--", lw=1.5)
@@ -120,26 +129,29 @@ fig.tight_layout(); fig.savefig(f"{OUT}/fig_result2.png", bbox_inches="tight"); 
 # ---- headline result v3: PC depletion + PP depletion + dual, F1-F4 (F0 n=2 dropped), value-labelled ----
 SR=["F1","F2","F3","F4"]
 fig,axs=plt.subplots(1,3,figsize=(12.4,5.7))
-def rpanel(ax,col,color,title,ylab,explant_line=None,dec=0):
+def rpanel(ax,col,color,title,ylab,explant_line=None,dec=0,legend=False):
+    top=0
     for i,st in enumerate(SR):
-        v=bio[bio.Fs==st][col].values*100
-        ax.scatter(np.full(len(v),i)+jitter(len(v),0.12), v, s=80, color=color, alpha=0.5,
-                   edgecolor="white", linewidth=0.8, zorder=3)
-        med=np.median(v); ax.plot([i-0.3,i+0.3],[med]*2,color=color,lw=4,zorder=4)
-        ax.text(i,med,f"{med:.{dec}f}%",ha="center",va="center",fontsize=11.5,fontweight="bold",color=color,zorder=6,
-                bbox=dict(boxstyle="round,pad=0.18",fc="white",ec="none",alpha=0.9))
-    ax.set_xticks(range(4)); ax.set_xticklabels(SR, fontsize=15)
-    ax.set_title(title, fontweight="bold", loc="left", fontsize=16); ax.set_ylabel(ylab, fontsize=14)
-    ax.grid(axis="y", color=GRID); ax.set_axisbelow(True)
+        v=bio[bio.Fs==st][col].values*100; top=max(top,v.max())
+        ax.scatter(np.full(len(v),i)+jitter(len(v),0.13), v, s=46, color=color, alpha=0.4,
+                   edgecolor="none", zorder=3)
+        med=np.median(v); ax.plot([i-0.34,i+0.34],[med]*2,color=color,lw=3.2,solid_capstyle="round",zorder=4)
+        ax.annotate(f"{med:.{dec}f}%",(i,med),xytext=(0,8),textcoords="offset points",
+                    ha="center",va="bottom",fontsize=12,fontweight="bold",color=color,zorder=6)
+    ax.set_xticks(range(4)); ax.set_xticklabels(SR)
+    ax.set_xlim(-0.6,3.6); ax.set_ylim(0, top*1.15)
+    ax.set_title(title, loc="left"); ax.set_ylabel(ylab)
+    clean(ax)
     if explant_line is not None:
-        ax.axhline(explant_line, color=CONFOUND, ls="--", lw=2)
-        ax.text(3.05,explant_line+0.05,"explants ≈2.9% (~7×)",color=CONFOUND,fontsize=10.5,va="bottom",ha="right",fontweight="bold")
-rpanel(axs[0],"PC_f",PC,"No pericentral depletion","PC-anchor %")
+        ax.axhline(explant_line, color=CONFOUND, ls=(0,(4,3)), lw=1.6)
+        ax.text(3.45,explant_line,"  explants ≈ 2.9% (~7×)",color=CONFOUND,fontsize=11,va="center",ha="right",fontweight="bold")
+    if legend: donor_legend(ax,color,"upper left")
+rpanel(axs[0],"PC_f",PC,"No pericentral depletion","PC-anchor %", legend=True)
 rpanel(axs[1],"PP_f",PP,"No periportal depletion","PP-anchor %")
 rpanel(axs[2],"dual2_f",DUAL,"Co-expression stays rare","Dual (≥2 UMI) %",explant_line=2.9,dec=1)
-fig.suptitle("Matched biopsy F1–F4   ·   donor = point, line = median, value labelled   (F0 n=2 omitted; full F0–F4 in backup)",
-             fontsize=12, color=MUTE, x=0.5, y=1.01)
-fig.tight_layout(); fig.savefig(f"{OUT}/fig_result3.png", bbox_inches="tight"); plt.close(fig)
+fig.suptitle("Matched biopsy fibrosis F1–F4   ·   each point = one donor   (F0 n=2 omitted; full F0–F4 in backup)",
+             fontsize=12.5, color=MUTE, x=0.5, y=1.005, ha="center")
+fig.tight_layout(rect=(0,0,1,0.97)); fig.savefig(f"{OUT}/fig_result3.png", bbox_inches="tight", pad_inches=0.15); plt.close(fig)
 
 # ===================== FIG 3 — TOST equivalence (F4 vs F1 PC-anchor) =====================
 eq=pd.read_csv(f"{T}/equivalence_bound.csv")

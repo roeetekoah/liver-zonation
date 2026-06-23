@@ -46,7 +46,7 @@ Zonation means hepatocytes run different programs by lobule position: pericentra
 
 The dataset is not one homogeneous disease series. Tissue source is tied to stage:
 
-\begin{table}[h]
+\begin{table}[H]
 \centering
 \small
 \begin{tabular}{lll}
@@ -81,7 +81,7 @@ Only the choices that explain why our result differs.
 \subsection{R1 --- The endpoints carry acquisition stress, so we exclude them}
 A curated stress module (immediate-early + heat-shock genes), depth-normalized, runs at \textbf{0.074} mean UMIs/nucleus in biopsies, \textbf{0.282} in healthy organ cubes, and \textbf{1.675} in end-stage explants ($\sim$22$\times$ biopsy). The decisive control is cross-lineage: end-stage-vs-biopsy stress is $\sim$18.5$\times$ in hepatocytes and $\sim$18.2$\times$ in \textbf{endothelial cells}, which carry no zonation program. A signal identical in a non-zonated lineage is whole-organ procurement handling, not hepatocyte biology --- and it perturbs exactly the oxygen/Wnt-gradient axis the de-zonation claim rests on. This justifies excluding the source-confounded endpoints from the disease axis.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.8\linewidth]{fig_stress}
 \caption{Procurement stress by group and lineage. The endpoints (organ cube, explant) carry an organ-wide acute stress signature; biopsies are uniformly low and flat.}
@@ -99,7 +99,7 @@ Across F0--F4 needle biopsies the structure holds by every failure mode:
 
 The poles stay dominant; at most a mild non-monotone middle-ward drift. The null is robust across the full sensitivity grid and a marker-set ladder from 2 to 1{,}637 genes (including Paper 2's own 40 landmark genes).
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.8\linewidth]{fig_result2}
 \caption{Pericentral-anchor fraction across fibrosis (flat) and the dual co-expression fraction collapsing to $\sim$0 at the $\ge 2$-UMI cut. (See also \texttt{fig\_anchor2x2.png}.)}
@@ -109,7 +109,7 @@ The poles stay dominant; at most a mild non-monotone middle-ward drift. The null
 \subsection{R3 --- Robustness and an honest bound}
 The result is stable across the sensitivity grid (depth budgets 1{,}000/1{,}500/3{,}000; GLUL-only/CYP3A4-only/both; Monte-Carlo SD on donor medians 0.006--0.010). An affirmative equivalence test (TOST, 90\% CI, donor-level anchor fractions) puts the F4-vs-F1 PC-anchor change at \textbf{+0.024 (90\% CI $-0.147$ to $+0.194$)}. So we \textbf{exclude a large shift on the order of 20 percentage points} (the well-powered F1$\to$F3 interior tightens to $\sim\pm0.12$); we do \textbf{not} exclude a subtle drift of $\le 10$ points (donor SD is large at F4 n=4). Large re-zonation is ruled out; subtle drift is not.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.8\linewidth]{fig_tost}
 \caption{Equivalence bound on the F4-vs-F1 pericentral-anchor change: a large shift is excluded, a subtle one is not.}
@@ -121,7 +121,7 @@ Genome-wide, of $\sim$21{,}000 genes only \textbf{64} reach FDR $< 0.05$ at F4-v
 
 Source attribution (a side lead): the headline genes are 5--78$\times$ more abundant in cholangiocytes than hepatocytes; the cholangiocyte fraction rises to $\sim$8\% at F4 (the ductular reaction); only $\sim$0.4\% of hepatocyte nuclei robustly co-express $\ge 2$ biliary markers; ambient correction (decontX) cuts hits 64$\to$34 and drops \emph{SOX4/SOX9} below significance. But \emph{EPCAM/B3GNT3/SPINT2} survive (decontX is a consistency check, not a verdict), and \emph{CXCL10} is separate --- its hepatocyte expression does not track the cholangiocyte fraction (corr $-0.09$), so it is a candidate real inflammatory signal, not ambient. Careful conclusion: the burden is \textbf{real as a signal in hepatocyte-labeled pseudobulk, source not resolved}, and the weight of evidence favors \textbf{ambient RNA + rare mixed/doublet nuclei} over broad transdifferentiation.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.8\linewidth]{fig_volcano}
 \caption{Volcano (F4-vs-F1): zonation genes flat; the highlighted hits are biliary/ductular markers. Compositional audit places these genes as cholangiocyte-dominant. (\texttt{fig\_volcano.png} + \texttt{fig\_compositional.png}.)}

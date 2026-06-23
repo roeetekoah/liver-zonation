@@ -36,7 +36,7 @@
 \noindent\textit{Supplementary report (optional).} The required deliverable for this project is the presentation; this document is a complete written companion to it.
 
 \vspace{0.4em}
-\begin{table}[h]
+\begin{table}[H]
 \centering\small
 \begin{tabular}{ll}
 \toprule
@@ -110,7 +110,7 @@ For ``what else changes,'' we summed each biopsy donor's hepatocyte raw UMIs int
 Any DGE hit was audited for source: (i) \textbf{cross-lineage burden} --- is the gene expressed far more in cholangiocytes than hepatocytes (a soup signature)?; (ii) \textbf{cholangiocyte fraction by stage} (ductular reaction); (iii) per-cell co-expression of $\ge$2 biliary markers in hepatocyte-labeled nuclei; (iv) \textbf{decontX} ambient-RNA estimation re-run on the pseudobulk inputs (a \emph{consistency check}, not a verdict --- it uses the paper's own labels, so it carries mild circularity); and (v) a crude \textbf{hepatocyte-cholangiocyte doublet probe} (KRT19/KRT7 $\ge$2 UMI) treated explicitly as an exploratory lead, not a finding.
 
 \paragraph{Compact methods table.}
-\begin{table}[h]
+\begin{table}[H]
 \centering\small
 \begin{tabular}{lll}
 \toprule
@@ -144,41 +144,41 @@ The single most consequential fact about this cohort is structural, not statisti
 
 The endpoints are not just acquired differently; they carry a measurable acute-handling signature. Depth-matched stress-module UMIs per nucleus (mean across donors) are \textbf{0.074 in needle biopsies, 0.282 in healthy organ cubes ($\sim$3.8$\times$), and 1.675 in end-stage explants ($\sim$22.6$\times$ the biopsy level)}; the ambient-robust $\ge$2-UMI detection rate follows the same ladder (0.053 / 0.247 / 0.770). The decisive control is cross-lineage: the explant-vs-biopsy stress fold is essentially identical in hepatocytes (immediate-early genes $\sim$18.5$\times$) and in \textbf{endothelial cells ($\sim$18.2$\times$)} --- a cell type with no zonation program. A stress signal equal in a non-zonated lineage cannot be a hepatocyte zonation phenomenon; it is whole-organ handling. Heat-shock chaperones rise $\sim$66$\times$ in hepatocytes, while the HIF/hypoxia contrast is only $\sim$1.7--2.6$\times$, pointing to acute dissociation/handling stress rather than a sustained chronic-hypoxia program. This is direct evidence that the endpoint signal is procurement-driven, and it justifies setting the endpoints aside as a disease readout.
 
-\begin{figure}[h]\centering\includegraphics[width=0.85\linewidth]{fig_stress}\caption{Procurement stress by tissue source and across lineages. Depth-matched stress-module (immediate-early $+$ heat-shock) UMIs per nucleus are uniformly low across needle biopsies and rise sharply in the deceased-donor organ-cube endpoints (healthy, end-stage). The explant-vs-biopsy fold is essentially identical in hepatocytes and in endothelial cells, which carry no zonation program --- establishing the signal as organ-wide acute handling, not a hepatocyte disease program.}\label{fig:stress}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=0.85\linewidth]{fig_stress}\caption{Procurement stress by tissue source and across lineages. Depth-matched stress-module (immediate-early $+$ heat-shock) UMIs per nucleus are uniformly low across needle biopsies and rise sharply in the deceased-donor organ-cube endpoints (healthy, end-stage). The explant-vs-biopsy fold is essentially identical in hepatocytes and in endothelial cells, which carry no zonation program --- establishing the signal as organ-wide acute handling, not a hepatocyte disease program.}\label{fig:stress}\end{figure}
 
 \subsection{Matched-biopsy anchor classification preserves zonation}
 
 On the acquisition-matched biopsy axis, every mechanism by which zonation could fail comes up flat. The \textbf{pericentral-anchor fraction} is 36/19/23/22/21\% for F0--F4 --- non-monotone and flat across the disease axis (the F0 value rests on n$=$2 and is descriptive). The \textbf{null} (double-negative) fraction is flat (34/44/36/39/39\%), so identity is not being turned off. The \textbf{PP:PC composition ratio} is 0.62/1.16/1.01/1.10/1.18, flat/non-monotone. Most tellingly, the \textbf{dual co-expression} fraction --- the direct count signature of de-zonation --- collapses from $\sim$7--10\% when a permissive 1-UMI call is used to \textbf{$\sim$0.2--0.6\%} under the ambient-robust $\ge$2-UMI call, with no trend across stage: the apparent co-expression at 1 UMI was ambient soup, not genuine co-detection. For contrast, the same strict $\ge$2-UMI dual fraction in explants is \textbf{$\sim$2.9\% ($\sim$7$\times$) higher}. A broad PC$\leftrightarrow$PP gradient is present at every biopsy stage, including cirrhotic F4; the poles stay dominant.
 
-\begin{figure}[h]\centering\includegraphics[width=0.85\linewidth]{fig_result2}\caption{Matched-biopsy anchor classification. Pericentral-anchor and strict ($\ge$2-UMI) dual co-expression fractions across needle-biopsy fibrosis stages. The pericentral fraction is flat/non-monotone; the dual fraction is near-zero and collapses from the permissive 1-UMI value, indicating the 1-UMI co-expression was ambient. Full four-panel breakdown (PC / dual / null / PP:PC) in Figure~\ref{fig:anchor2x2}.}\label{fig:result2}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=0.85\linewidth]{fig_result2}\caption{Matched-biopsy anchor classification. Pericentral-anchor and strict ($\ge$2-UMI) dual co-expression fractions across needle-biopsy fibrosis stages. The pericentral fraction is flat/non-monotone; the dual fraction is near-zero and collapses from the permissive 1-UMI value, indicating the 1-UMI co-expression was ambient. Full four-panel breakdown (PC / dual / null / PP:PC) in Figure~\ref{fig:anchor2x2}.}\label{fig:result2}\end{figure}
 
-\begin{figure}[h]\centering\includegraphics[width=0.85\linewidth]{fig_anchor2x2}\caption{Full anchor 2$\times$2: pericentral-anchor fraction, strict dual co-expression, null (double-negative) fraction, and the periportal:pericentral ratio across biopsy fibrosis stages --- all flat/non-monotone.}\label{fig:anchor2x2}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=0.85\linewidth]{fig_anchor2x2}\caption{Full anchor 2$\times$2: pericentral-anchor fraction, strict dual co-expression, null (double-negative) fraction, and the periportal:pericentral ratio across biopsy fibrosis stages --- all flat/non-monotone.}\label{fig:anchor2x2}\end{figure}
 
 \subsection{The null is robust and quantitatively bounded}
 
 The preserved-zonation result is not a single fragile contrast. It holds across the entire sensitivity grid (anchor choice, UMI threshold, marker-set ladder from 2 to 1{,}637 genes) with Monte-Carlo SD of 0.006--0.010 on donor-median fractions. To bound it affirmatively, a TOST equivalence test on the donor-level pericentral-anchor fraction gives an F4-vs-F1 difference of \textbf{$+$0.024 ($+$2.4 percentage points), 90\% CI $-$0.147 to $+$0.194}; the better-powered interior F1-vs-F3 tightens to roughly $\pm$0.12. In words: the matched axis \textbf{excludes a large coordinated re-zonation on the order of 20 percentage points}, but \textbf{does not exclude a subtle drift of $\le$$\sim$10 points} (the donor-level SD at n$=$4 is too large to rule that out). This is a bounded null --- large/dramatic collapse excluded; subtle change not excluded --- and the bound applies to donor-level transcriptional \emph{structure}, not to lobule-scale spatial architecture, which snRNA cannot see.
 
-\begin{figure}[h]\centering\includegraphics[width=0.85\linewidth]{fig_tost}\caption{Equivalence bound. TOST on the donor-level pericentral-anchor fraction across biopsy F1$\to$F4: the 90\% CI excludes a $\sim$20-point shift but not a $\le$10-point drift --- a quantified bound on ``preserved,'' honest about the limited power at n$=$4.}\label{fig:tost}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=0.85\linewidth]{fig_tost}\caption{Equivalence bound. TOST on the donor-level pericentral-anchor fraction across biopsy F1$\to$F4: the 90\% CI excludes a $\sim$20-point shift but not a $\le$10-point drift --- a quantified bound on ``preserved,'' honest about the limited power at n$=$4.}\label{fig:tost}\end{figure}
 
 \subsection{End-stage explants are heterogeneous, not one program}
 
 Setting the explants aside as confounded does not mean they are uninformative about \emph{why} pooling fakes a collapse. The five explants go in opposite directions rather than sharing one end-stage phenotype: \textbf{CL104} retains its pericentral pole (PC-anchor 49.7\%, PP:PC 0.13); \textbf{CL16} nearly collapses to periportal (PC 3.2\%, PP:PC 20.3); \textbf{CL18} floods into co-expression (dual 22.4\%); CL103 and CL17 are periportal-leaning. Across the five, the pericentral-anchor fraction spans 3--50\% and PP:PC spans 0.13--20. Pooling five discordant organs into one marker correlation manufactures a single uniform ``collapse'' that none of them individually shows --- the signature of heterogeneous, separately-handled organ procurement.
 
-\begin{figure}[h]\centering\includegraphics[width=0.85\linewidth]{fig_explant}\caption{End-stage explant heterogeneity. Per-explant anchor profiles: the five organs span retained pericentral identity (CL104) to near-total periportal collapse (CL16) to a co-expression flood (CL18). A pooled correlation collapses these into one number.}\label{fig:explant}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=0.85\linewidth]{fig_explant}\caption{End-stage explant heterogeneity. Per-explant anchor profiles: the five organs span retained pericentral identity (CL104) to near-total periportal collapse (CL16) to a co-expression flood (CL18). A pooled correlation collapses these into one number.}\label{fig:explant}\end{figure}
 
 \subsection{Genome-wide DGE finds a biliary burden, not zonation loss}
 
 A genome-wide donor-level pseudobulk DGE scan plays two roles. As an \textbf{independent count-based check} on the zonation result, the zonation genes are flat at the expression level --- GLUL FDR \textbf{0.80}, CYP3A4 0.85, ASS1 0.96, with all detox/periportal markers FDR $>$ 0.79 --- agreeing with the anchor classification (this is a corroborating sanity check, \emph{not} the primary proof). As a \textbf{discovery scan}, of the 21{,}022 tested genes only \textbf{64 reach FDR$<$0.05 at F4-vs-F1} (omnibus across stages: 91), and they form a coherent \textbf{biliary/ductular marker burden}: EPCAM (logFC $+$2.3, FDR 0.002), GRHL2 ($+$3.1, FDR 0.0004), SPINT2 ($+$2.7, FDR 0.003), SOX4 ($+$2.5, FDR 0.047), SOX9 ($+$2.4, FDR 0.044), B3GNT3 ($+$2.9, FDR 0.001), plus CXCL10 ($+$5.4, FDR 0.001). The honest claim is bounded: \textbf{no large single-gene hepatocyte program changes across the matched axis other than this biliary burden} --- but a gene-level scan can miss a weak \emph{coordinated} program (tens-to-hundreds of genes each shifting modestly without any one crossing FDR), so a gene-set test is still owed (see Sec.\ 4.4, 4.6). A within-class confirmatory DGE (Plan B) found the same biliary set appearing class-agnostically across PC/PP/null/dual nuclei, with zonation genes flat inside every class.
 
-\begin{figure}[h]\centering\includegraphics[width=0.85\linewidth]{fig_volcano}\caption{Genome-wide pseudobulk DGE (F4-vs-F1) volcano. Zonation genes sit at the origin (flat; GLUL FDR 0.80). The significant hits are a biliary/ductular marker set (EPCAM, GRHL2, SPINT2, SOX4, SOX9, B3GNT3) plus CXCL10.}\label{fig:volcano}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=0.85\linewidth]{fig_volcano}\caption{Genome-wide pseudobulk DGE (F4-vs-F1) volcano. Zonation genes sit at the origin (flat; GLUL FDR 0.80). The significant hits are a biliary/ductular marker set (EPCAM, GRHL2, SPINT2, SOX4, SOX9, B3GNT3) plus CXCL10.}\label{fig:volcano}\end{figure}
 
 \subsection{The biliary burden is most consistent with a compositional source --- a lead, not a verdict}
 
 Several lines of evidence point to the biliary burden being \textbf{compositional} rather than hepatocyte-intrinsic transdifferentiation, but none closes the question. (i) Every headline biliary gene is \textbf{5--78$\times$ more abundant in cholangiocytes than in hepatocytes} --- the profile of ambient soup. (ii) The cholangiocyte fraction itself rises to \textbf{$\sim$8\% at F4} (the expected ductular reaction), so a per-cell-fraction ``rise'' in hepatocyte-labeled pseudobulk is exactly what compositional spillover predicts. (iii) Only \textbf{$\sim$0.4\%} of hepatocyte nuclei robustly co-express $\ge$2 biliary markers --- too few to drive a widespread program. (iv) \textbf{decontX} cuts the hits from 64 to 34 and drops the canonical plasticity factors \textbf{SOX4 (FDR 0.131) and SOX9 (FDR 0.118)} below significance, while \textbf{EPCAM, B3GNT3, SPINT2 and CXCL10 survive} --- consistent with a mixed source, but decontX uses the paper's own labels and can over- as well as under-correct, so it \emph{demotes, it does not disprove}, these genes. A crude doublet probe (hepatocyte-cholangiocyte co-capture suspects, KRT19/KRT7 $\ge$2 UMI) rises $\sim$17$\times$ with fibrosis and carries the inflated-total-count signature of genuine co-capture, yet all such nuclei sit \emph{below} the paper's only doublet filter (0 of 42{,}579 biopsy hepatocyte nuclei exceed the $>$50{,}000-count cutoff) --- an illustrative lead that cannot separate a doublet from a rare transdifferentiating cell. \textbf{CXCL10 is carved out separately}: its hepatocyte expression does not track the cholangiocyte fraction (correlation $-$0.09), so it is a \emph{candidate real inflammatory signal}, not ambient. Net reading: the biliary burden is \textbf{most consistent with cholangiocyte ambient RNA plus a small fibrosis-rising co-capture/biphenotypic contribution that Paper 1's filter could not have removed} --- neither hepatocyte-intrinsic --- but the source attribution is an open lead, repeatedly flagged as such, not a closed result.
 
-\begin{figure}[h]\centering\includegraphics[width=0.85\linewidth]{fig_compositional}\caption{Source attribution of the biliary burden (3-panel). Left: headline biliary genes are 5--78$\times$ cholangiocyte-dominant across lineages. Middle: cholangiocyte fraction rises into F4 (ductular reaction). Right: decontX reduces hits 64$\to$34, dropping SOX4/SOX9; EPCAM/B3GNT3/SPINT2/CXCL10 survive. Most consistent with a compositional source; not a closed verdict.}\label{fig:compositional}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=0.85\linewidth]{fig_compositional}\caption{Source attribution of the biliary burden (3-panel). Left: headline biliary genes are 5--78$\times$ cholangiocyte-dominant across lineages. Middle: cholangiocyte fraction rises into F4 (ductular reaction). Right: decontX reduces hits 64$\to$34, dropping SOX4/SOX9; EPCAM/B3GNT3/SPINT2/CXCL10 survive. Most consistent with a compositional source; not a closed verdict.}\label{fig:compositional}\end{figure}
 
-\begin{figure}[h]\centering\includegraphics[width=0.85\linewidth]{fig_lobe}\caption{Lobe invariance (supporting). Within explants, the zonation-marker detection pattern is invariant across right/caudate/left lobes (e.g.\ GLUL 0.350/0.343/0.297), so multi-lobe sampling does not manufacture the de-zonation signal --- clearing one sub-confound.}\label{fig:lobe}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=0.85\linewidth]{fig_lobe}\caption{Lobe invariance (supporting). Within explants, the zonation-marker detection pattern is invariant across right/caudate/left lobes (e.g.\ GLUL 0.350/0.343/0.297), so multi-lobe sampling does not manufacture the de-zonation signal --- clearing one sub-confound.}\label{fig:lobe}\end{figure}
 
 \textbf{Two conceptual figures} belong with this report but are not fabricated here. A \textbf{study-design / confound schematic} would show the disease axis (F0--F4 needle biopsies, right lobe) beside the endpoints (healthy and end-stage deceased-donor organ cubes, multi-lobe), with the stage-vs-acquisition collinearity stated explicitly: because every milder sample is a biopsy and every end-stage sample is an explant, disease stage and acquisition method are perfectly collinear and not separable in the pooled comparison \emph{(schematic; see presentation slides 3 and 5)}. An \textbf{anchor-method pipeline schematic} would show raw counts $\to$ binomial down-thinning to 1{,}500 UMIs $\to$ $\ge$2-UMI strict anchor calls $\to$ PC/PP/dual/null per nucleus $\to$ donor-level fractions $\to$ sensitivity grid \emph{(schematic; see presentation slides 5 and 8)}.
 
@@ -232,7 +232,7 @@ Verified against primary sources where possible; entries we could not independen
 \FloatBarrier
 \section{Figures and tables}
 
-\begin{table}[h]
+\begin{table}[H]
 \centering\small
 \begin{tabular}{lll}
 \toprule
@@ -253,19 +253,5 @@ Fig 7 & Lobe invariance & \texttt{fig\_lobe.png} \\
 \end{table}
 
 Key data tables (in \texttt{results/tables/analysis/}): \texttt{load\_bearing\_donor\_table.csv} (donor-level anchor counts), \texttt{equivalence\_bound.csv} (TOST), \texttt{dge\_planA\_F4vsF1.csv} (primary DGE), \texttt{dge\_planA\_omnibus.csv}, \texttt{dge\_planA\_decontx\_F4vsF1.csv} (decontX), \texttt{dge\_planA\_compositional.csv} (source attribution), \texttt{census\_sensitivity.csv} (grid).
-
-\subsection*{Contribution table}
-
-\begin{table}[h]
-\centering\small
-\begin{tabular}{ll}
-\toprule
-Member & Contribution \\
-\midrule
-\emph{Name / CSE username / email / ID} & \emph{placeholder} \\
-\emph{Name / CSE username / email / ID} & \emph{placeholder} \\
-\bottomrule
-\end{tabular}
-\end{table}
 
 \end{document}
