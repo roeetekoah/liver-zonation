@@ -4,7 +4,7 @@
 \usepackage{enumitem}
 \usepackage{booktabs}
 \usepackage{graphicx}
-\graphicspath{{../../presentation/assets/}{./}}
+\graphicspath{{../presentation/assets/}{./}}
 \usepackage{float}
 \usepackage{placeins}
 \usepackage{xcolor}
@@ -15,16 +15,18 @@
 \usepackage{fancyhdr}
 \setlength{\headheight}{13.6pt}
 \pagestyle{fancy}\fancyhf{}
-\lhead{Computational Genomics}\rhead{Hackathon}\cfoot{\thepage}
+\lhead{Computational Genomics 76553}\rhead{Hackathon}\cfoot{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
 \begin{document}
-\begin{center}
-  {\Large\bfseries Computational Genomics -- Hackathon}\\[0.4em]
-  {\large Does the snRNA-seq evidence for hepatocyte de-zonation survive matched sampling? A re-analysis note}\\[0.7em]
-  Roee Tekoah \quad(\href{mailto:roee.tekoah@mail.huji.ac.il}{roee.tekoah@mail.huji.ac.il})\\[0.2em]
-  Shira Gelbstein
-\end{center}
-\vspace{0.4em}
+\noindent{\LARGE\bfseries Does the snRNA-seq evidence for hepatocyte\\[1pt]
+de-zonation survive matched sampling?}\par
+\vspace{0.45em}
+\noindent\textbf{Roee Tekoah}~(\href{mailto:roee.tekoah@mail.huji.ac.il}{roee.tekoah@mail.huji.ac.il})\quad\textbf{·}\quad\textbf{Shira Gelbstein}\par
+\vspace{0.12em}
+\noindent{\small\color{black!55}Computational Genomics 76553~~·~~Hebrew University of Jerusalem~~·~~Hackathon}\par
+\vspace{0.45em}
+\noindent\textcolor{black!40}{\rule{\textwidth}{0.7pt}}\par
+\vspace{0.6em}
 
 {\small\noindent\textbf{Abstract.~}Gribben et al.\ report that during human chronic liver disease (MASLD) hepatocytes progressively lose their spatial zonation and acquire cholangiocyte-like (biliary) features. We re-examined the single-nucleus RNA-seq evidence for the \emph{progressive de-zonation} part of that claim. The complication we found is structural: \textbf{disease stage is collinear with how the tissue was obtained.} Healthy and end-stage samples are deceased-donor organ tissue (a $\sim$1\,cm$^3$ cube / explant); the F0--F4 disease spectrum is 16-gauge needle biopsy. So ``healthy $\to$ MASLD $\to$ end-stage'' is also ``organ cube $\to$ needle $\to$ explant,'' and a single pooled correlation cannot tell disease from acquisition. After setting aside the source-confounded endpoints and re-testing on the matched needle-biopsy axis --- using raw UMI counts, depth-normalized per nucleus, with the \textbf{donor} ($\sim$47) as the unit of inference --- pericentral/periportal structure is \textbf{preserved across fibrosis F1$\to$cirrhotic F4}. A donor-level pseudobulk differential-expression scan finds no zonation-marker loss; its one signal is a small \textbf{biliary/ductular-marker burden} at F4, more consistent with cholangiocyte ambient RNA plus rare mixed/doublet nuclei (the ductular reaction) than with broad hepatocyte transdifferentiation. We do not claim to overturn the paper; biliary source attribution is \textbf{a lead, not closed.}}\par\vspace{0.5em}
 
