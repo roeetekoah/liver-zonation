@@ -246,6 +246,36 @@ does **not** need the causal claim — the perfect stage⟂tissue-source **colli
   at n=4); we rule out *large/dramatic* re-zonation (explant-collapse scale), not subtle change. This converts
   D3 from "nothing significant" into a quantified exclusion bound; it bounds donor-level STRUCTURE, not per-gene.
 
+- **O13 — Gene-set / pathway-level DGE (the KEY open test for "no other hepatocyte program").** Gene-level
+  FDR (Plan A) can miss a *coordinated weak program* — tens-to-hundreds of genes each shifting modestly without
+  any single one crossing FDR. To make the Level-1 "nothing else moves" claim fully defensible we need
+  **CAMERA** (competitive enrichment) + **ROAST/mroast** (self-contained, pre-specified) over standard
+  hepatocyte programs: detoxification, urea cycle, bile-acid & lipid metabolism, ER stress, interferon/
+  inflammation, hypoxia, mitochondrial, cell-cycle, senescence, EMT, fetal/progenitor, cholangiocyte/ductular.
+  Claim becomes defensible only if, after excluding zonation sets and the ductular/biliary axis, **no
+  hepatocyte program shows robust donor-level enrichment F1→F4.** Raised by ChatGPT review (item 3) + flagged
+  by the user as KEY. **DECISION PENDING: future work vs run now** (bounded analysis; reuses the Plan A edgeR
+  fit). This is central (not the downweighted plasticity sub-leg) — recommend running it.
+
+## Note N5 — DGE framing locked with the lead (2026-06-23): Plan A is the finding; plasticity is a side lead
+- **Level-1 DGE conclusion (the point), two parts:** (1) **zonation kept — and the genome-wide DGE INDEPENDENTLY
+  CORROBORATES it** (a second method, per-gene donor-level expression, agreeing with the count instruments
+  F8/F1/F9/F16; strikingly non-significant FDRs on zonation genes + flat housekeeping/controls). This is **not a
+  "sanity check"** and not the primary proof — it is genuine independent support; the earlier "sanity-check"
+  demotion was wrong and is corrected in F18. (2) **Genome-wide, nothing else moves except a biliary-marker
+  burden** — and per ChatGPT item 5, Plan A *detects a biliary-marker burden inside hepatocyte-labeled pseudobulk;
+  it does NOT by itself prove "plasticity."* Caveat O13 (gene-set layer) bounds part (2).
+- **Plan A vs Plan B:** Plan A is the load-bearing finding. Plan B is **subordinate/confirmatory** — given flat
+  proportions (F8) there is no composition shift for pooling to mask, so B mostly confirms A; its value is
+  foreclosing "could a program hide within a zone?" (no). Report A; keep B as a within-zone robustness note (F20).
+- **F4-vs-F1 fragility (ChatGPT item 2) is largely resolved for the MAIN claims by the interior contrasts:** the
+  null and the zonation corroboration hold in the well-populated F1→F3 interior (n=8/12/12), so they do **not**
+  hinge on the thin F4 (n=4). What the interior does NOT resolve is leave-one-F4-donor-out robustness of the
+  *biliary hits* specifically — but that sits in the downweighted source-attribution sub-leg, not the main claims.
+- **Source-attribution sub-leg (compositional burden / decontX / doublet F21 / CXCL10) = a side exploration, a
+  promising lead, NOT the point.** Probed crudely; do not expand it (scDblFinder, decontX sweeps, contamination-
+  quantification per ChatGPT items 7–9 are out of scope unless the lead asks). F21 reclassified EXPLORATORY LEAD.
+
 ## Item 15 — Affirmative equivalence bound for "zonation preserved" → F16
 **STATUS: LIVE.** See O12 (done). Strengthens **D3**: the preservation claim now has an affirmative form
 ("we exclude a coordinated re-zonation larger than ±0.12–0.19 across biopsy F1→cirrhotic F4"), honestly

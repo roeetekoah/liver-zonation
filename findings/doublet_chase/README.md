@@ -1,6 +1,10 @@
 # F21 — Doublet chase: do the decontX-surviving biliary genes come from hepatocyte–cholangiocyte doublets?
 
-**Status: LIVE.** Script `src/dge/doublet_chase.py` → `results/tables/analysis/doublet_chase.csv`.
+**Status: EXPLORATORY LEAD — not a settled finding.** This was probed crudely, with little time, as a *source-
+attribution* sub-question for the biliary-marker burden (F18 part 2). It is a promising lead for "what is that
+residual," **not a load-bearing result**, and it is downstream of — and far less important than — the two main
+DGE claims (zonation kept; nothing else moves at the gene level). Treat everything below as directional.
+Script `src/dge/doublet_chase.py` → `results/tables/analysis/doublet_chase.csv`.
 Follow-up to F18: after decontX, EPCAM/B3GNT3/SPINT2/CXCL10 still tested significant F4-vs-F1 and we
 listed three possible sources of that residual — (a) residual ambient decontX under-corrected, (b)
 **hepatocyte–cholangiocyte doublets** (which decontX does not model and which plausibly rise in cirrhosis),

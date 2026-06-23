@@ -1,6 +1,19 @@
 # F20 — Plan B: within-class DGE (does the program shift INSIDE a stable zonal population?)
 
-**Status: LIVE.** Script `src/dge/plan_b_within_class.R` → `dge_planB_{PC,PP,null,dual}_F4vsF1.csv`.
+**Status: LIVE but SUBORDINATE to Plan A (robustness check, largely confirmatory).** Script
+`src/dge/plan_b_within_class.R` → `dge_planB_{PC,PP,null,dual}_F4vsF1.csv`.
+
+**Why this is subordinate, not a co-equal second finding (reasoned).** Plan A pools all of a donor's
+hepatocytes; Plan B first labels each hepatocyte by zone and pseudobulks *within* each label. The only thing
+Plan B can catch that Plan A cannot is a **within-zone program masked by pooling** — and pooling masks a
+within-zone change *only if zone composition also shifts* to cancel it (an aggregation/Simpson effect). But we
+have already established that **zone proportions are flat across F1→F4 (F8)**, so there is no composition shift
+for pooling to hide behind, and Plan A and Plan B are *expected* to agree — which they do. So Plan B is mostly
+**confirmatory of A**, not independent evidence. Its one genuinely useful job is to **foreclose the specific
+question a reviewer will ask** — "could a disease program hide inside a zone?" — answered cleanly: no. (Its
+other output, that the biliary burden is class-agnostic, was corroboration for the *source-attribution*
+sub-leg, which is downweighted.) **Recommendation: report Plan A as the DGE finding and keep this as a short
+within-zone robustness paragraph under it; do not present A and B as two separate headline analyses.**
 Each biopsy hepatocyte nucleus is classified PC / PP / null / dual by ambient-robust (≥2-UMI) anchor
 detection; then the full transcriptome is pseudobulked per donor WITHIN each class and tested F4-vs-F1 with
 edgeR (TMM + negative-binomial quasi-likelihood); classifier genes (GLUL,CYP3A4,ASS1,PCK1,HAL,ALDOB) excluded;

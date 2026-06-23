@@ -9,45 +9,71 @@ donors (all ≥50 hepatocyte nuclei; F0–F4 = 2/8/12/12/4 donors), 21,022 genes
 common biological coefficient of variation 0.405. Primary contrast = **cirrhotic F4 vs F1**; an across-all-
 stages omnibus is secondary.
 
-## Purpose & framing — this is a DISCOVERY scan, NOT a zonation re-test
-Zonation preservation is **already established** by the count-based instruments (anchor classification flat
-across the whole sensitivity grid F8; set-invariance F1; donor-balanced gradient F9; equivalence bound F16)
-and is treated here as a **settled premise.** This genome-wide DGE asks a *different* question: **given that
-zonation is preserved, does ANY other coordinated program shift across the disease axis** — on some axis
-other than zonation, or within a zone? Because a genome-wide test scans *all* ~21,000 genes, the zonation
-genes are necessarily included — but their flatness here is a **built-in sanity / negative-control check**
-(it shows the edgeR pipeline does not manufacture significance where the count instruments already found
-none, and is internally consistent with the premise), **NOT the deliverable and NOT independent proof of
-zonation.** The deliverable is the answer to "what else changes?" — see the headline below.
+## Purpose & framing — a discovery scan whose null ALSO independently corroborates preserved zonation
+This analysis has one primary job and one genuine bonus, and they should be kept distinct.
 
-## Headline result — beyond the (already-known, compositional) plasticity set, only a candidate inflammatory signal
-Across all ~21,000 genes, the dominant coordinated F1→F4 program is the biliary/plasticity set that **Paper 1
-already described** — and our follow-up scans (below) show that set is **compositional (cholangiocyte ambient +
-doublets), not a hepatocyte-intrinsic program.** Subtracting it, **no other large coordinated hepatocyte program
-reaches significance** — with **one honest exception we initially buried: CXCL10**, an interferon-induced
-inflammatory chemokine. CXCL10 has the largest fold-change in the set (log2 +5.4), survives decontX (FDR 0.002),
-and — unlike every genuinely ambient hit — its hepatocyte expression does **NOT** track the cholangiocyte
-fraction (correlation **−0.09**, vs +0.24 to +0.68 for EPCAM/GRHL2/SOX4/etc.), so by our own ambient logic it is
-**not** spillover. It is a **candidate real hepatocyte/stromal inflammation signal** (see CXCL10 note below).
-So the accurate headline is: *no other large coordinated program EXCEPT a candidate inflammatory axis (CXCL10);
-the biliary set is compositional.* **Power caveat:** "no other program" means **none larger than ~2-fold**
-(log2 ≈ 1) — at common biological-variation 0.405 with F4 n=4 / F1 n=8 the realized detection floor is roughly
-2-fold, so a subtler coordinated program could sit below threshold (the well-populated F1–F3 interior is also
-near-flat — two looks agree, but neither rules out small effects). The across-all-stages **omnibus finds 91
-genes FDR<0.05** (vs 64 for F4-vs-F1), and the headline biliary genes are an **F4-weighted jump, not a smooth
-gradient** (e.g. EPCAM log2 vs F1 = +0.6 at F2, +0.7 at F3, **+2.3 at F4**) — consistent with a cirrhosis-stage
-ductular reaction.
+**Primary job — discovery.** Zonation preservation is already established by the count-based instruments
+(anchor classification flat across the whole sensitivity grid F8; marker-set invariance F1; donor-balanced
+gradient F9; equivalence bound F16). Taking that as settled, the genome-wide DGE asks a *different* question:
+**given preserved zonation, does any OTHER coordinated hepatocyte program shift across the matched needle-biopsy
+axis F1 → cirrhotic-F4?**
+
+**Bonus — independent corroboration of preserved zonation (NOT a mere sanity check).** Because the scan tests
+every gene, it also tests the zonation markers, and they come back flat *at the expression level*, with
+strikingly non-significant FDRs, while the housekeeping controls are flat and the rest of the genome behaves.
+This is **not the primary proof** of preservation (the count instruments are) — but it is also **far more than a
+pipeline sanity check.** It is a genuine **second, independent line of support**, from a method (per-gene
+donor-level expression with edgeR/TMM) that shares no machinery with the count-based anchor instruments. Two
+independent methods agreeing that the zonation genes do not change is real corroboration, and we state it as
+such.
+
+## Headline result — two parts
+**(1) Zonation is kept — independently corroborated.** Every zonation/detox gene is non-significant at
+F4-vs-F1 (numbers below), the housekeeping panel is flat, and nothing in the rest of the genome rediscovers
+the original de-zonation. A genome-wide expression scan independently agrees with the count-based preservation
+claim.
+
+**(2) Beyond zonation, essentially nothing else moves — except a biliary-marker burden (and one candidate
+inflammatory gene).** Of ~21,000 genes only **64 reach FDR<0.05** at F4-vs-F1, and they are a biliary/ductular
+marker set (EPCAM, GRHL2, SPINT2, SOX4, SOX9, B3GNT3) — exactly the markers Paper 1 flagged — plus CXCL10.
+**The careful reading (ChatGPT item 5): this scan detects a biliary-MARKER BURDEN inside hepatocyte-labeled
+pseudobulk; it does NOT, by itself, prove or measure hepatocyte "plasticity."** Whether that burden is
+cholangiocyte ambient RNA, rare doublets, or genuine rare hepatocyte expression is a **separate source-
+attribution question**, explored at lower depth in a sub-finding (below) — that exploration is a promising
+**lead, not the point of this finding**, and was only crudely probed. CXCL10 stands apart from the biliary
+set: its hepatocyte expression does not track the cholangiocyte fraction (correlation −0.09 vs +0.24..+0.68),
+so it is a **candidate real inflammatory signal**, not biliary/ambient.
+
+**The key open caveat on part (2) — gene-level FDR ≠ "no program."** "Nothing else moves" is a *gene-level*
+statement: no single gene outside the biliary set crosses FDR. Gene-level DGE can still miss a **coordinated
+weak program** — tens-to-hundreds of genes each shifting modestly (a whole pathway dimming a little) without
+any one gene reaching significance. To claim "no other hepatocyte program" with full confidence we need a
+**gene-set / pathway-level layer** (CAMERA for competitive enrichment; ROAST/mroast for self-contained
+pre-specified signatures) over the standard hepatocyte programs — detoxification, urea cycle, bile-acid and
+lipid metabolism, ER stress, interferon/inflammation, hypoxia, mitochondrial, cell-cycle, senescence, EMT,
+fetal/progenitor, cholangiocyte/ductular. **Until that runs, the honest claim is: "no single-gene program and
+no large coordinated change (> ~2-fold); a coordinated *weak* program is not yet formally excluded."**
+[OPEN — O13; decision pending: future work vs run now.]
+
+**Power note (bounds the single-gene null).** "No other program" at the gene level means **none larger than
+~2-fold** (log2 ≈ 1): at common biological-variation 0.405 with F4 n=4 / F1 n=8 the realized detection floor
+is roughly a 2-fold coordinated change. The well-populated F1–F3 interior (n=8/12/12) is also near-flat, so
+two looks agree — but neither rules out subtle effects, which is exactly why the gene-set layer (O13) matters.
+(Secondary detail: the across-all-stages omnibus finds 91 genes FDR<0.05 vs 64 for F4-vs-F1; the biliary genes
+are an F4-weighted jump, not a smooth gradient — e.g. EPCAM log2 vs F1 = +0.6 at F2, +0.7 at F3, **+2.3 at
+F4** — consistent with a cirrhosis-stage ductular reaction.)
 
 ## Results (detail)
-- **Sanity / consistency check — zonation + housekeeping flat (NOT the deliverable).** Every zonation/detox
+- **Independent corroboration — zonation + housekeeping flat at the expression level.** Every zonation/detox
   gene is non-significant at F4-vs-F1. Verbose, from `dge_planA_F4vsF1.csv`: **GLUL FDR 0.803** (logFC −0.33),
   CYP3A4 0.851, CYP2E1 0.903, ALDOB 0.846, CPS1 0.920, ASS1 0.962 — all far above the 0.05 cut. The lowest
   detox FDRs are **ADH4 0.428** (logFC −0.54) and SLCO1B3 0.571 (−0.64) — still non-significant. (Earlier
   drafts mis-stated "GLUL FDR 0.43"; 0.43 is ADH4's value, GLUL is 0.80 — corrected here and in F19.) No
-  housekeeping gene is FDR-significant (ACTB mildly up +1.06 but FDR 0.33; GAPDH/MALAT1/PPIA/TBP flat).
-  Together these confirm the pipeline is calibrated and consistent with the established premise — they do not
-  re-prove zonation. **Note these are high-expression genes where the n=4 power limit does NOT bite, so their
-  flatness is genuine evidence, not merely absence of power.**
+  housekeeping gene is FDR-significant (ACTB mildly up +1.06 but FDR 0.33; GAPDH/MALAT1/PPIA/TBP flat). These
+  are high-expression genes where the n=4 power limit does NOT bite, so their flatness is **genuine evidence**,
+  not absence of power — a second, independent method agreeing with the count instruments (not a re-proof, and
+  not a mere pipeline check). One honest limit (ChatGPT item 4): housekeeping flatness shows normalization is
+  sound, which is necessary but not the same as proving the model is perfectly specified.
 - **Discovery: 64 genes FDR<0.05 (62 up).** The program is **biliary / ductular / transdifferentiation**:
   **EPCAM +2.3, GRHL2 +3.1, SPINT2 +2.7, B3GNT3, SOX4, SOX9**, + inflammation **CXCL10 +5.4**. This is the
   ductular reaction of cirrhosis — and **SOX4/SOX9/EPCAM are exactly Paper 1's plasticity/transdifferentiation
