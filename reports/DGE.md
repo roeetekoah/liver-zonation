@@ -36,9 +36,9 @@ These answer different questions and must be normalized differently. This distin
   up, −1 = halved) and each unit = one doubling. **logFC +3.1 = 2³·¹ ≈ 8.5× up; 0 = no change.**
 - **FDR (false-discovery rate)** = among the genes you call "significant" at a threshold, the expected
   fraction that are false. We test ~21,000 genes, so some look significant by chance; FDR adjusts the raw
-  p-value for that. **Example (verbose, as required): the zonation gene GLUL has FDR = 0.43 in F4-vs-F1 —
-  i.e. if we set the bar at GLUL's level, 43% of "changed" calls would be false; far above the 0.05 cut, so
-  GLUL shows NO detectable change.**
+  p-value for that. **Example (verbose, as required): the zonation gene GLUL has FDR = 0.80 in F4-vs-F1
+  (from `dge_planA_F4vsF1.csv`) — i.e. if we set the bar at GLUL's level, ~80% of "changed" calls would be
+  false; far above the 0.05 cut, so GLUL shows NO detectable change.**
 - **TMM** = edgeR per-donor scaling factor (depth + composition); the proper fix for the UMIs/10k denominator.
 - **NB-GLM** = negative-binomial model for counts (over-disperse vs Poisson); how the change is tested.
 - **burden (UMIs/10k)** = a gene's share of a cell type's transcriptome ×10⁴ — used to compare a gene's
@@ -51,7 +51,8 @@ These answer different questions and must be normalized differently. This distin
   right check for "are sequencing batches randomized vs disease stage?" Ours: V(run,stage)=0.84 (NOT
   randomized; 9/13 runs single-stage); V(run,F)=0.40 within biopsies (partial). MDS-by-donor is a SECONDARY
   "did batch leak into expression" picture, not the design-level randomization check.
-- **"preserved" vs "no detectable change":** a null DGE (zonation genes FDR>0.43) = **no detectable change**,
+- **"preserved" vs "no detectable change":** a null DGE (every zonation gene non-significant; GLUL FDR 0.80,
+  lowest of the set ADH4 FDR 0.43) = **no detectable change**,
   NOT proven preservation. The affirmative bound (F16: exclude shifts > ~±0.12–0.19) only rules out LARGE
   shifts. We do NOT claim tight quantitative preservation.
 

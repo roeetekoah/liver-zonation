@@ -309,7 +309,7 @@ bounded (modest ≤10% drift not excluded). The companion to the descriptive nul
 ## Item 16 — Plan A genome-wide discovery DGE (edgeR pseudobulk) → F18
 **STATUS: LIVE.** [`findings/dge_plan_a/`](findings/dge_plan_a/README.md). Pseudobulk per donor (raw UMIs,
 hepatocytes) → edgeR TMM + negative-binomial quasi-likelihood (robust), 38 biopsy donors, 21,022 genes;
-primary F4-vs-F1. **Zonation flat** (GLUL FDR 0.43, all detox FDR>0.79 → reproduces D3 with edgeR);
+primary F4-vs-F1. **Zonation flat** (GLUL FDR 0.80, all detox FDR>0.79 → reproduces D3 with edgeR);
 **housekeeping flat** (normalization sound). **64 hits = a biliary/ductular program** (EPCAM/GRHL2/SPINT2/
 SOX4/SOX9 + CXCL10). Cross-lineage burden: every headline gene 7–78× cholangiocyte-dominant; cholangiocyte
 fraction rises to ~8.3% at F4 (ductular reaction) → the F4 "rise" is compositional spillover, not hepatocyte
