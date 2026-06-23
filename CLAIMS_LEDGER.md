@@ -280,6 +280,35 @@ hepatocyte nuclei exceed 50,000.** But they are too rare to dominate — only ~2
 is the diffuse ambient smear. So the residual = **mostly ambient + a small fibrosis-rising doublet
 contribution Paper 1 could not have removed — neither hepatocyte-intrinsic.** Small-number caveat (16 suspects).
 
+## Note N4 — Second adversarial-review round (biology + methods agents, 2026-06-23) and the fixes applied
+Two adversarial agents (one liver-biology, one statistics/methods) reviewed the DGE package. Core conclusions
+survived; the following real problems were caught and corrected (all verified against the CSVs, not prose):
+- **ROGUE NUMBER — GLUL FDR.** Drafts said "GLUL FDR 0.43"; the CSV shows **GLUL = 0.803** (0.43 is ADH4).
+  Fixed in F18, F19, and the memory file. Conclusion (zonation flat) unchanged — GLUL is high-expression, so
+  the null is real evidence, not a power artifact.
+- **F17 BATCH CLAIM WAS FALSE AS WRITTEN.** "Both F4-bearing runs carry F1 (MIXED)" — wrong: **SLX-20270 has
+  no F1**; only SLX-20290 has both endpoints, so 2 of 4 F4 donors lack a within-run F1 comparator. The old
+  MIXED flag tested "≥2 F levels," not "both endpoints." **Executed the promised sensitivity** (`plan_a_batch
+  _sensitivity.R`): biliary effect sizes survive (A) run-as-covariate and (B) within a single run — only
+  significance attenuates with n → the hits are **not a batch artifact**; F17 corrected + evidence added.
+- **CXCL10 MISLABELED "ambient" (under-claim).** Its hep expression does not track cholangiocyte fraction
+  (corr −0.09 vs +0.24..+0.68 for true ambient hits); it is a **candidate inflammatory signal**, broken out of
+  the biliary/ambient bucket in F18 + SYNTHESIS. The headline is now "no other large program EXCEPT CXCL10."
+- **F21 DOUBLET LEG over-stated → softened to illustrative.** KRT19/KRT7≥2 cannot separate a doublet from a
+  rare transdifferentiating cell; the total-count gap is partly a selection + denominator artifact; n=16 is
+  directional not statistical. The model-independent fact (0/42,579 over the 50,000-count filter) stands.
+- **NULL restated** as "no other program **larger than ~2-fold**" (detection floor at BCV 0.405, n=4/8), and
+  the **omnibus count (91)** and F4-weighted (non-gradient) shape surfaced in F18.
+- **decontX flagged as a consistency check, not decisive** (uses the paper's own labels → mild circularity);
+  the **cross-lineage burden audit is the pre-specified decisive test.** Forking-paths honesty: Plan A / interior
+  / decontX / Plan B×4 / doublet are corroborating/descriptive around that one decisive test, not independent
+  confirmations; Plan B per-class FDRs are not cross-corrected (positively correlated donors).
+- **Two untested alternatives logged as caveats in F19:** needle-core sampling-axis bias; regeneration as a
+  hepatocyte-intrinsic source of biliary markers (distinct from both ambient and transdifferentiation).
+- **SOUND, no change (per methods agent):** pseudobulk+TMM+QL design, filterByExpr, Plan B classifier-gene
+  exclusion, the zonation-flat null on high-expression genes, the cross-lineage burden audit, the 50,000-count
+  fact. The procurement confound (endothelial stress 20.2× ≈ hepatocyte 21.0×) remains the strongest result.
+
 ## Known doc-debt (to fix when un-freezing the report) — confirmed by cross-check agent 2026-06-23
 Agent compared findings/ + ledger vs writeup/. Two real problems repeat; everything else is consistent.
 - **(A) "surgical / atlas" healthy source — WRONG (4 spots):** `MANUSCRIPT.md` Table 1 (:48), Methods (:158),

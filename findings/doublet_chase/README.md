@@ -46,15 +46,32 @@ The other **~97%** of the EPCAM signal is a thin, diffuse smear spread across th
 — the signature of **ambient**, not doublets. So the residual that survived decontX is **two non-intrinsic
 sources, not one**: a *dominant diffuse ambient smear* + a *small, fibrosis-rising doublet contribution*.
 
-## Conclusion
-This **resolves the "residual unresolved" caveat in F18 in the ambient/compositional direction, and adds a
-concrete QC gap in Paper 1.** The decontX survivors are **not** evidence of hepatocyte-intrinsic
-transdifferentiation: most is diffuse ambient, the remainder is genuine hepatocyte–cholangiocyte doublets
-that (i) accumulate with fibrosis and (ii) sit entirely below Paper 1's 50,000-count doublet threshold, so
-their pipeline could not have removed them. Both sources are compositional consequences of the ductular
-reaction (more cholangiocytes at F4 → richer soup + more co-capture), not a hepatocyte program.
+## Conclusion (illustrative, not decisive — softened after adversarial review)
+This **shifts the "residual unresolved" caveat in F18 toward the ambient/compositional direction, and
+surfaces a concrete QC gap in Paper 1.** The decontX survivors are **not** evidence of hepatocyte-intrinsic
+transdifferentiation: most is a diffuse ambient smear; the remainder is a small fraction of
+**co-capture/biphenotypic nuclei** that (i) accumulate with fibrosis and (ii) sit entirely below Paper 1's
+50,000-count doublet threshold, so their pipeline could not have removed them. Either way it is a
+compositional consequence of the ductular reaction, not a coordinated hepatocyte program.
 
-**Caveats:** small-number analysis (only 16 suspects across all biopsy; F4 EPCAM totals are single-digit
-molecule counts — directional, not a precise fraction). KRT19/KRT7 ≥2 is a deliberately strict, high-
-confidence doublet definition; looser thresholds would label more nuclei but blur the doublet/ambient line.
+**Two reviewers flagged that this leg is illustrative, not decisive — keep it that way:**
+1. **The KRT19/KRT7 ≥2-UMI flag cannot tell a doublet from a genuine *transdifferentiating* hepatocyte.** A
+   hepatocyte converting toward biliary fate is *expected* to switch on KRT19/KRT7 — those are the exact
+   markers Paper 1 stains for its biphenotypic cells. So this flag labels "doublet-suspect" and "the cell the
+   paper calls transdifferentiating" identically. Inflated total count is **necessary but not sufficient** for
+   a doublet (a cell co-expressing two full programs also carries more RNA). The honest statement is therefore
+   *"rare co-capture OR rare biphenotypic cells — indistinguishable at this n,"* not "genuine doublets."
+2. **The "inflated total count" is partly a selection artifact.** A nucleus must clear a ≥2-UMI gate on
+   KRT19/KRT7 to be flagged, and higher-total-UMI nuclei mechanically clear any ≥2-UMI gate more often — so
+   "suspects have higher median total UMI" is confounded with the definition. Also the F4 contrast is inflated
+   on **both ends**: the "rest" median total UMI *falls* to 3,096 at F4 (lower-depth nuclei), so the "4.5×"
+   gap is as much a denominator collapse as a numerator rise.
+3. **The counts are tiny.** ~6 suspect nuclei at F4, 16 across all biopsy, single-digit EPCAM molecules — the
+   "~17× rise" (0.01%→0.167%) is a ratio of 1 vs 6 noisy nuclei, and "2.9% of EPCAM" has no real CI. This is
+   **directional/illustrative**, not a statistical estimate. A real doublet caller (e.g. scDblFinder) would be
+   needed to quantify; the OR-gate here is a deliberately strict but arbitrary and self-confirming heuristic.
+
+**What survives regardless:** the model-independent fact that **0 of 42,579 biopsy hepatocyte nuclei exceed
+Paper 1's 50,000-count filter**, so whatever these co-capture nuclei are, that filter removed none of them;
+and the genes are cholangiocyte-ambient by the cross-lineage burden audit (F18) independent of this leg.
 This tests the **snRNA** leg only; it says nothing about Paper 1's imaging/co-staining evidence.

@@ -208,18 +208,26 @@ FDR < 0.002). Because Paper 1 ran **no computational ambient-RNA removal** (no S
 state QC "confirmed" the cells are not contamination but name no ambient tool, resting on their imaging — we ran
 **decontX**: it removes a substantial part of this signal — the canonical transdifferentiation factors **SOX4
 and SOX9 fall below significance** (FDR 0.131 and 0.118; decontX can over- as well as under-correct, so this
-**demotes — it does not disprove** — these two) — but **EPCAM, B3GNT3, SPINT2 and CXCL10 survive**, so the
-residual is unresolved (residual ambient, hepatocyte–cholangiocyte doublets — which their crude >50,000-count
-filter would miss — or genuine low-level expression). Within-class testing (Plan B) shows this biliary program
+**demotes — it does not disprove** — these two; and it uses the paper's own cell labels, so it is a consistency
+check, not the decisive test — the model-independent cross-lineage burden audit is). **EPCAM, B3GNT3, SPINT2
+survive**, and the doublet chase (F21) traces them to a diffuse cholangiocyte-ambient smear plus a small fraction
+of co-capture/biphenotypic nuclei that all sit below the paper's >50,000-count filter — illustrative, not
+decisive (it cannot tell a doublet from a rare transdifferentiating cell). **CXCL10 also survives but is NOT
+biliary/ambient** — its hepatocyte expression does not track the cholangiocyte fraction (correlation −0.09), so
+it is a **candidate real inflammatory signal**, the one hepatocyte-side change we should not fold into the ambient
+story. Within-class testing (Plan B) shows this biliary program
 appears **uniformly across pericentral, periportal, null and dual nuclei alike** (class-agnostic) — *consistent
 with* ambient, though that inference rests on the cross-lineage burden (5–65× cholangiocyte-dominant) and the
 ≤0.4% per-cell co-expression, not on class-agnosticism alone — while the zonation genes are flat inside every
 class. Notably, **the paper itself reserves the "full" transdifferentiation phenotype for end-stage** (*"acquired
 only towards the end stage"*) and its one across-stage trend (Fig 3e, P = 0.03058) pools the procurement-
 confounded healthy + end-stage groups. **Net:** in acquisition-matched biopsy MASLD, hepatocyte gene-expression
-zonation is preserved against any large change, and there is no within-hepatocyte disease program except a
-biliary signal that is at least partly ambient. We thereby **correct the transcriptional de-zonation leg** (which
-the paper claimed *progressive across biopsy stages*) and **add that the modest biopsy-stage biliary rise is
-largely ambient/ductular** — while **agreeing with the paper that the strong transdifferentiation is an
-end-stage phenomenon**, and explicitly **not** addressing its end-stage protein / imaging / organoid evidence and
-**not** claiming to overturn the paper.
+zonation is preserved against any large change, and there is no large within-hepatocyte disease program except a
+biliary signal that is compositional (ambient + co-capture) and a candidate inflammatory signal (CXCL10). The
+paper itself titles its zonation/transdifferentiation figure *"...in end-stage MASLD"* and reserves the full
+phenotype for end-stage, so we are **largely agreeing with its own scoping**; what we add is narrower and
+specific: in **acquisition-matched needle-biopsy tissue** (which removes the procurement/tissue-source confound
+that its one cross-stage statistic, pooling all 47 donors, does not), the transcriptional **de-zonation does not
+appear and the modest biopsy-stage biliary rise is largely ambient/ductular** rather than hepatocyte-intrinsic.
+We explicitly **do not** address its end-stage protein / imaging / organoid evidence and **do not** claim to
+overturn the paper — its strong signal lives in exactly the end-stage tissue we set aside as confounded.

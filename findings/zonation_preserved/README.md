@@ -10,11 +10,14 @@ bound; then "what this claim is NOT."
 ## Ground 1 — the zonation marker GENES show no detectable change (expression level)
 Genome-wide donor-level test (pseudobulk per donor + edgeR with TMM normalization and a negative-binomial
 quasi-likelihood test — the method Squair et al. 2021 recommend): every zonation/detox gene is
-non-significant at F4-vs-F1. **Verbose:** the pericentral master gene **GLUL has FDR = 0.43** (far above the
-0.05 significance cut → if we called genes "changed" at GLUL's level, 43% would be false; so GLUL shows no
-detectable change); **CYP2E1 FDR = 0.66, CYP3A4 FDR = 0.85, ASS1 FDR = 0.96, CPS1 FDR = 0.92** — all flat;
-fold-changes small (log2 −0.1 to −0.6, i.e. ≤1.5× either way). Sources: F15, F18; held also after decontX
-(0/13 significant) and in the F1→F3 interior (0/13).
+non-significant at F4-vs-F1. **Verbose (FDRs from `dge_planA_F4vsF1.csv`):** the pericentral master gene
+**GLUL has FDR = 0.803** (far above the 0.05 significance cut → if we called genes "changed" at GLUL's level,
+about 80% would be false; so GLUL shows no detectable change); **CYP3A4 FDR = 0.85, CYP2E1 = 0.90, ASS1 =
+0.96, CPS1 = 0.92** — all flat; the lowest of the set are the detox genes **ADH4 = 0.43, SLCO1B3 = 0.57**,
+still non-significant; fold-changes small (log2 −0.1 to −0.6, i.e. ≤1.5× either way). (An earlier draft wrote
+"GLUL FDR = 0.43" — that is ADH4's value, not GLUL's; corrected.) These are high-expression genes where the
+n=4 power limit does not bite, so the flatness is genuine evidence. Sources: F15, F18; held also after
+decontX (0/13 significant) and in the F1→F3 interior (0/13).
 
 ## Ground 2 — the zonal-classification PROPORTIONS are flat across every threshold
 Per-nucleus zonal-anchor classification (PC / PP / null / dual) + donor-level proportions, after binomial
@@ -50,3 +53,17 @@ A null ("nothing was significant") is not, by itself, proof of preservation — 
 4. **Single cohort, no protein/independent validation** of the transcriptional null.
 5. Scope: **biopsy F1→cirrhotic-F4 only.** End-stage explants are excluded (procurement/stress/batch
    confounds); we say nothing about them here.
+6. **Not a test of the paper's actual co-expression readout.** Paper 1's de-zonation metric is a *marker–marker
+   correlation* breaking down (cells co-expressing both poles), not the pole *proportion* we measure. A flat
+   proportion (36/19/23/22/21%) is consistent with — but does not by itself rule out — a rise in the *fraction
+   of cells co-expressing both poles*. We address that separately with the ambient-robust ≥2-UMI dual fraction
+   (F8: 0.2–0.6%, flat), but the proportion alone is not the same instrument as their correlation test.
+7. **Needle-core sampling-axis caveat (raised by review, not separately tested).** A 16-gauge core may not
+   traverse the full central-vein→portal-tract lobule axis, so a flat pericentral/periportal proportion could
+   in principle reflect *what the needle sampled* rather than preserved zonation. The lobe-invariance result
+   (F1) and the across-many-donors consistency argue against a systematic per-core bias, but we have not
+   directly modelled needle-track position — flagged as an untested alternative.
+8. **Regeneration as a third option for the biliary markers (not separately tested).** Beyond "ambient" vs
+   "hepatocyte transdifferentiation," the paper frames biphenotypic cells as *regenerative*; regeneration-
+   associated biliary-marker induction is a hepatocyte-intrinsic possibility our compositional/ambient analysis
+   does not separately distinguish from ductular ambient. (Bears on F18/F21, not on the zonation null itself.)

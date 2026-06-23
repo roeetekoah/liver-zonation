@@ -20,10 +20,15 @@ run grouping); the donor-coloured MDS plot is only a secondary "did batch leak i
   This is another layer of the same confound (tissue-source + procurement + **now sequencing batch**, all
   collinear with stage). It is *uncorrectable* for the healthy/end-stage groups — but those are already
   excluded from the disease axis.
-- **Within the 38 biopsy donors it is weaker and partly crossed: Cramér's V(run, F) = 0.40.** The **4 F4 biopsy
-  donors are on 2 runs (SLX-20270, SLX-20290), and BOTH runs also carry F0/F1/F2/F3 donors** (MIXED) → the
-  **F1-vs-F4 fibrosis effect is estimable within-batch, NOT collinear with run.** So the biopsy DGE is not a
-  pure batch artifact.
+- **Within the 38 biopsy donors it is weaker and partly crossed: Cramér's V(run, F) = 0.40.** The 4 cirrhotic-F4
+  biopsy donors sit on 2 runs — SLX-20270 (donors 12, 22) and SLX-20290 (donors 68, 75). **CORRECTION (caught by
+  methodological review 2026-06-23):** an earlier draft said "BOTH runs also carry F0/F1/F2/F3 (MIXED) → F1-vs-F4
+  estimable within-batch." That is **wrong** and contradicts our own table below: **SLX-20270 carries F0/F2/F3/F4
+  but NO F1 donor.** Only **SLX-20290 contains both an F1 and an F4** donor. So two of the four F4 donors (12, 22)
+  have **no within-run F1 comparator** — for them the raw F1-vs-F4 contrast is partly aliased with run. The old
+  `batch_qc.py` "MIXED" flag was too weak: it tested "≥2 fibrosis levels on the run," not "both endpoints (F1 AND
+  F4) present." We therefore ran the sensitivity test the section below had only *promised* — see "Batch
+  sensitivity (executed)."
 
 ## Run × fibrosis (biopsy donors)
 | run | F0 | F1 | F2 | F3 | F4 |
@@ -34,13 +39,21 @@ run grouping); the donor-coloured MDS plot is only a secondary "did batch leak i
 | SLX-20289 | 0 | 1 | 2 | 1 | 0 |
 | (5 small runs, 1–2 donors each) | | | | | |
 
-## How the DGE handles it (pin #2, now answered)
-Cannot model 13-level run as a fixed factor at n=38 (over-parameterized). Instead:
-1. **MDS / PCA colored by run** as pre-flight — does run drive the dominant variance, or stage?
-2. **Per-hit within-run sensitivity:** for any F1/early-vs-F4 hit, confirm the effect is present **within
-   SLX-20270 and SLX-20290** (the two runs that contain F4 alongside earlier stages). A hit that only appears
-   between runs, not within, is batch.
-3. **Leave-one-donor-out** (already planned) — also catches a single-run-driven hit.
-4. Optionally include a coarse **2–3-level batch covariate** (the biggest runs vs rest) if the n permits.
+## Batch sensitivity (executed) — `src/dge/plan_a_batch_sensitivity.R`
+We re-tested the F4-vs-F1 biliary hits two ways that remove the run confound:
+- **(A) Run as a blocking covariate**, restricted to the 2 F4-bearing runs (18 donors), model `~ run + fibrosis`,
+  contrast F4−F1: the biliary genes keep **large positive log2 fold-changes** (B3GNT3 +3.3, GRHL2 +3.1, SOX4 +3.0,
+  EPCAM +2.5, CXCL10 +6.6, SPINT2 +3.1) — i.e. controlling for run does **not** shrink the effect — but with the
+  smaller donor set only B3GNT3 clears FDR<0.05 (B3GNT3 0.011; SPINT2 0.083, EPCAM 0.095, CXCL10 0.103, GRHL2/SOX4
+  0.21–0.26). What batch adjustment costs is **significance (sample size), not effect size.**
+- **(B) Within a single run** (SLX-20290 only, the one run with both endpoints; 2 F4 vs 3 F1, zero batch confound):
+  the **same genes top the list with the same large fold-changes** (B3GNT3 +3.2, CXCL10 +7.0, SOX4 +3.3, GRHL2 +2.9,
+  EPCAM +2.2); none reach FDR<0.05 at this tiny n, but the program is plainly present **inside one batch.**
 
-This does not rescue end-stage (Plan C stays descriptive); it bounds the biopsy DGE honestly.
+**Conclusion:** the biliary rise is **not created by sequencing batch** — its direction and magnitude reproduce
+both under run-adjustment and within a single run; only statistical significance attenuates with the reduced n.
+(This is the test F17 originally only promised. The MDS pre-flight and a formal leave-one-donor-out remain as
+optional extra checks; full 13-level run cannot be modelled as a fixed factor at n=38.) **Caveat:** this rescues
+the *direction*, not power — and it does not change the deeper point that these genes are **cholangiocyte-ambient
+by the cross-lineage burden audit (F18)** regardless of batch. Batch was a candidate *inflator* of the hits; it
+is not the source. End-stage (Plan C) stays descriptive.

@@ -20,19 +20,34 @@ genes are necessarily included — but their flatness here is a **built-in sanit
 none, and is internally consistent with the premise), **NOT the deliverable and NOT independent proof of
 zonation.** The deliverable is the answer to "what else changes?" — see the headline below.
 
-## Headline result — nothing changes beyond the (already-known, compositional) plasticity set
-Across all ~21,000 genes, the **only** coordinated F1→F4 program that surfaces is the biliary/plasticity set
-that **Paper 1 already described** — and our follow-up scans (below) show that set is **compositional
-(cholangiocyte ambient + doublets), not a hepatocyte-intrinsic program.** Subtracting it, **no other
-coherent hepatocyte program reaches significance** across the biopsy disease axis. We state that **with
-confidence for moderate-to-large coordinated changes** (and note the honest power limit at F4 n=4 lower down).
+## Headline result — beyond the (already-known, compositional) plasticity set, only a candidate inflammatory signal
+Across all ~21,000 genes, the dominant coordinated F1→F4 program is the biliary/plasticity set that **Paper 1
+already described** — and our follow-up scans (below) show that set is **compositional (cholangiocyte ambient +
+doublets), not a hepatocyte-intrinsic program.** Subtracting it, **no other large coordinated hepatocyte program
+reaches significance** — with **one honest exception we initially buried: CXCL10**, an interferon-induced
+inflammatory chemokine. CXCL10 has the largest fold-change in the set (log2 +5.4), survives decontX (FDR 0.002),
+and — unlike every genuinely ambient hit — its hepatocyte expression does **NOT** track the cholangiocyte
+fraction (correlation **−0.09**, vs +0.24 to +0.68 for EPCAM/GRHL2/SOX4/etc.), so by our own ambient logic it is
+**not** spillover. It is a **candidate real hepatocyte/stromal inflammation signal** (see CXCL10 note below).
+So the accurate headline is: *no other large coordinated program EXCEPT a candidate inflammatory axis (CXCL10);
+the biliary set is compositional.* **Power caveat:** "no other program" means **none larger than ~2-fold**
+(log2 ≈ 1) — at common biological-variation 0.405 with F4 n=4 / F1 n=8 the realized detection floor is roughly
+2-fold, so a subtler coordinated program could sit below threshold (the well-populated F1–F3 interior is also
+near-flat — two looks agree, but neither rules out small effects). The across-all-stages **omnibus finds 91
+genes FDR<0.05** (vs 64 for F4-vs-F1), and the headline biliary genes are an **F4-weighted jump, not a smooth
+gradient** (e.g. EPCAM log2 vs F1 = +0.6 at F2, +0.7 at F3, **+2.3 at F4**) — consistent with a cirrhosis-stage
+ductular reaction.
 
 ## Results (detail)
 - **Sanity / consistency check — zonation + housekeeping flat (NOT the deliverable).** Every zonation/detox
-  gene is non-significant at F4-vs-F1 (FDR 0.43–0.96): GLUL, CYP2E1/3A4, CPS1, ASS1, ALDOB flat; detox genes
-  small negative logFC (ADH4 −0.54, SLCO1B3 −0.64) but none survive FDR. No housekeeping gene is
-  FDR-significant (ACTB mildly up +1.06 but FDR 0.33; GAPDH/MALAT1/PPIA/TBP flat). Together these confirm the
-  pipeline is calibrated and consistent with the established premise — they do not re-prove zonation.
+  gene is non-significant at F4-vs-F1. Verbose, from `dge_planA_F4vsF1.csv`: **GLUL FDR 0.803** (logFC −0.33),
+  CYP3A4 0.851, CYP2E1 0.903, ALDOB 0.846, CPS1 0.920, ASS1 0.962 — all far above the 0.05 cut. The lowest
+  detox FDRs are **ADH4 0.428** (logFC −0.54) and SLCO1B3 0.571 (−0.64) — still non-significant. (Earlier
+  drafts mis-stated "GLUL FDR 0.43"; 0.43 is ADH4's value, GLUL is 0.80 — corrected here and in F19.) No
+  housekeeping gene is FDR-significant (ACTB mildly up +1.06 but FDR 0.33; GAPDH/MALAT1/PPIA/TBP flat).
+  Together these confirm the pipeline is calibrated and consistent with the established premise — they do not
+  re-prove zonation. **Note these are high-expression genes where the n=4 power limit does NOT bite, so their
+  flatness is genuine evidence, not merely absence of power.**
 - **Discovery: 64 genes FDR<0.05 (62 up).** The program is **biliary / ductular / transdifferentiation**:
   **EPCAM +2.3, GRHL2 +3.1, SPINT2 +2.7, B3GNT3, SOX4, SOX9**, + inflammation **CXCL10 +5.4**. This is the
   ductular reaction of cirrhosis — and **SOX4/SOX9/EPCAM are exactly Paper 1's plasticity/transdifferentiation
@@ -69,9 +84,21 @@ estimated **mean per-cell contamination 8.7% (hepatocytes 5.1%)**; removing it a
 **Honest conclusion (do not overclaim):** ambient removal explains a substantial part — notably SOX4/SOX9 —
 but a **residual epithelial/inflammatory signal survives** whose source we then resolved (F21): (a) residual
 ambient decontX under-corrected, (b) **hepatocyte–cholangiocyte doublets** (high-copy co-capture decontX
-doesn't model; rises with cirrhosis), or (c) genuine low-level hepatocyte expression. CXCL10 (+5.2) may be
-real inflammation, not biliary. → We CANNOT say "the biopsy transdifferentiation signal is artifact," but
-we CAN say it is **not hepatocyte-intrinsic** (F21 below). 
+doesn't model; rises with cirrhosis), or (c) genuine low-level hepatocyte expression. → We CANNOT say "the
+biopsy transdifferentiation signal is artifact," but we CAN say the *biliary/epithelial* part is **not
+hepatocyte-intrinsic** (F21 below).
+
+**CXCL10 is the exception — treat it as inflammation, NOT biliary/ambient (correction after adversarial review).**
+The compositional audit (`dge_planA_compositional.csv`) stamped CXCL10 "ambient" because it keys on cross-lineage
+burden alone (CXCL10 is 7.8× cholangiocyte-over-hepatocyte). But CXCL10's **`corr_hepCPM_vs_cholFrac = −0.09`** —
+the only *negative* value among the hits (EPCAM +0.34, GRHL2 +0.36, SOX4 +0.33, KCNJ16 +0.68): its expression in
+hepatocyte pseudobulk does **not** rise with the cholangiocyte fraction, so it does **not** behave like spillover
+from the expanding cholangiocyte pool. CXCL10 is an interferon-γ-induced chemokine, a classic NASH/cirrhosis
+inflammation gene. It has the largest fold-change in the set (log2 +5.4) and survives decontX (FDR 0.002). So the
+"ambient" verdict for CXCL10 is **wrong**, and lumping it into the biliary story made our headline cleaner than
+the data support: there is at least a **candidate inflammatory axis** that changed across the biopsy disease axis.
+(The verdict rule should require high burden AND positive cholangiocyte-fraction correlation to call "ambient" —
+a fix for the audit script. Other negative-correlation genes, if any, deserve the same separate treatment.)
 
 **Doublet chase (F21) resolves the residual toward (a)+(b), away from (c).** Defining doublet-suspects as
 hepatocyte nuclei co-detecting cholangiocyte structural markers (KRT19 or KRT7 ≥2 UMI): they **exist and
