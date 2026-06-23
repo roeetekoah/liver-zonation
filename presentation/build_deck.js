@@ -42,6 +42,11 @@ function chip(s,x,y,w,h,txt,fill,tcol){
   s.addShape(p.shapes.ROUNDED_RECTANGLE,{x,y,w,h,fill:{color:fill},rectRadius:0.08,shadow:sh()});
   s.addText(txt,{x,y,w,h,fontSize:14.5,bold:true,color:tcol||WHITE,align:"center",valign:"middle",margin:2});
 }
+function classbox(s,x,y,w,h,title,sub,fill,tcol){ // labelled definition card (title + plain-language line)
+  s.addShape(p.shapes.ROUNDED_RECTANGLE,{x,y,w,h,fill:{color:fill},rectRadius:0.07,shadow:sh()});
+  s.addText(title,{x:x+0.18,y:y+0.13,w:w-0.36,h:0.5,fontSize:20,bold:true,color:tcol||WHITE,fontFace:SERIF,align:"left",valign:"top",margin:0});
+  s.addText(sub,{x:x+0.18,y:y+0.68,w:w-0.36,h:h-0.8,fontSize:13.5,color:tcol||WHITE,align:"left",valign:"top",margin:0});
+}
 
 // ============================================================ SLIDE 1 — TITLE
 let s=p.addSlide(); s.background={color:DARK};
@@ -121,23 +126,97 @@ s.addText([
 foot(s);
 s.addNotes("Show the legacy approach and the claim it produced, then dismantle it. We first read the data with a z-scored relative ruler and marker correlations — which produced the headline 'hepatocytes lose zonation, pericentral turns off.' But every such metric is a relative summary pooled across all samples; it hides who moved and is bent by depth, cell number and tissue source. That motivated the pivot to raw molecule counts on the matched axis.");
 
+// ============================================================ SLIDE 3c — THE FOUR CLASSES (vocabulary)
+s=p.addSlide(); s.background={color:BG};
+head(s,"THE VOCABULARY","Every hepatocyte falls in one of four classes");
+s.addText("Before asking how zonation could break down, we fix the words. Each hepatocyte either runs the pericentral program, the periportal program, both at once, or neither — four mutually exclusive classes:",
+  {x:0.7,y:1.5,w:12.3,h:0.6,fontSize:16,color:INK,align:"left"});
+// axis headers — periportal across the top, pericentral down the left
+s.addText("PERIPORTAL  PROGRAM   (ASS1, CPS1, PCK1 …)",{x:2.95,y:2.18,w:9.15,h:0.3,fontSize:12.5,bold:true,color:PP,charSpacing:1,align:"center",margin:0});
+s.addText("not detected",{x:2.95,y:2.5,w:4.45,h:0.3,fontSize:12.5,bold:true,color:MUTE,align:"center",margin:0});
+s.addText("detected",{x:7.65,y:2.5,w:4.45,h:0.3,fontSize:12.5,bold:true,color:MUTE,align:"center",margin:0});
+s.addText("PERICENTRAL\nPROGRAM\n(GLUL, CYP …)",{x:0.4,y:2.45,w:2.4,h:0.85,fontSize:12.5,bold:true,color:PC,align:"center",margin:0});
+s.addText("detected",{x:0.4,y:3.5,w:2.4,h:0.3,fontSize:12.5,bold:true,color:MUTE,align:"center",margin:0});
+s.addText("not detected",{x:0.4,y:5.2,w:2.4,h:0.3,fontSize:12.5,bold:true,color:MUTE,align:"center",margin:0});
+// 2x2 grid of definition cards — colours match the mechanism chips on the next slide
+classbox(s,2.95,2.9,4.45,1.55,"PC-anchor","Pericentral identity — pericentral genes detected, periportal genes silent.",PC);
+classbox(s,7.65,2.9,4.45,1.55,"Dual","Co-expression — both programs detectable in the same nucleus.",DUAL);
+classbox(s,2.95,4.6,4.45,1.55,"Null","Double-negative — neither program detectable.",NULL,INK);
+classbox(s,7.65,4.6,4.45,1.55,"PP-anchor","Periportal identity — periportal genes detected, pericentral genes silent.",PP);
+s.addText([{text:"These four classes are the vocabulary. ",options:{bold:true}},
+  {text:"“Losing zonation” means cells ",options:{}},{text:"redistribute",options:{italic:true}},
+  {text:" across them — the next slide is the four ways that can happen, in these same colours.",options:{}}],
+  {x:0.7,y:6.35,w:12.3,h:0.5,fontSize:13.5,italic:true,color:MUTE,align:"left"});
+foot(s);
+s.addNotes("Definitions before mechanisms. Every hepatocyte is sorted into exactly one of four classes by which zonation program it runs: PC-anchor (pericentral only), PP-anchor (periportal only), Dual (both — the co-expression state), or Null (neither — double-negative). The 2x2 is pericentral detected/not against periportal detected/not. The card colours are carried onto the next slide, where each failure mode is a change in how cells distribute across these four boxes. 'Detected' here is operationalised on the later method slide as the >=2-UMI, depth-normalized rule.");
+
 // ============================================================ SLIDE 4 — FAILURE MODES
 s=p.addSlide(); s.background={color:BG};
 head(s,"WHAT WE TEST","Zonation loss is not one mechanism");
 s.addText("If the zonation expression signal breaks down, it can do so in distinct ways — each has its own count signature, which we test separately:",
   {x:0.7,y:1.6,w:12.0,h:0.7,fontSize:17,color:INK,align:"left"});
-chip(s,1.0,2.6,2.6,1.2,"Depletion\n(a pole's cells lost)",PC);
-chip(s,3.85,2.6,2.6,1.2,"Co-expression\n(both poles on)",DUAL);
-chip(s,6.7,2.6,2.6,1.2,"Turn-off\n(neither pole on)",NULL,INK);
+chip(s,1.0,2.6,2.6,1.2,"Depletion\n(an anchor box ↓)",PC);
+chip(s,3.85,2.6,2.6,1.2,"Co-expression\n(the dual box ↑)",DUAL);
+chip(s,6.7,2.6,2.6,1.2,"Turn-off\n(the null box ↑)",NULL,INK);
 chip(s,9.55,2.6,2.85,1.2,"Composition shift\n(PP : PC ratio moves)",PP);
-s.addText([{text:"We suspected pericentral depletion specifically — but ",options:{}},
-  {text:"“depletion” is general",options:{bold:true}},
-  {text:" (either pole, or both). We test each mechanism, not just the one we expected.",options:{}}],
-  {x:1.0,y:4.2,w:11.0,h:0.6,fontSize:15,color:"334155",align:"left"});
-s.addText("A single anti-correlation or UMAP impression conflates these — which is exactly the trap we avoid with absolute counts.",
-  {x:1.0,y:5.1,w:11.0,h:0.6,fontSize:15,italic:true,color:MUTE,align:"left"});
+s.addText([{text:"We expected pericentral depletion — but an ",options:{}},
+  {text:"emptying anchor box",options:{bold:true,color:PC}},
+  {text:" (depletion) and a ",options:{}},
+  {text:"filling null box",options:{bold:true,color:"6B7280"}},
+  {text:" (turn-off) are different boxes, opposite directions — neither implies the other. We track all four, not just the pericentral depletion we expected.",options:{}}],
+  {x:1.0,y:4.25,w:11.9,h:0.7,fontSize:15,color:"334155",align:"left",valign:"top"});
+s.addText("Any relative summary — a z-score, a marker correlation, a UMAP axis — is scale-free by construction: it divides out the absolute level, so it reads the gradient’s shape, not how many cells sit where. The four box-counts above collapse into one number; only counting molecules tells them apart.",
+  {x:1.0,y:5.35,w:11.9,h:1.3,fontSize:15,italic:true,color:MUTE,align:"left",valign:"top"});
 foot(s,4);
-s.addNotes("De-zonation is not one thing. Pericentral OR periportal cells could deplete; cells could co-express both poles; cells could turn both off; or the periportal-to-pericentral ratio could shift. We deliberately say 'depletion' generally — we suspected pericentral depletion and will show it is absent, but depletion is the general confounder and we test each mechanism. A single correlation score conflates them; counts separate them.");
+s.addNotes("De-zonation is not one event but several, each a different movement among the four boxes from the previous slide. Depletion = an anchor (pole-identity) box shrinks — pericentral OR periportal. Turn-off = the null, double-negative box grows. These are dissociable, which is the question that keeps coming up: a pole can convert to the opposite pole (depletion with the null box untouched), and cells can go double-negative without any single pole shrinking (turn-off with no depletion). Co-expression fills the dual box; composition shift tilts the PP:PC ratio. A single correlation or z-score collapses all four into one number; absolute box counts keep them separate. All four are flat across biopsy F1-F4. Two further routes act on the gradient itself rather than the boxes — gradient compression and dimming — and get their own slide next.");
+
+// ============================================================ SLIDE 4b — THE GRADIENT AXIS (compression + dimming)
+// mini line-schematic of a zonation gradient (yf: 0=top/high expression, 1=bottom/low)
+function gplot(s,px,py,pw,ph,lines){
+  s.addShape(p.shapes.LINE,{x:px,y:py,w:0,h:ph,line:{color:"C2CBCB",width:1}});
+  s.addShape(p.shapes.LINE,{x:px,y:py+ph,w:pw,h:0,line:{color:"C2CBCB",width:1}});
+  for(const ln of lines){ const x1=px+ln.x1*pw,y1=py+ln.y1*ph,x2=px+ln.x2*pw,y2=py+ln.y2*ph;
+    // OOXML extents must be non-negative — use abs() and flipV for rising lines
+    const x=Math.min(x1,x2),y=Math.min(y1,y2),w=Math.abs(x2-x1),h=Math.abs(y2-y1),flipV=((x2-x1)*(y2-y1)<0);
+    s.addShape(p.shapes.LINE,{x,y,w,h,flipV:flipV,line:{color:ln.c,width:ln.w||3,dashType:ln.d}}); }
+}
+s=p.addSlide(); s.background={color:BG};
+head(s,"THE GRADIENT AXIS","Beyond the boxes — zonation is a gradient");
+s.addText("The four classes are discrete bins. Zonation is really a continuous gradient, which can weaken two further ways the box-counts can’t see — one of shape, one of level:",
+  {x:0.7,y:1.55,w:12.3,h:0.6,fontSize:16,color:INK,align:"left"});
+// --- card A: COMPRESSION (shape) ---
+s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:0.6,y:2.25,w:6.0,h:3.55,fill:{color:"FFFFFF"},line:{color:"E2DCCF",width:1},rectRadius:0.06,shadow:sh()});
+s.addText([{text:"Compression  ",options:{bold:true,fontSize:19,color:TEAL,fontFace:SERIF}},{text:"the gradient flattens",options:{italic:true,fontSize:14,color:MUTE}}],
+  {x:0.9,y:2.42,w:5.4,h:0.4,align:"left",margin:0});
+gplot(s,0.95,3.0,1.9,1.45,[
+  {x1:0,y1:0.95,x2:1,y2:0.08,c:"B7C1C1",w:2,d:"dash"},
+  {x1:0,y1:0.58,x2:1,y2:0.44,c:TEAL,w:3.5}]);
+s.addText([{text:"— before    ",options:{color:"9AA6A6"}},{text:"— after",options:{color:TEAL,bold:true}}],
+  {x:0.95,y:4.5,w:1.95,h:0.25,fontSize:10.5,align:"center",margin:0});
+s.addText("Per-cell PC↔PP balance drifts toward the middle — the contrast between poles shrinks.",
+  {x:3.05,y:3.0,w:3.35,h:1.4,fontSize:13.5,color:INK,align:"left",valign:"top"});
+s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:0.9,y:4.95,w:5.4,h:0.66,fill:{color:"E7F0EE"},rectRadius:0.05});
+s.addText([{text:"Mild, non-monotone (peak F3); both poles stay populated → ",options:{color:"14532D"}},{text:"gradient present.",options:{bold:true,color:"14532D"}}],
+  {x:1.05,y:4.97,w:5.15,h:0.62,fontSize:12.5,align:"left",valign:"middle"});
+// --- card B: DIMMING (amplitude) ---
+s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:6.85,y:2.25,w:6.0,h:3.55,fill:{color:"FFFFFF"},line:{color:"E2DCCF",width:1},rectRadius:0.06,shadow:sh()});
+s.addText([{text:"Dimming  ",options:{bold:true,fontSize:19,color:AMBER,fontFace:SERIF}},{text:"the gradient drops",options:{italic:true,fontSize:14,color:MUTE}}],
+  {x:7.15,y:2.42,w:5.4,h:0.4,align:"left",margin:0});
+gplot(s,7.2,3.0,1.9,1.45,[
+  {x1:0,y1:0.82,x2:1,y2:0.08,c:"B7C1C1",w:2,d:"dash"},
+  {x1:0,y1:1.0,x2:1,y2:0.34,c:AMBER,w:3.5}]);
+s.addText([{text:"— before    ",options:{color:"9AA6A6"}},{text:"— after",options:{color:AMBER,bold:true}}],
+  {x:7.2,y:4.5,w:1.95,h:0.25,fontSize:10.5,align:"center",margin:0});
+s.addText("Cells keep their balance, but the program’s overall level falls (same shape, lower).",
+  {x:9.3,y:3.0,w:3.35,h:1.4,fontSize:13.5,color:INK,align:"left",valign:"top"});
+s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:7.15,y:4.95,w:5.4,h:0.66,fill:{color:"FBEEE2"},rectRadius:0.05});
+s.addText([{text:"Nominal ~30% dip (12.7→8.9 UMI/nuc) — borderline; not corroborated genome-wide → ",options:{color:"7C2D12"}},{text:"dropped.",options:{bold:true,color:"7C2D12"}}],
+  {x:7.3,y:4.97,w:5.15,h:0.62,fontSize:12,align:"left",valign:"middle"});
+s.addText([{text:"On matched biopsies the gradient holds its shape, and the one amplitude hint doesn’t hold up — consistent with the flat box-counts. ",options:{}},
+  {text:"Only the explant collapses to a single pole.",options:{italic:true,color:MUTE}}],
+  {x:0.7,y:6.05,w:12.3,h:0.6,fontSize:14.5,color:"334155",align:"left",valign:"top"});
+foot(s);
+s.addNotes("The continuous-gradient axis, which the discrete box-counts cannot capture. Two routes here, and they are distinct facets: compression is a loss of SHAPE — the per-cell PC/(PC+PP) balance drifts toward the middle, contrast between poles shrinks (still a relative measure); dimming is a loss of LEVEL — the program's absolute magnitude falls while the balance is unchanged. Compression: down-thinned, donor-balanced per-cell balance histograms (results/figures/h2/gradient_polarization_dist.png) show a mild, non-monotone middle drift peaking at F3 with both poles staying populated — gradient present, not collapsed; only the explant collapses to the periportal pole. Dimming: a nominal ~30% within-PC detox dip (12.7 to 8.9 down-thinned UMIs/nucleus, F1 to F4). It is borderline to begin with — only about 1.4x the ~26% minimum detectable effect at n=8 vs 4 — and it is NOT corroborated by the genome-wide donor-level pseudobulk DGE of the same genes (CYP2E1 FDR .98, CYP1A2 .91, ADH4 .97, GLUL ~.80, all non-significant). Since those detox genes are expressed mostly in PC cells, a real dimming should have left a donor-level footprint; none appears, so we drop it rather than report it. We do not claim the DGE formally disproves dimming. Net: the gradient is preserved in shape and, where testable, in amplitude — matching the flat anchor counts.");
 
 // ============================================================ SLIDE 5 — THE CONFOUND
 s=p.addSlide(); s.background={color:BG};
@@ -288,14 +367,20 @@ const cols=[
   {h:"Limits",c:"FCA5A5",items:["snRNA-seq ≠ lobule geometry / spatial architecture.","Imaging / protein / organoid evidence not re-analyzed.","F4 has only 4 biopsy donors.","Gene-level DGE can miss weak coordinated pathways."]},
   {h:"Next",c:"9CC6CC",items:["CAMERA / ROAST gene-set tests.","Leave-one-F4-donor-out DGE.","Quantitative contamination model.","Spatial / independent biopsy validation."]}
 ];
-let cx=0.85; for(const col of cols){ const cw=3.85;
-  s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:cx,y:1.75,w:cw,h:4.3,fill:{color:"1E3A3D"},rectRadius:0.08,shadow:sh()});
-  s.addText(col.h,{x:cx,y:1.9,w:cw,h:0.5,fontSize:20,bold:true,color:col.c,fontFace:SERIF,align:"center"});
-  s.addText(col.items.map(t=>({text:t,options:{bullet:true,color:"E2E8F0",breakLine:true,paraSpaceAfter:9}})),
-    {x:cx+0.25,y:2.5,w:cw-0.45,h:3.4,fontSize:14.5,align:"left",valign:"top"});
-  cx+=cw+0.25; }
-s.addText("The snRNA-seq transcriptomic evidence for progressive de-zonation does not survive matched-source re-analysis.",
-  {x:0.7,y:6.4,w:11.9,h:0.65,fontSize:17,bold:true,italic:true,color:WHITE,align:"center"});
+const takes=[
+  {n:"01",t:"Matched biopsies stay zonated",s:"Across F1–F4 every count route — depletion, co-expression, turn-off, composition — is flat, and the gradient holds its shape."},
+  {n:"02",t:"The trajectory was acquisition, not disease",s:"Healthy and end-stage are deceased-donor cubes and explants; the apparent “progression” tracks how the tissue was taken."},
+  {n:"03",t:"The biliary signal looks compositional",s:"The lone genome-wide change is a biliary / ductular burden, most consistent with composition / ambient RNA."}];
+let ty=1.92; for(const k of takes){
+  s.addText(k.n,{x:0.92,y:ty,w:1.15,h:0.7,fontSize:34,bold:true,color:AMBER,fontFace:SERIF,align:"left",valign:"top",margin:0});
+  s.addText(k.t,{x:2.2,y:ty+0.02,w:10.5,h:0.45,fontSize:21,bold:true,color:WHITE,fontFace:SERIF,align:"left",valign:"top",margin:0});
+  s.addText(k.s,{x:2.22,y:ty+0.5,w:10.4,h:0.5,fontSize:14.5,color:"C9D6D3",align:"left",valign:"top",margin:0});
+  ty+=1.0; }
+s.addShape(p.shapes.LINE,{x:2.22,y:4.98,w:10.3,h:0,line:{color:"2E4A4D",width:1}});
+s.addText("The snRNA-seq evidence for progressive de-zonation does not survive matched-source re-analysis — what looked like a disease trajectory was, in large part, an acquisition trajectory.",
+  {x:0.92,y:5.18,w:11.9,h:0.9,fontSize:17,bold:true,italic:true,color:WHITE,align:"left",valign:"top"});
+s.addText("Scope — snRNA-seq transcriptomes only: imaging, protein and organoid evidence are untouched, and a weak coordinated gene-set program is not excluded.",
+  {x:0.92,y:6.5,w:11.9,h:0.5,fontSize:13,color:"8FA3A0",align:"left",valign:"top"});
 foot(s,11);
 s.addNotes("Close on the methodological lesson: in single-cell disease atlases, acquisition matching can dominate apparent disease trajectories. Bottom line, narrow and honest: the snRNA-seq transcriptomic evidence for progressive de-zonation does not survive matched-source re-analysis; imaging/protein/organoid evidence is untouched; the biliary burden is most consistent with composition/ambient RNA, a rare intrinsic state not excluded.");
 
@@ -362,22 +447,38 @@ bbul(b,["Gene-level FDR can miss a coordinated WEAK program (many genes, small s
   "mitochondrial, ER stress, interferon, hypoxia, EMT/fetal/progenitor, cholangiocyte/ductular.",
   "Closes the caveat behind “no other large hepatocyte program.”"]);
 
-b=back("SCENARIO COVERAGE","Every de-zonation route, tested by count signature");
+b=back("SCENARIO COVERAGE","Every de-zonation route, mapped to its signature");
 const TAX=[
-  [{text:"Mechanism",options:{bold:true}},{text:"Count signature",options:{bold:true}},{text:"Biopsy F0→F4 (donor-median)",options:{bold:true}},{text:"Verdict",options:{bold:true}}],
+  [{text:"Mechanism",options:{bold:true}},{text:"Signature",options:{bold:true}},{text:"Biopsy F0→F4 (donor-median)",options:{bold:true}},{text:"Verdict",options:{bold:true}}],
   ["Pericentral depletion","PC-anchor fraction ↓","36 / 19 / 23 / 22 / 21 %","flat → no depletion"],
   ["Periportal depletion","PP-anchor fraction ↓","20 / 21 / 22 / 24 / 24 %","flat → no depletion"],
+  ["Dimming","within-PC level ↓ (magnitude)","12.7 → 8.9 detox UMI/nuc (F1→F4)","borderline; not corroborated genome-wide → dropped"],
   ["Co-expression","dual (≥2 UMI) fraction ↑","~0.0 / 0.2 / 0.4 / 0.2 / 0.2 %","ambient soup → no"],
   ["Gradient compression","per-cell balance → middle","mild, non-monotone (peak F3)","gradient present"],
   ["Turn-off","null (double-neg) fraction ↑","34 / 44 / 36 / 39 / 39 %","flat → no turn-off"],
   ["Composition shift","PP : PC anchor ratio","0.62 / 1.16 / 1.01 / 1.10 / 1.18","~flat → no shift"],
   ["Induction","program burden ↑","flat in biopsy; rises only end-stage","explant-only"],
 ];
-b.addTable(TAX,{x:0.7,y:1.7,w:12.0,colW:[2.6,3.0,4.0,2.4],fontSize:13.5,color:INK,
+b.addTable(TAX,{x:0.7,y:1.65,w:12.0,colW:[2.5,2.95,3.95,2.6],fontSize:12.5,color:INK,
   border:{pt:0.5,color:"C9BFAE"}, fill:{color:"FFFFFF"},
-  rowH:0.52, valign:"middle", align:"left",
+  rowH:0.4, valign:"middle", align:"left",
   margin:[3,5,3,5]});
-b.addText("Each row is a distinct way zonation could fail, mapped to an absolute-count signature on depth-normalized counts; only the null (all stable) survives across biopsy F1–F4.",
-  {x:0.7,y:6.4,w:12.0,h:0.5,fontSize:13,italic:true,color:MUTE,align:"left"});
+b.addText("Each row is a distinct way zonation could fail, mapped to its signature on depth-normalized counts. Seven are count-based (cells crossing boxes); dimming is the one magnitude axis the counts can’t see. Only the null (all stable) survives biopsy F1–F4 — the lone positive hint, dimming, did not hold up genome-wide.",
+  {x:0.7,y:6.45,w:12.0,h:0.7,fontSize:12.5,italic:true,color:MUTE,align:"left"});
+
+// BACKUP — the detailed three-way partition (moved off the in-place conclusion)
+{ const bc=p.addSlide(); bc.background={color:DARK};
+  bc.addShape(p.shapes.RECTANGLE,{x:0,y:0,w:0.28,h:7.5,fill:{color:TEAL}});
+  bc.addShape(p.shapes.RECTANGLE,{x:0.28,y:0,w:0.12,h:7.5,fill:{color:AMBER}});
+  bc.addShape(p.shapes.RECTANGLE,{x:0.85,y:0.5,w:0.16,h:0.26,fill:{color:AMBER}});
+  bc.addText("BACKUP  ·  FULL CONCLUSIONS",{x:1.08,y:0.46,w:11.5,h:0.4,fontSize:14,bold:true,color:AMBER,charSpacing:3,align:"left"});
+  bc.addText("Conclusions · limits · next steps",{x:0.85,y:0.85,w:11.6,h:0.8,fontSize:28,bold:true,color:WHITE,fontFace:SERIF,align:"left",valign:"middle"});
+  let bx=0.85; for(const col of cols){ const cw=3.85;
+    bc.addShape(p.shapes.ROUNDED_RECTANGLE,{x:bx,y:1.8,w:cw,h:4.55,fill:{color:"1E3A3D"},rectRadius:0.08,shadow:sh()});
+    bc.addText(col.h,{x:bx,y:1.95,w:cw,h:0.5,fontSize:20,bold:true,color:col.c,fontFace:SERIF,align:"center"});
+    bc.addText(col.items.map(t=>({text:t,options:{bullet:true,color:"E2E8F0",breakLine:true,paraSpaceAfter:9}})),
+      {x:bx+0.25,y:2.55,w:cw-0.45,h:3.6,fontSize:14.5,align:"left",valign:"top"});
+    bx+=cw+0.25; }
+}
 
 p.writeFile({fileName:__dirname+"/MASLD_zonation.pptx"}).then(f=>console.log("WROTE",f));

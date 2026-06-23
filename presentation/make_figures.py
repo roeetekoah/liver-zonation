@@ -263,11 +263,14 @@ fig.tight_layout(); fig.savefig(f"{OUT}/fig_lobe.png", bbox_inches="tight"); plt
 ex=lb[lb.source=="explant"].copy().set_index("donor")
 order_e=["CL104","CL18","CL103","CL17","CL16"]; ex=ex.loc[[d for d in order_e if d in ex.index]]
 fig,ax=plt.subplots(figsize=(8.6,4.6)); bottom=np.zeros(len(ex))
-for cls,color,nm in [("PC_f",PC,"PC"),("PP_f",PP,"PP"),("dual2_f",DUAL,"dual"),("null_f",NULL,"null")]:
+for cls,color,nm in [("PC_f",PC,"PC-anchor"),("PP_f",PP,"PP-anchor"),("dual2_f",DUAL,"dual"),("null_f",NULL,"null")]:
     ax.bar(ex.index, ex[cls]*100, bottom=bottom*100, color=color, label=nm); bottom=bottom+ex[cls].values
-ax.set_ylabel("% of hepatocyte nuclei"); ax.legend(frameon=False, ncol=4, loc="upper center", bbox_to_anchor=(0.5,1.12))
-for i,(dn,row) in enumerate(ex.iterrows()): ax.text(i,102,f"PP:PC {row['pppc']:.2f}",ha="center",fontsize=9,color=MUTE)
-ax.set_title("Five end-stage organs, five different phenotypes", fontweight="bold", loc="left")
+ax.set_ylabel("% of hepatocyte nuclei"); ax.set_ylim(0,104)
+# PP:PC ratio just above each bar's own total (not a fixed y — that collided with the title/legend)
+tot=(ex["PC_f"]+ex["PP_f"]+ex["dual2_f"]+ex["null_f"]).values*100
+for i,(dn,row) in enumerate(ex.iterrows()): ax.text(i, tot[i]+1.5, f"PP:PC {row['pppc']:.2f}", ha="center", fontsize=9, color=MUTE)
+# title comes from the slide headline + figure caption; legend gets the cleared top strip
+ax.legend(frameon=False, ncol=4, loc="lower center", bbox_to_anchor=(0.5,1.01))
 fig.tight_layout(); fig.savefig(f"{OUT}/fig_explant.png", bbox_inches="tight"); plt.close(fig)
 
 print("wrote figures to", OUT)
