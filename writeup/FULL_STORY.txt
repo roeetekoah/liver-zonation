@@ -1,423 +1,258 @@
 ================================================================================
-FULL STORY — a re-analysis of zonation & transdifferentiation in MASLD liver
-For external review. Plain text. 2026-06-23.
+RE-ANALYSIS NARRATIVE — hepatocyte zonation & epithelial plasticity in MASLD snRNA-seq
+Re-analysis of Gribben et al., Nature 2024 (GSE202379). Plain text. 2026-06-23 (v2).
+Scope: a 2-3 day graduate-hackathon re-analysis of the single-nucleus transcriptomic
+component only — not the paper's imaging, immunostaining, protein, organoid, or spatial
+evidence. Tightened after external review; claims stated with their resolution limits.
+One deliberate wording choice: the genome-wide DGE zonation result is called "independent
+corroboration," not a "sanity check" — it is a second method agreeing, not pipeline-checking.
 ================================================================================
 
-------------------------------------------------------------------------------
-TO THE REVIEWER (please read first)
-------------------------------------------------------------------------------
-This is a 2-3 day GRADUATE-LEVEL HACKATHON re-analysis, not a paper submission.
-Judge it with that perspective: we are not claiming publication-grade completeness,
-and we cannot run wet-lab or new sequencing. That is NOT a license to cut corners on
-logic or honesty — but please calibrate "what more is needed" to a few-day student
-project, not a Nature revision.
+## Scope and conclusion
 
-Two explicit requests:
-1. I (the author) am POOR AT PHRASING and NOT ALWAYS ACCURATE. Please REORDER and
-   REWRITE this narrative so it flows cleanly and logically. If any statement looks
-   wrong, internally inconsistent, or overclaimed, flag it.
-2. If you need any additional NUMBER, TABLE, or DATA to judge a step, ASK ME FOR IT
-   BEFORE you conclude. Do not assume; do not fill gaps with guesses.
+This re-analysis examines the single-nucleus RNA-seq evidence from Gribben et al., Nature
+2024, which reported that during human MASLD progression hepatocytes progressively lose
+zonation and acquire cholangiocyte-like features. We focus only on the transcriptomic
+single-nucleus component. We do not re-analyze the paper's imaging, immunostaining,
+protein-level validation, organoid experiments, or spatial architecture.
 
-What I want from you: pressure-test the STORY and its logic end to end. Is the chain
-of reasoning sound? Where is it weakest? What is over- or under-claimed? What single
-addition would most strengthen it?
+Our conclusion is narrow but important:
 
-A note on vocabulary: several labels below (PC/PP "anchor", "anchor classification",
-and the scenario names "depletion / dimming / co-expression / gradient compression /
-turn-off / composition shift / induction / preserved") are OUR OWN coinages for this
-project. Each is defined in plain language where it first appears. If any definition
-is unclear, say so.
+In acquisition-matched MASLD needle-biopsy samples, hepatocyte transcriptional zonation is
+preserved across the fibrosis axis. The apparent progressive loss of zonation in the
+original single-nucleus analysis is largely driven by a sampling/source confound: the
+healthy and end-stage groups are not acquired the same way as the disease-biopsy samples.
+Restricted to comparable biopsy tissue and performed on raw, depth-controlled counts at the
+donor level, we do not detect a large coordinated breakdown of hepatocyte zonation.
 
-------------------------------------------------------------------------------
-0. THE PAPER WE RE-ANALYZED, AND THE QUESTION
-------------------------------------------------------------------------------
-Gribben et al., Nature 2024 ("Acquisition of epithelial plasticity in human chronic
-liver disease"; single-nucleus RNA-seq; GEO GSE202379). Headline claims: as human
-MASLD (fatty-liver disease) progresses, hepatocytes (1) progressively LOSE their
-ZONATION, and (2) TRANSDIFFERENTIATE toward cholangiocytes (bile-duct cells),
-appearing as "biphenotypic" cells co-expressing both identities.
+A separate genome-wide pseudobulk differential-expression analysis finds one main signal
+across the biopsy disease axis: a small biliary/ductular marker burden in hepatocyte-
+labeled nuclei, strongest at cirrhotic F4. Multiple diagnostics suggest this signal is
+largely compositional — consistent with cholangiocyte ambient RNA and rare mixed/doublet
+nuclei from the ductular reaction — rather than widespread hepatocyte transdifferentiation.
+This source-attribution conclusion is not closed: a few genes survive ambient correction,
+and a weak or rare hepatocyte-intrinsic inflammatory/plasticity state remains possible.
 
-Background on zonation: a healthy liver lobule is spatially organized along the blood-
-flow axis from the central vein to the portal tract. PERICENTRAL hepatocytes (near the
-central vein) run one gene program (e.g. GLUL, CYP3A4, CYP2E1, the detox/CYP genes);
-PERIPORTAL hepatocytes (near the portal tract) run another (e.g. ASS1, CPS1, PCK1, HAL,
-ALDOB, urea-cycle/gluconeogenesis). "De-zonation" = this spatial division of labor
-breaking down.
+So the re-analysis does not overturn the paper. It challenges the single-nucleus
+transcriptomic claim of progressive de-zonation across MASLD progression, and it reframes
+the hepatocyte biliary-marker signal as a possible contamination/composition problem.
 
-The dataset: 47 donors, 99,809 nuclei after the paper's QC, spanning healthy through
-end-stage cirrhosis. We worked from the raw UMI counts (not the paper's normalized
-matrix), extracted from the deposited objects.
+## Biological background: what "zonation" means
 
-Our overall finding, stated up front so you can test it: the single-nucleus
-TRANSCRIPTIONAL evidence for "progressive de-zonation across the disease" does not
-survive once a sampling confound is removed; in acquisition-matched needle-biopsy
-tissue, hepatocyte gene-expression zonation is PRESERVED. We do NOT touch the paper's
-imaging/protein/organoid evidence, and we largely AGREE with the paper that the strong
-transdifferentiation signal is an end-stage phenomenon.
+The liver lobule is spatially organized along the porto-central axis. Pericentral
+hepatocytes (near the central vein) preferentially express one set of genes, including GLUL
+and detoxification/CYP genes such as CYP3A4 and CYP2E1. Periportal hepatocytes (near the
+portal tract) preferentially express another program, including ASS1, CPS1, PCK1, HAL and
+ALDOB (urea cycle, gluconeogenesis).
 
-------------------------------------------------------------------------------
-1. THE CONFOUND THAT REFRAMES EVERYTHING: TISSUE-SOURCE / SAMPLING HETEROGENEITY
-------------------------------------------------------------------------------
-The 47 donors are not one homogeneous series. They come from THREE different kinds of
-tissue, acquired three different ways, and — critically — the acquisition method is
-almost perfectly COLLINEAR with disease stage:
+"Zonation" means this division of labor is intact: different hepatocytes run different
+programs by location. "De-zonation" means it breaks down — and it could break down in
+several distinct ways: pericentral cells could disappear; zonal genes could turn off; cells
+could start co-expressing both programs; the gradient could compress toward an intermediate
+state; or the periportal-to-pericentral ratio could shift. Because these failure modes have
+different count signatures, we did not rely on one global correlation score; we tested them
+separately.
 
-  - HEALTHY controls: deceased-donor organ tissue (~1 cm^3 cubes from transplant
-    organs). [verified in the paper's Methods: "deceased transplant organ tissue".]
-  - DISEASE F0->F4 (the actual MASLD spectrum): 16-gauge NEEDLE BIOPSIES, right lobe.
-  - END-STAGE: explanted whole cirrhotic organs (multi-lobe: Right + Caudate + Left).
+## The central confound: tissue source is tied to disease stage
 
-So "early disease" is a needle core, while "healthy" and "end-stage" are organ cubes.
-Deceased-donor / explant procurement involves warm + cold ischemia and tissue
-dissociation that a fresh needle biopsy does not. Any comparison that runs "healthy ->
-mild -> ... -> end-stage" is therefore also running "organ-cube -> needle -> organ-
-cube", and cannot separate disease biology from how the tissue was obtained.
+The dataset is not one homogeneous disease series. The disease-biopsy samples and the
+endpoint groups differ in how the tissue was obtained. The MASLD spectrum F0-F4 consists of
+16-gauge needle biopsies. The healthy controls come from deceased-donor transplant-organ
+tissue, and the end-stage samples from explanted cirrhotic organs. Organ tissue and explants
+experience ischemia, procurement stress, handling delay, and dissociation effects that fresh
+needle biopsies do not.
 
-This is the load-bearing observation. Everything after it is either (a) showing this
-confound is real and large, or (b) re-doing the zonation test in a way that is immune
-to it (biopsy-only, depth-normalized, count-based).
+So the apparent axis healthy -> MASLD -> MASH -> cirrhosis -> end-stage is also partly an
+acquisition axis: deceased-donor organ tissue -> needle biopsy -> explanted organ. This is
+the load-bearing methodological issue: if disease stage is collinear with tissue source, a
+comparison across the full series cannot separate disease biology from procurement and
+sampling. The main disease-axis analysis therefore excludes the healthy and end-stage groups
+and focuses on the acquisition-matched biopsy samples. The endpoint groups remain informative
+descriptively, but they are not clean evidence for a progressive trajectory.
 
-------------------------------------------------------------------------------
-2. LOBE INVARIANCE (clears one sub-confound) [finding F1]
-------------------------------------------------------------------------------
-First we ruled out a narrower worry. The end-stage explants were sampled from three
-lobes including the CAUDATE lobe (Couinaud segment I) — which is anatomically odd: dual
-blood supply, drains directly to the inferior vena cava, and is often spared/
-hypertrophied in cirrhosis. Could the apparent "de-zonation" just be caudate tissue
-being different?
+## Preliminary check: end-stage lobe is not the explanation
 
-Test: within the end-stage hepatocytes, compare the zonation markers across Right /
-Caudate / Left lobes. Metric = DETECTION RATE (fraction of nuclei with raw UMI > 0).
-Result: detection is lobe-invariant — e.g. GLUL 0.350 / 0.343 / 0.297 (R/C/L); ALDOB
-0.821 / 0.837 / 0.838; CPS1 0.826 / 0.874 / 0.879. The same markers are on/off in every
-lobe; the zonation pattern is fully present in RIGHT-lobe-only cells.
+The end-stage explants were sampled from multiple lobes, including the caudate lobe, which
+has unusual anatomy and can behave differently in cirrhosis. Within end-stage hepatocytes,
+zonation-marker detection rates were broadly similar across right/caudate/left lobes — GLUL
+~0.350/0.343/0.297, ALDOB 0.821/0.837/0.838, CPS1 0.826/0.874/0.879. This clears the narrow
+"caudate tissue is just different" sub-confound, but it does not solve the larger problem
+that explants and biopsies are fundamentally different acquisition contexts.
 
-Honest caveat: absolute BURDEN (UMIs per 10,000) varies more across lobes (median
-spread ~0.36, up to ~0.5 for a few genes), but unsystematically, not in a direction
-that manufactures de-zonation. So "invariant" applies to the detection PATTERN, not to
-exact expression level.
+## Procurement stress is visible and source-collinear
 
-Scope: this clears ONLY the lobe sub-confound. It does NOT clear the bigger explant-vs-
-biopsy / procurement-stress confound from Part 1 — that is the next piece.
+If organ/explant samples carry procurement stress, it should show in stress-response genes.
+We measured a stress module of immediate-early and heat-shock genes (FOS, JUN, JUNB, JUND,
+ATF3, DUSP1, HSPA1A, HSPA1B). To avoid mistaking sequencing depth for biology, we used raw
+UMI counts and down-thinned each nucleus to a common 1,500-UMI budget (nuclei below it
+dropped), so a count difference is not just deeper sequencing.
 
-------------------------------------------------------------------------------
-3. THE PROCUREMENT-STRESS SIGNATURE, BY STAGE [findings F2/F3, F5]
-------------------------------------------------------------------------------
-If the organ-cube groups (healthy, end-stage) are stressed by procurement and the
-needle biopsies are not, that stress should be visible and stage-collinear. It is.
+The module showed a strong source pattern (mean stress UMIs per nucleus): biopsy ~0.074,
+healthy deceased-donor ~0.282, end-stage explant ~1.675. The same pattern holds on an
+ambient-robust metric (at least two stress UMIs per nucleus); end-stage stays ~20x higher
+than biopsy, stable across downsampling budgets.
 
-Stress module = sum of 8 immediate-early + heat-shock genes (FOS, JUN, JUNB, JUND,
-ATF3, DUSP1, HSPA1A, HSPA1B) per nucleus. These are the documented tissue-dissociation/
-ischemia artifact in single-cell work (van den Brink 2017; O'Flanagan 2019; Denisenko
-2020). To compare fairly across samples of different sequencing depth, we DEPTH-
-NORMALIZE: binomial down-thinning of every nucleus's raw UMIs to a common budget of
-1,500 total UMIs (cells below that are dropped; Monte-Carlo averaged over draws). All
-"per nucleus" numbers below are on that common budget.
+The key control is cross-lineage: the immediate-early stress increase in end-stage vs biopsy
+is similar in hepatocytes and in endothelial cells (~18x in both). Endothelial cells are not
+where hepatocyte zonation is tested, so this is not a hepatocyte-zonation-specific program —
+it is an organ-wide acute handling/procurement signal. This supports excluding the healthy
+and end-stage groups from the clean disease-axis analysis.
 
-Stress per source (mean across donors):
-  - needle biopsy (38 donors):       0.074 stress-UMIs / nucleus   (baseline, low)
-  - healthy deceased-donor (4):      0.282                          (~3.8x biopsy)
-  - end-stage explant (5):           1.675                          (~22.6x biopsy,
-                                                                      ~6x healthy)
-Ambient-robust detection (fraction of nuclei with >=2 stress UMIs): 0.053 / 0.247 /
-0.770 across the same three groups. The fold (explant vs biopsy) is stable at ~21-23x
-whether the budget is 1000, 1500, or 3000 UMIs.
+## Why raw counts and depth normalization
 
-So stress is elevated in BOTH deceased-donor groups and far higher in end-stage, while
-the entire needle-biopsy disease spectrum is uniformly low. That is exactly the pattern
-of a procurement artifact, not a disease gradient.
+The core questions are count questions: is a marker detected, how many molecules are present,
+does a nucleus truly co-detect two programs? Normalization methods such as SCT are useful for
+clustering and visualization but distort absolute count interpretation, and are not ideal for
+deciding one stray ambient molecule versus robust expression. So the main zonation tests use
+raw counts after down-thinning every nucleus to the same total budget, and a marker counts as
+"on" only with at least two UMIs. A single-UMI event can easily be ambient RNA; two or more is
+not perfect proof but is more robust.
 
-The decisive control (cross-lineage, finding F5): if this were liver-disease biology
-specific to hepatocytes/zonation, non-zonated cell types should NOT be equally stressed.
-They are. Immediate-early stress in end-stage vs biopsy is ~18.5x in hepatocytes and
-~18.2x in ENDOTHELIAL cells — a cell type with no zonation program at all. Heat-shock is
-~66x; hypoxia-response (HIF targets) is only ~1.7-2.6x. Reading: this is ACUTE tissue
-handling stress felt organ-wide, not chronic hypoxia and not a zonation-specific
-program. A whole-organ, all-lineage stress spike cannot be the hepatocyte de-zonation
-the paper describes.
+## The main zonation test: count-based anchor classification
 
-This is why we EXCLUDE the healthy and end-stage groups from the disease axis and
-analyze the needle-biopsy F1->F4 spectrum on its own.
+For each hepatocyte nucleus in the biopsy samples we asked whether it expresses a pericentral
+anchor program (GLUL, CYP3A4), a periportal anchor program (ASS1, PCK1, HAL, ALDOB), both, or
+neither, classifying it as PC-anchor, PP-anchor, dual, or null. The unit of inference is the
+donor, not the nucleus: we summarize each donor's hepatocyte fractions per class and compare
+donor-level fractions across fibrosis stage. This directly tests the failure modes:
 
-(Aside, finding F2/F3 "Leg B": if you DO look at the end-stage gene shape descriptively,
-it is selective, not a clean pericentral "turn-off": detox genes fall (CYP2E1 detection
-0.81->0.33, SLCO1B3 0.57->0.28 from cirrhotic-biopsy to end-stage) while pericentral
-IDENTITY is retained or up (GLUL 0.07->0.14, CYP3A4 0.31->0.41) and periportal genes are
-INDUCED (PCK1 0.15->0.58, ALDOB 0.55->0.70). But this lives entirely inside the
-confounded end-stage group, so it is a description of the explant phenotype, not a
-disease trajectory. See also Part 7.)
+- Pericentral depletion would drop the PC-anchor fraction. It does not — broadly flat and
+  non-monotone across biopsy stages (36/19/23/22/21% F0-F4).
+- Co-expression would raise robust dual-positives. At a one-UMI threshold dual cells look
+  common, but at the ambient-robust two-UMI threshold the dual fraction collapses to roughly
+  0.2-0.6% and does not trend up — much of the apparent low-level co-expression is ambient RNA.
+- Turn-off would raise the double-negative (null) fraction. No strong monotone increase.
+- A composition shift would move the periportal-to-pericentral ratio. Broadly flat/non-monotone.
+- Gradient compression would move cells off the poles into the middle of the axis. There is at
+  most a mild, non-monotone middle-ward drift that peaks before F4 and partly reverts; the
+  poles remain present, the gradient is not collapsed.
 
-------------------------------------------------------------------------------
-4. THE MAIN TEST: ANCHOR CLASSIFICATION + THE DE-ZONATION SCENARIO TAXONOMY
-   [findings F8, F9; this is the core positive result]
-------------------------------------------------------------------------------
-Having isolated the clean disease axis (biopsy F1->F4) and a depth-normalization method,
-we test zonation directly, in a way designed to separate genuine biology from artifacts.
+Together the biopsy-only count evidence supports preserved hepatocyte transcriptional
+zonation, and it is robust across a sensitivity grid (alternate pericentral definitions,
+thresholds, periportal requirements, ALDOB in/out, CPS1-based, strict identity) — the
+conclusion does not rest on one favorable panel.
 
-THE INSTRUMENT — "anchor classification" (our term). For each hepatocyte nucleus, we ask
-which zonal program it expresses, using STRICT, mutually-exclusive ANCHOR markers
-(pericentral anchors: GLUL, CYP3A4; periportal anchors: ASS1, PCK1, HAL, ALDOB), counted
-on the depth-normalized 1,500-UMI budget, and a gene is "on" only at an AMBIENT-ROBUST
-threshold of >=2 UMI (>=2 so that a single stray ambient molecule does not count). Each
-nucleus is then labeled:
-  - PC-anchor  = pericentral program on, periportal off
-  - PP-anchor  = periportal on, pericentral off
-  - dual       = BOTH on (the cell co-expresses both identities)
-  - null       = NEITHER on
-We summarize each donor by the fraction of its hepatocytes in each label, and compare
-those fractions across fibrosis stage. The unit of inference is the DONOR, not the cell.
+## Why an earlier relative-ruler approach was abandoned
 
-THE SCENARIO TAXONOMY (our coined labels). Rather than fish for any metric that moves,
-we enumerated every distinct WAY zonation could break down, mapped each to a specific
-count signature, and tested all of them. Each label below is OUR coinage and is defined:
+An earlier analysis used a z-scored relative coordinate (standardize the two programs, form a
+relative axis, read de-zonation off its spread/correlation). We abandoned it for two reasons.
+First, it was source-confounded: including healthy and end-stage tissue created an apparent
+collapse that largely disappeared on biopsy-only data. Second, it was mechanism-blind: a
+smaller spread can come from true co-expression, complete turn-off, reduced depth, or noise —
+biologically different scenarios the ruler cannot separate. The count-based anchor
+classification was built to separate them. The lesson: a global anti-correlation or relative-
+coordinate metric can be visually compelling but biologically ambiguous.
 
-  - DEPLETION = pericentral cells disappear (their fraction drops). Signature: PC-anchor
-    fraction falls with stage. Result: 36 / 19 / 23 / 22 / 21 % across F0->F4 (donor-
-    median) — flat / non-monotone. NO depletion.
+## End-stage explants are heterogeneous, not one clean program
 
-  - DIMMING = pericentral cells survive but turn their program DOWN (lower expression).
-    Signature: within-PC detox burden falls. We saw a weak hint (12.7 -> 8.9) but it was
-    confounded and did NOT survive a genome-wide test (Part 9), so we DROPPED it as a
-    finding. (It was the only thing that twitched and got over-promoted; retired.)
+Excluded from the clean axis but still descriptively informative: analyzed individually, the
+five end-stage organs do not show one uniform zonation phenotype. One retains a strong
+pericentral fraction; one shows a large dual/co-expression signal; others shift strongly
+periportal, one to near-total pericentral collapse. PC-anchor fraction ranges ~3% to ~50%;
+PP:PC ratio ranges ~0.13 to over 20. If they all moved together one might call them a coherent
+terminal state despite the confound; instead they diverge. Pooling them into one average
+correlation hides this and can manufacture the impression of a single "de-zonation" phenotype.
+The safe reading: dramatic, heterogeneous disruption under a confounded acquisition context —
+not clean evidence for a progressive biopsy-axis trajectory.
 
-  - CO-EXPRESSION = the spatial division of labor blurs, so single cells express BOTH
-    poles at once (the "biphenotypic" idea). Signature: the dual fraction rises. This is
-    the key ambient-robustness result: at a 1-UMI threshold the dual fraction looks like
-    ~7-10% and could be read as "lots of co-expression", but at the ambient-robust >=2-UMI
-    threshold it COLLAPSES to ~0.2-0.6% at every stage (0.002 / 0.006 / 0.003 / 0.005)
-    and does not trend. The apparent co-expression at 1 UMI was AMBIENT SOUP (stray
-    cross-cell molecules), not real co-expression. NO de-zonation by co-expression.
-    (For contrast, the confounded explant group sits ~0.029, about 7x higher.)
+## Equivalence framing: bounding the absence of a large shift
 
-  - GRADIENT COMPRESSION ("folding") = cells pile toward the MIDDLE of the pericentral-
-    periportal axis (losing the sharp poles) without necessarily flipping label.
-    Signature: in the per-cell PC/(PC+PP) balance distribution, mass moves to the center
-    and away from the poles. Result: middle-mass 0.21 / 0.22 / 0.24 / 0.28 / 0.26 and
-    pole-mass 0.47 / 0.41 / 0.39 / 0.32 / 0.38 — a MILD, NON-MONOTONE middle-ward drift
-    that peaks at F3 and partly reverts at F4; the poles stay dominant. Gradient PRESENT,
-    not collapsed. (The confounded explant, by contrast, spikes to a single periportal
-    pole: middle 0.18, poles 0.58.) We are careful not to call this a perfect "flat".
+A negative result is not automatically preservation, so we added an equivalence-style bound.
+Across biopsy F1 to F4 the estimated change in pericentral-anchor fraction is small (about
++2.4 percentage points) with a wide interval (small F4 n). The data exclude a large
+compartment-scale shift on the order of 20 percentage points; the better-populated F1-to-F3
+interior bounds it to roughly 12 percentage points. They do NOT exclude subtle drift below
+about 10 percentage points (donor variation + small F4 sample limit resolution). The correct
+claim: large biopsy-axis de-zonation is bounded against; subtle drift is not ruled out.
 
-  - TURN-OFF = hepatocytes lose zonal identity entirely (become double-negative).
-    Signature: the null fraction rises. Result: 34 / 44 / 36 / 39 / 39 % — flat. NO
-    turn-off.
+## Genome-wide pseudobulk differential expression
 
-  - COMPOSITION SHIFT = the ratio of periportal to pericentral cells changes. Signature:
-    PP:PC anchor ratio. Result: 0.62 / 1.16 / 1.01 / 1.10 / 1.18 — roughly flat / non-
-    monotone. NO shift.
+To ask whether any other hepatocyte program changes across the matched biopsy axis, we ran
+genome-wide DGE. For each donor, raw UMIs were summed across hepatocyte nuclei (one profile
+per donor — avoiding treating nuclei from one person as independent replicates), then analyzed
+with edgeR (TMM normalization, negative-binomial quasi-likelihood, robust dispersion). The
+main contrast was cirrhotic F4 vs F1; the cohort had 38 donors across F0-F4, with F4 only four
+donors, so F4-specific signals need caution.
 
-  - INDUCTION = a program is switched on more strongly. Result: periportal genes are flat
-    across biopsy stages and rise only in the end-stage explant. Induction is EXPLANT-ONLY.
+The results play two roles.
 
-  - PRESERVED = all of the above stable. This is the NULL, and it is what we observe
-    across biopsy F1->F4.
+First, they INDEPENDENTLY CORROBORATE the zonation result. Zonation genes are flat at donor-
+level expression: GLUL and the identity/detox set are not significantly changed (GLUL FDR
+~0.80), and housekeeping genes are stable. This is not the primary proof of preserved zonation
+— the anchor classification is — but it is genuine independent corroboration: a second method
+(per-gene donor-level expression) that shares no machinery with the anchor instruments,
+arriving at the same answer. It is more than a pipeline sanity check.
 
-Crucially, this whole picture is ROBUST: the PC-anchor flatness holds across every
-sensitivity-grid variant (pericentral defined by GLUL only / CYP3A4 only / both;
-threshold 1 or 2 UMI; periportal defined 2-of-4 or 3-of-4; ALDOB in or out; CPS1-based;
-strict-identity). The negative is solid because it survives the entire grid, not because
-of one lucky cut.
+Second, the scan asks whether any other large hepatocyte program changes. Only a small set of
+genes reaches FDR significance at F4-vs-F1, and they are not a broad metabolic, detox,
+mitochondrial, cell-cycle, or stress program — they are mostly biliary/ductular/plasticity
+markers (EPCAM, GRHL2, SPINT2, SOX4, SOX9, B3GNT3) plus CXCL10. The scan does not rediscover
+widespread hepatocyte remodeling; it finds a biliary-marker burden inside hepatocyte-labeled
+pseudobulk.
 
-------------------------------------------------------------------------------
-5. WHY WE CHANGED THE MEASUREMENT: THE RELATIVE-RULER POSTMORTEM [finding F12]
-------------------------------------------------------------------------------
-We did not start with the count-based anchor classification. An earlier instrument was a
-z-scored "relative ruler": standardize each program to mean-0/variance-1 across all
-cells, form a coordinate, and read "collapse" off its SPREAD or its pericentral-
-periportal anti-correlation. We abandoned it for two distinct reasons:
+A gene-level scan cannot fully exclude weak coordinated pathway shifts (a pathway can move
+modestly across many genes without single genes passing FDR). So the honest claim is not "no
+other hepatocyte program exists." It is: no large single-gene hepatocyte program was detected
+outside the biliary/ductular marker burden; formal gene-set testing is still needed to exclude
+weak coordinated pathway shifts.
 
-  1. Tissue-source confound. Pooling the deceased-donor + explant groups with biopsies
-     put the dramatic "collapse" into the confounded tissue; dropping those groups
-     removes most of it. (It is also a Simpson/aggregation effect: the pooled anti-
-     correlation can reverse sign when you stop aggregating.)
-  2. An INTRINSIC defect that survives even biopsy-only: the ruler is depth- and cell-
-     number-sensitive (shallower F4 biopsies change the spread for non-biological
-     reasons), AND it conflates mechanisms — turn-off, co-expression, and plain noise ALL
-     shrink the spread, so the ruler cannot tell them apart. The count-based scenario
-     taxonomy (Part 4) was built precisely to separate them.
+## Interpreting the biliary-marker burden
 
-Empirically, the biopsy-only ruler showed a weak "detox drift" (66 -> 49 on the relative
-scale) that turned out to be within-donor spread noise and did not survive the count
-classification. So the ruler was indirect and mechanism-blind; the count anchor
-classification on depth-normalized counts is the trustworthy instrument.
+A biliary-marker burden in hepatocyte-labeled nuclei does not automatically mean
+transdifferentiation. It could be genuine plasticity, ambient cholangiocyte RNA, doublets/mixed
+nuclei, or misclassified rare states. Several observations favor a compositional explanation:
 
-------------------------------------------------------------------------------
-6. THE 2D JOINT-COUNT VIEW — AND ITS CORRECTION [finding F13]
-------------------------------------------------------------------------------
-A natural "conviction" picture: for each nucleus plot pericentral-program count (x) vs
-periportal-program count (y); zonation = two separated clouds, de-zonation = the both-
-high corner fills. We built it, then caught a trap on audit: the broad 7+6-gene PROGRAM
-sums include broadly-expressed metabolic genes (CPS1, ALDOB, ASS1, the CYPs) that are ON
-in essentially every normal hepatocyte. So "both programs high" is satisfied by most
-NORMAL cells and is NOT a co-expression test. Measured this way the both-high corner is
-actually FULLER in biopsy (~0.80 at a low threshold) than in explant (0.43) — the
-opposite of the naive reading — because the explant collapsed to the periportal pole.
+- The headline biliary genes are far more abundant in cholangiocytes than hepatocytes, so a
+  little cholangiocyte leakage creates a large apparent hepatocyte signal.
+- The cholangiocyte fraction rises at F4 (ductular reaction) — a richer ambient environment
+  exactly where the hepatocyte biliary burden appears.
+- True per-cell co-expression is rare (~0.4% of hepatocyte nuclei robustly co-express multiple
+  biliary markers) — hard to reconcile with a broad transdifferentiation wave.
+- Ambient correction with decontX cuts the significant hits from 64 to 34 and drops SOX4/SOX9
+  below significance — consistent with ambient contribution.
 
-So the 2D joint-count is a POLE-COLLAPSE visualization, not a co-expression test. The
-real high-amount co-expression conviction lives in the STRICT anchor dual at >=2 UMI
-(Part 4): ~0.2-0.6% in biopsy vs ~2.9% in explant (~7x). That is the clean version, and
-it says genuine co-expression is near-absent across biopsy disease and present only in
-the confounded explants.
+But decontX is not a verdict: it can remove true hybrid biology if it treats unexpected lineage
+markers as contamination, and it can also under-correct; and several genes (EPCAM, B3GNT3,
+SPINT2, CXCL10) survive and need caution. CXCL10 should be read separately — an interferon/
+inflammatory gene, not simply a cholangiocyte structural marker, and a candidate real
+inflammatory hepatocyte response rather than contamination.
 
-------------------------------------------------------------------------------
-7. EXPLANT HETEROGENEITY — END-STAGE IS NOT ONE PROGRAM [finding F14] (IMPORTANT)
-------------------------------------------------------------------------------
-This is important because it is where the original "collapse" signal actually lives, and
-it shows that signal is not a single coherent thing. Per-explant anchor classification
-(fractions of depth-normalized hepatocytes):
+Proper conclusion: the biliary/plasticity signal is most consistent with a mixture of
+cholangiocyte ambient RNA and rare mixed/doublet events associated with the ductular reaction,
+but a rare or partial hepatocyte-intrinsic program is not excluded.
 
-  CL104:  PC 49.7%  PP 6.7%   dual 1.1%   null 17.7%   PP:PC 0.13   -> RETAINS pericentral
-          (more than the average biopsy donor, ~24%)
-  CL18 :  PC 20.5%  PP 18.7%  dual 22.4%  null 5.3%    PP:PC 0.92   -> CO-EXPRESSION
-          explosion (22% real dual)
-  CL103:  PC 14.2%  PP 41.7%  dual 2.7%   null 25.5%   PP:PC 2.93   -> periportal-leaning
-  CL17 :  PC 9.1%   PP 50.5%  dual 5.9%   null 16.7%   PP:PC 5.55   -> periportal-leaning
-  CL16 :  PC 3.2%   PP 65.2%  dual 2.4%   null 18.0%   PP:PC 20.3   -> near-total
-          pericentral COLLAPSE
+## Final interpretation
 
-Five separately-procured organs go in OPPOSITE directions: one keeps its pericentral
-pole, one floods into co-expression, one nearly loses pericentral entirely. PC-anchor
-ranges 3%->50%; PP:PC ranges 0.13->20. This is the signature of heterogeneous,
-separately-handled organ procurement, NOT one disease program. The original approach
-pools these five discordant organs into a single marker-correlation number and reports a
-uniform "collapse" — which is exactly what hides the heterogeneity. (Open follow-up O11:
-test whether each organ's collapse magnitude tracks its procurement-stress severity.)
+1. The full healthy-to-end-stage trajectory in the original single-nucleus analysis is
+   confounded by tissue source; the three groups are not directly comparable as one clean axis.
+2. Within acquisition-matched needle-biopsy MASLD, hepatocyte transcriptional zonation is
+   preserved — multiple de-zonation mechanisms tested directly on raw, depth-normalized counts,
+   none showing a large monotone breakdown, robust to marker definitions, corroborated by
+   genome-wide pseudobulk expression.
+3. The main genome-wide disease-associated signal inside hepatocyte-labeled nuclei is a
+   biliary/ductular marker burden at F4 — overlapping the paper's biology, but here not
+   sufficient evidence for widespread transdifferentiation; its pattern is strongly compatible
+   with cholangiocyte ambient RNA and rare mixed/doublet events. CXCL10 remains a candidate
+   real inflammatory signal.
 
-------------------------------------------------------------------------------
-8. AFFIRMATIVE BOUND + BATCH HONESTY [findings F16, F17]
-------------------------------------------------------------------------------
-A null ("nothing was significant") is not automatically proof of preservation, so we
-added an EQUIVALENCE bound (TOST). Across biopsy F1 -> cirrhotic-F4 the change in the
-pericentral-anchor fraction is +0.024 (i.e. +2.4 percentage points of hepatocytes) with a
-90% confidence interval of -0.147 to +0.194. Because that interval does not extend beyond
-about +/-0.19, we can AFFIRMATIVELY EXCLUDE any coordinated re-zonation larger than about
-+/-0.19 of the compartment across this contrast; the better-populated F1->F3 interior
-tightens this to about +/-0.12. Honest limit: a MODEST drift of <= +/-0.10 is NOT excluded
-(donor-to-donor spread is large at F4, n=4). So we rule out a large/dramatic re-zonation
-(the explant-collapse scale moves the fraction by ~0.3-0.5), not a subtle drift.
+Stated with boundaries: in biopsy-matched MASLD, single-nucleus hepatocyte expression does not
+support progressive large-scale de-zonation. The strong zonation/plasticity signal is
+concentrated in the confounded end-stage explants and in a small biliary-marker burden whose
+source is not definitively hepatocyte-intrinsic. This corrects the transcriptomic
+interpretation; it does not address the paper's imaging, protein, spatial, or organoid evidence.
 
-Batch honesty (F17): sequencing run is NOT randomized — run predicts tissue source almost
-perfectly (Cramer's V = 0.84), so the healthy/end-stage groups are batch-confounded too
-(another reason to exclude them). Within the biopsy axis it is weaker but real: of the two
-sequencing runs carrying the four F4 donors, only one also carries an F1 donor. We
-therefore checked the genome-wide hits (Part 9) with run as a covariate and within a
-single run — the effects persist in direction, only significance attenuates with the
-smaller n, so they are not a pure batch artifact.
+## Remaining limitations and highest-priority next steps (future work)
 
-------------------------------------------------------------------------------
-9. GENOME-WIDE DIFFERENTIAL EXPRESSION [findings F15, F18; Plan B F20; lead F21]
-------------------------------------------------------------------------------
-The anchor classification uses a marker panel. To check that nothing was missed, we ran a
-GENOME-WIDE differential-expression test, and we framed it deliberately.
+- Pathway-level sensitivity (the biggest gap): a pre-specified gene-set test (CAMERA + ROAST on
+  the same pseudobulk model) across hepatocyte functional pathways and cholangiocyte/ductular
+  signatures, to exclude weak coordinated programs.
+- F4 robustness: leave-one-F4-donor-out DGE and per-donor plots for the biliary genes, to show
+  whether the signal is consistent across cirrhotic donors or driven by one outlier.
+- Quantitative contamination accounting: estimate whether the observed cholangiocyte ambient/
+  doublet burden is, in magnitude, sufficient to explain the apparent hepatocyte biliary counts.
 
-Method: pseudobulk per donor (sum raw UMIs over each donor's hepatocytes) -> edgeR with
-TMM library-size normalization + a negative-binomial quasi-likelihood gene-by-gene test
-(the pseudobulk-per-donor design that Squair et al. 2021 show avoids the false-positive
-inflation of per-cell tests). 38 biopsy donors (F0-F4 = 2/8/12/12/4), 21,022 genes,
-common biological coefficient of variation 0.405. Primary contrast cirrhotic-F4 vs F1;
-the well-populated F1->F3 interior and an all-stage omnibus as secondary looks.
-
-Framing: zonation preservation is ALREADY ESTABLISHED by the count instruments (Part 4)
-and is the PREMISE here. The genome-wide test asks a DIFFERENT question — given preserved
-zonation, does any OTHER coordinated hepatocyte program shift across F1->F4? It has two
-payoffs:
-
-  PART 1 OF THE RESULT — zonation kept, INDEPENDENTLY CORROBORATED. Because the scan tests
-  every gene, it also tests the zonation genes, and they come back flat at the expression
-  level: GLUL FDR 0.80 (not significant), the rest of the identity/detox set FDR 0.43-0.96,
-  while the housekeeping controls are flat too. This is a SECOND, independent method (per-
-  gene donor-level expression) agreeing with the count instruments — not the primary proof,
-  but genuine corroboration, NOT a mere pipeline sanity check. (An earlier genome-wide
-  Spearman test, F15, gave the same answer and also falsified the dimming hint from Part 4.)
-
-  PART 2 OF THE RESULT — beyond zonation, essentially nothing else moves. Of ~21,000 genes,
-  only 64 reach significance at F4-vs-F1, and they are a BILIARY / ductular marker set
-  (EPCAM, GRHL2, SPINT2, SOX4, SOX9, B3GNT3) plus CXCL10 — i.e. exactly the markers the
-  original paper flagged as transdifferentiation. The careful reading: this scan detects a
-  biliary-MARKER BURDEN inside hepatocyte-labeled pseudobulk; it does NOT by itself prove
-  hepatocyte "plasticity". An across-all-stage omnibus finds 91 genes, and the biliary
-  genes are an F4-weighted jump, not a smooth gradient.
-
-  KEY OPEN CAVEAT on Part 2 (a reviewer, ChatGPT, flagged this and we agree): "nothing else
-  moves" is a GENE-LEVEL statement. Gene-by-gene FDR can miss a COORDINATED WEAK program —
-  tens-to-hundreds of genes each shifting modestly without any one crossing significance.
-  To make "no other hepatocyte program" fully defensible we still need a GENE-SET / pathway-
-  level test (CAMERA + ROAST over pre-specified hepatocyte programs: detox, urea cycle,
-  bile-acid/lipid metabolism, ER stress, interferon/inflammation, hypoxia, mitochondrial,
-  cell-cycle, senescence, EMT, fetal/progenitor, cholangiocyte/ductular). This is DEFERRED
-  to future work; until it runs, the honest claim is "no single-gene program and no large
-  coordinated change (> ~2-fold); a coordinated weak program is not yet formally excluded."
-
-WHERE DOES THE BILIARY-MARKER BURDEN COME FROM? (a SIDE LEAD, not the main point; probed
-crudely.) Source-attribution evidence that it is COMPOSITIONAL (cholangiocyte ambient RNA +
-rare mixed nuclei from the cirrhotic ductular reaction), not a hepatocyte program:
-  - every headline gene is 5-78x more abundant in cholangiocytes than hepatocytes (so a
-    little cholangiocyte leakage creates a large apparent hepatocyte signal);
-  - the cholangiocyte fraction rises to ~8% exactly at F4 (the ductular reaction), enriching
-    the ambient soup where the signal appears;
-  - only ~0.4% of hepatocyte nuclei co-express >=2 biliary markers (hard to reconcile with a
-    broad transdifferentiation wave);
-  - decontX ambient correction drops the hits 64 -> 34 and sends SOX4/SOX9 below significance
-    (consistent with ambient), though EPCAM/B3GNT3/SPINT2/CXCL10 survive (decontX can over-
-    and under-correct, and it uses the paper's own labels, so it is a consistency check, not
-    a verdict);
-  - a crude doublet probe (hepatocyte nuclei co-detecting cholangiocyte structural markers
-    KRT19/KRT7 at >=2 UMI) finds such nuclei rise with fibrosis and sit ENTIRELY below the
-    paper's only doublet control (they removed nuclei with >50,000 counts; 0 of 42,579 biopsy
-    hepatocyte nuclei exceed that). IMPORTANT HONESTY: this probe cannot tell a doublet from a
-    rare genuinely-transdifferentiating cell, and rests on ~16 nuclei — it is a LEAD, not a
-    finding.
-  - ONE EXCEPTION we initially buried: CXCL10 is an interferon-induced inflammation gene whose
-    hepatocyte expression does NOT track the cholangiocyte fraction (correlation -0.09 vs
-    +0.24..+0.68 for the true ambient genes), so it is a CANDIDATE REAL inflammatory signal,
-    not biliary/ambient — we separate it out.
-
-Plan B (within-class DGE, finding F20) is SUBORDINATE: classify each hepatocyte by zone, then
-test for changes WITHIN each zone. Given that zone proportions are flat (Part 4), pooling
-cannot mask a within-zone program, so this is largely confirmatory of the main test; its job
-is to foreclose "could a program hide inside a zone?" — answer: no.
-
-On the F4-vs-F1 fragility (only 4 F4 donors): the MAIN claims (zonation corroboration; nothing
-else moves) also hold in the well-populated F1->F3 interior, so they do not hinge on the thin
-F4 group. What the interior does not resolve is leave-one-F4-donor-out robustness of the
-biliary hits specifically — but that is in the downweighted side lead, not the main claims.
-
-------------------------------------------------------------------------------
-10. WHAT WE CONCLUDE — AND WHAT WE EXPLICITLY DO NOT CLAIM
-------------------------------------------------------------------------------
-We conclude: in acquisition-matched needle-biopsy MASLD (fibrosis F1 -> cirrhotic F4),
-hepatocyte GENE-EXPRESSION zonation is PRESERVED — no detectable change by the count-based
-scenario taxonomy across the whole sensitivity grid, corroborated independently by genome-
-wide expression DGE, with large coordinated re-zonation affirmatively excluded (down to about
-+/-0.12-0.19 of the compartment). Beyond zonation, no large coordinated hepatocyte program
-changes across the biopsy axis except a biliary-marker burden that is most consistent with
-cholangiocyte ambient RNA and the cirrhotic ductular reaction (plus one candidate inflammatory
-gene, CXCL10).
-
-We do NOT claim:
-  - that we overturned the paper. We correct only the single-nucleus TRANSCRIPTIONAL leg of
-    the de-zonation claim in matched biopsy tissue.
-  - anything about the paper's IMAGING / protein / organoid evidence — untouched.
-  - anything about SPATIAL/architectural zonation. snRNA measures per-cell transcriptional
-    balance, not lobule geometry; a needle core cannot see septa/perivenular remodeling.
-  - that there is NO hepatocyte program whatsoever — only that no single-gene and no large
-    coordinated program is detected; the gene-set test (O13) is still owed.
-  - that the biliary signal is definitively non-intrinsic — the source-attribution leg is a
-    crude, promising lead, not a closed result.
-We also AGREE with the paper that the strong transdifferentiation/zonation-change signal is an
-END-STAGE phenomenon — which is exactly the tissue we set aside as confounded.
-
-------------------------------------------------------------------------------
-QUESTIONS FOR YOU, THE REVIEWER
-------------------------------------------------------------------------------
-1. Is the logical chain sound: confound -> exclude the ends -> re-test on the clean biopsy
-   axis with depth-normalized counts + genome-wide DGE -> preserved? Where is it weakest?
-2. Is the "preserved zonation" conclusion fairly stated and fairly bounded, given a hackathon
-   scope?
-3. Is the separation between the MAIN claims (zonation preserved; nothing else large changes)
-   and the SIDE LEAD (the biliary burden is compositional) clear and correctly weighted?
-4. What is the single most valuable addition for a 2-3 day project — and do you need any number
-   or table from us to judge any step? If so, ASK before concluding.
-5. Please REORDER / REWRITE for clean, logical flow; flag any inaccuracy or overclaim.
+Until then, the strongest defensible statement: zonation preservation across matched biopsy
+tissue is well supported; the biliary/plasticity signal is real as a signal in hepatocyte-
+labeled data, but its source is not resolved and is more consistent with compositional
+contamination than with widespread hepatocyte transdifferentiation.
 ================================================================================
