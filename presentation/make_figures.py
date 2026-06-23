@@ -7,16 +7,25 @@ import os, numpy as np, pandas as pd
 import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-T   = next((c for c in ["results/tables/analysis","archive/results/tables/analysis"] if os.path.isdir(c)), "results/tables/analysis")
+T   = "results/tables/analysis"
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets"); os.makedirs(OUT, exist_ok=True)
 
-# ---- palette (deck spec) ----
-PC="#1D4ED8"; PP="#EA580C"; DUAL="#7C3AED"; NULL="#9CA3AF"
-BIOPSY="#0D9488"; CONFOUND="#BE123C"; ENDSTAGE="#86198F"; STRESS="#DC2626"; BILIARY="#7C3AED"
-INK="#1E293B"; MUTE="#64748B"; GRID="#E2E8F0"
-plt.rcParams.update({"font.size":14,"axes.edgecolor":"#94A3B8","axes.labelcolor":INK,
-    "xtick.color":INK,"ytick.color":INK,"axes.titlecolor":INK,"font.family":"DejaVu Sans",
-    "axes.spines.top":False,"axes.spines.right":False,"figure.dpi":200})
+# ---- palette: data = meaning colors; chrome aligned to the deck (cream / teal / ink) ----
+PC="#1D4ED8"; PP="#E0701C"; DUAL="#7C5CD8"; NULL="#A8A29E"
+BIOPSY="#1B6E78"; CONFOUND="#B0413C"; ENDSTAGE="#8A2C6B"; STRESS="#C0392B"; BILIARY="#7C5CD8"
+INK="#1B2B31"; MUTE="#5C6E73"; GRID="#E8E2D6"; EDGE="#CFC8BA"
+plt.rcParams.update({
+    "font.family":"sans-serif", "font.sans-serif":["Segoe UI","Calibri","Helvetica Neue","Arial","DejaVu Sans"],
+    "font.size":13, "axes.titlesize":15, "axes.titleweight":"bold", "axes.titlecolor":INK, "axes.titlelocation":"left",
+    "axes.titlepad":10, "axes.labelsize":12, "axes.labelcolor":MUTE,
+    "axes.edgecolor":EDGE, "axes.linewidth":1.1,
+    "xtick.color":MUTE, "ytick.color":MUTE, "xtick.labelsize":11.5, "ytick.labelsize":11,
+    "xtick.major.size":0, "ytick.major.size":3, "xtick.major.pad":7,
+    "axes.spines.top":False, "axes.spines.right":False,
+    "axes.grid":True, "axes.axisbelow":True, "grid.color":GRID, "grid.linewidth":0.9,
+    "figure.dpi":220, "savefig.dpi":220,
+    "figure.facecolor":"none", "axes.facecolor":"none", "savefig.transparent":True,
+    "legend.frameon":False, "legend.fontsize":11, "legend.handlelength":1.4})
 STAGES=["F0","F1","F2","F3","F4"]
 
 def jitter(n, w=0.13): return (np.random.RandomState(0).rand(n)-0.5)*2*w
