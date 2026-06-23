@@ -1,7 +1,10 @@
 // MASLD snRNA-seq hackathon deck. Kicker style (ALL-CAPS kicker + short headline), per
 // the project's Zonation_Reanalysis.pptx. Run from here: node build_deck.js
 const pptxgen = require("pptxgenjs");
+const fs = require("fs");
 const A = __dirname + "/assets/";
+// read a PNG's pixel dimensions (IHDR) so figures embed at their EXACT native aspect (no stretch)
+function pngSize(file){ const b=fs.readFileSync(file); return {w:b.readUInt32BE(16), h:b.readUInt32BE(20)}; }
 
 // exact palette + fonts from the project's old build_deck.js (archive/legacy_reports/)
 const PC="1D4ED8", PP="EA580C", DUAL="7C3AED", NULL="9CA3AF",
@@ -27,7 +30,13 @@ function foot(s){ _pg++;
   s.addText(COURSE,{x:0.5,y:7.12,w:10.5,h:0.3,fontSize:10.5,color:MUTE,align:"left",margin:0});
   s.addText(String(_pg),{x:12.2,y:7.12,w:0.6,h:0.3,fontSize:10.5,color:MUTE,align:"right",margin:0});
 }
-function img(s,file,box){ s.addImage({path:A+file,x:box.x,y:box.y,w:box.w,h:box.h,sizing:{type:"contain",w:box.w,h:box.h}}); }
+function img(s,file,box){ // fit within (box.w x box.h) preserving the PNG's native aspect — exact, no stretch
+  const d=pngSize(A+file), ar=d.w/d.h;
+  let w=box.w, h=w/ar;
+  if(box.h && h>box.h){ h=box.h; w=h*ar; }
+  const x=box.x+(box.w-w)/2;          // centre horizontally within the box
+  s.addImage({path:A+file,x:x,y:box.y,w:w,h:h});
+}
 function figcap(s,x,y,w,txt){ s.addText(txt,{x,y,w,h:0.4,fontSize:12,italic:true,color:MUTE,align:"center",margin:0}); }
 function chip(s,x,y,w,h,txt,fill,tcol){
   s.addShape(p.shapes.ROUNDED_RECTANGLE,{x,y,w,h,fill:{color:fill},rectRadius:0.08,shadow:sh()});

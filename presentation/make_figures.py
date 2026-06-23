@@ -23,7 +23,7 @@ plt.rcParams.update({
     "xtick.major.size":0, "ytick.major.size":3, "xtick.major.pad":7,
     "axes.spines.top":False, "axes.spines.right":False,
     "axes.grid":True, "axes.axisbelow":True, "grid.color":GRID, "grid.linewidth":0.9,
-    "figure.dpi":220, "savefig.dpi":220,
+    "figure.dpi":300, "savefig.dpi":300,
     "figure.facecolor":"none", "axes.facecolor":"none", "savefig.transparent":True,
     "legend.frameon":False, "legend.fontsize":11, "legend.handlelength":1.4})
 STAGES=["F0","F1","F2","F3","F4"]
@@ -42,7 +42,7 @@ SG=["FOS","JUN","JUNB","JUND","ATF3","DUSP1","HSPA1A","HSPA1B"]
 mod = (sd[sd.gene.isin(SG)].groupby(["donor","source"])["dm_mean"].sum().reset_index())
 order=["needle_biopsy","healthy(deceased-donor)","explant"]; labels=["Needle biopsy\n(F0–F4)","Healthy\ndeceased-donor","End-stage\nexplant"]
 cols=[BIOPSY,CONFOUND,ENDSTAGE]
-fig,(ax,ax2)=plt.subplots(1,2,figsize=(12.2,5),gridspec_kw={"width_ratios":[1.2,1.85]})
+fig,(ax,ax2)=plt.subplots(1,2,figsize=(11.6,5.5),gridspec_kw={"width_ratios":[1.2,1.85]})
 means=[]
 for i,s in enumerate(order):
     v=mod[mod.source==s]["dm_mean"].values; means.append(v.mean())
@@ -119,7 +119,7 @@ fig.tight_layout(); fig.savefig(f"{OUT}/fig_result2.png", bbox_inches="tight"); 
 
 # ---- headline result v3: PC depletion + PP depletion + dual, F1-F4 (F0 n=2 dropped), value-labelled ----
 SR=["F1","F2","F3","F4"]
-fig,axs=plt.subplots(1,3,figsize=(13.2,5.0))
+fig,axs=plt.subplots(1,3,figsize=(12.4,5.7))
 def rpanel(ax,col,color,title,ylab,explant_line=None,dec=0):
     for i,st in enumerate(SR):
         v=bio[bio.Fs==st][col].values*100
@@ -195,7 +195,7 @@ fig.tight_layout(); fig.savefig(f"{OUT}/fig_volcano.png", bbox_inches="tight"); 
 
 # ===================== FIG 5 — compositional (3 panels) =====================
 comp=pd.read_csv(f"{T}/dge_planA_compositional.csv")
-fig,(a,b,c)=plt.subplots(1,3,figsize=(13.2,4.6))
+fig,(a,b,c)=plt.subplots(1,3,figsize=(12.6,5.4))
 # A lollipop chol/hep fold
 g6=["GRHL2","EPCAM","B3GNT3","SOX9","SPINT2","SOX4"]
 sub=comp[comp.gene.isin(g6)].set_index("gene").loc[g6]
