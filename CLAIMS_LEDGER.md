@@ -19,6 +19,25 @@ re-verified live), and notes from the discussion (incl. what changed if REVISED/
 
 <!-- Entries are appended below as we go through them, in the order raised. -->
 
+## Story map (read the ledger in story order)
+The detailed Items below are in **audit order** (the order we raised them). For the **story order**, read them
+in this sequence — matching [`../FINDINGS.md`](FINDINGS.md) and [`writeup/FULL_STORY.txt`](writeup/FULL_STORY.txt):
+
+| Story part | Claims / findings / decisions here |
+|---|---|
+| 1. The central confound (source ⟂ stage) | Item 1, Item 3 (batch), **Decision D1** (analyze end-stage separately); SYNTHESIS §1 |
+| 2. Lobe invariance | Item 2 → F1 |
+| 3. Procurement stress by stage | Item 3 (stress), Item 4 (end-stage shape), Item 6 (cross-lineage); Note N3 (stress literature) |
+| 4. Main zonation test (anchor classification) | Item 8, Item 10 (F8), Item 11 (F9 taxonomy), Item 12 (cirrhotic biopsy), **Decision D3** (preserved claim), F19 |
+| 5. Relative-ruler postmortem | Item 13 → F12 |
+| 6. 2D joint-count correction | Item 14 → F13 |
+| 7. End-stage explant heterogeneity | Item 4 caveat, F14; OPEN O11 |
+| 8. Equivalence bound + batch | Item 15 / O12 → F16; Item 3 / F17 |
+| 9. Genome-wide DGE | Item 16 (F18), Item 17 (F20 subordinate), Note N5 (framing); **Decision D2** (detox dropped) |
+| 10. Biliary-burden source attribution (side lead) | Item 16 (compositional/decontX), Item 18 (F21 doublet lead) |
+| Scope — what the paper claims | OPEN O8 / F10 |
+| Future work | OPEN O1, O2, O4, O11, O13 (designated future work) |
+
 ## Item 1 — The alternative-explanations framework (count / condition / define, not regress)
 **STATUS: LIVE (framework); per-row verdicts below.** Born from the professor critique; reframed the
 confounder section as structural, not correlational. Re-verified per row against the files:
@@ -262,11 +281,13 @@ The remainder are either DONE (O7/O8/O12), quarantined/optional (O3/O6/O10), or 
   state "no other hepatocyte program" unqualified.
 
 ## Note N5 — DGE framing locked with the lead (2026-06-23): Plan A is the finding; plasticity is a side lead
-- **Level-1 DGE conclusion (the point), two parts:** (1) **zonation kept — and the genome-wide DGE INDEPENDENTLY
-  CORROBORATES it** (a second method, per-gene donor-level expression, agreeing with the count instruments
-  F8/F1/F9/F16; strikingly non-significant FDRs on zonation genes + flat housekeeping/controls). This is **not a
-  "sanity check"** and not the primary proof — it is genuine independent support; the earlier "sanity-check"
-  demotion was wrong and is corrected in F18. (2) **Genome-wide, nothing else moves except a biliary-marker
+- **Level-1 DGE conclusion (the point), two parts:** (1) **zonation kept — and the genome-wide DGE gives an
+  INDEPENDENT COUNT-BASED CHECK** (a second method, per-gene donor-level expression, agreeing with the count
+  instruments F8/F1/F9/F16; strikingly non-significant FDRs on zonation genes + flat housekeeping/controls).
+  This is **an independent count-based sanity check, not the primary proof** (the count instruments are). NOTE:
+  the lead first wanted this called "independent support, not a sanity check"; after the external reviewer's
+  call (2026-06-23) the lead AGREED it is a sanity check — settled as "independent count-based sanity check
+  agreeing with the anchor classification." (2) **Genome-wide, nothing else moves except a biliary-marker
   burden** — and per ChatGPT item 5, Plan A *detects a biliary-marker burden inside hepatocyte-labeled pseudobulk;
   it does NOT by itself prove "plasticity."* Caveat O13 (gene-set layer) bounds part (2).
 - **Plan A vs Plan B:** Plan A is the load-bearing finding. Plan B is **subordinate/confirmatory** — given flat

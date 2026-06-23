@@ -16,8 +16,9 @@ about 80% would be false; so GLUL shows no detectable change); **CYP3A4 FDR = 0.
 0.96, CPS1 = 0.92** — all flat; the lowest of the set are the detox genes **ADH4 = 0.43, SLCO1B3 = 0.57**,
 still non-significant; fold-changes small (log2 −0.1 to −0.6, i.e. ≤1.5× either way). (An earlier draft wrote
 "GLUL FDR = 0.43" — that is ADH4's value, not GLUL's; corrected.) These are high-expression genes where the
-n=4 power limit does not bite, so the flatness is genuine evidence. Sources: F15, F18; held also after
-decontX (0/13 significant) and in the F1→F3 interior (0/13).
+n=4 power limit does not bite, so the flatness is genuine evidence — an independent count-based sanity check
+agreeing with the count instruments, not the primary proof. Sources: F15, F18; held also after decontX (0/13
+significant) and in the F1→F3 interior (0/13).
 
 ## Ground 2 — the zonal-classification PROPORTIONS are flat across every threshold
 Per-nucleus zonal-anchor classification (PC / PP / null / dual) + donor-level proportions, after binomial

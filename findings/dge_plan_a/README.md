@@ -9,8 +9,8 @@ donors (all ≥50 hepatocyte nuclei; F0–F4 = 2/8/12/12/4 donors), 21,022 genes
 common biological coefficient of variation 0.405. Primary contrast = **cirrhotic F4 vs F1**; an across-all-
 stages omnibus is secondary.
 
-## Purpose & framing — a discovery scan whose null ALSO independently corroborates preserved zonation
-This analysis has one primary job and one genuine bonus, and they should be kept distinct.
+## Purpose & framing — a discovery scan whose null ALSO gives an independent count-based check on zonation
+This analysis has one primary job and one secondary payoff, kept distinct.
 
 **Primary job — discovery.** Zonation preservation is already established by the count-based instruments
 (anchor classification flat across the whole sensitivity grid F8; marker-set invariance F1; donor-balanced
@@ -18,20 +18,19 @@ gradient F9; equivalence bound F16). Taking that as settled, the genome-wide DGE
 **given preserved zonation, does any OTHER coordinated hepatocyte program shift across the matched needle-biopsy
 axis F1 → cirrhotic-F4?**
 
-**Bonus — independent corroboration of preserved zonation (NOT a mere sanity check).** Because the scan tests
-every gene, it also tests the zonation markers, and they come back flat *at the expression level*, with
-strikingly non-significant FDRs, while the housekeeping controls are flat and the rest of the genome behaves.
-This is **not the primary proof** of preservation (the count instruments are) — but it is also **far more than a
-pipeline sanity check.** It is a genuine **second, independent line of support**, from a method (per-gene
-donor-level expression with edgeR/TMM) that shares no machinery with the count-based anchor instruments. Two
-independent methods agreeing that the zonation genes do not change is real corroboration, and we state it as
-such.
+**Secondary payoff — an independent count-based check on preserved zonation.** Because the scan tests every
+gene, it also tests the zonation markers, and they come back flat *at the expression level*, with strikingly
+non-significant FDRs, while the housekeeping controls are flat and the rest of the genome behaves. This is
+**not the primary proof** of preservation (the count instruments are) — it is an **independent count-based
+sanity check**, from a method (per-gene donor-level expression with edgeR/TMM) that shares no machinery with
+the count-based anchor instruments, agreeing with it. We report it as a check that is consistent with the
+established result, not as the proof itself.
 
 ## Headline result — two parts
-**(1) Zonation is kept — independently corroborated.** Every zonation/detox gene is non-significant at
-F4-vs-F1 (numbers below), the housekeeping panel is flat, and nothing in the rest of the genome rediscovers
-the original de-zonation. A genome-wide expression scan independently agrees with the count-based preservation
-claim.
+**(1) Zonation is kept — independent count-based check agrees.** Every zonation/detox gene is non-significant
+at F4-vs-F1 (numbers below), the housekeeping panel is flat, and nothing in the rest of the genome rediscovers
+the original de-zonation. The genome-wide expression scan is consistent with the count-based preservation claim
+(a sanity check agreeing with it, not the primary proof).
 
 **(2) Beyond zonation, essentially nothing else moves — except a biliary-marker burden (and one candidate
 inflammatory gene).** Of ~21,000 genes only **64 reach FDR<0.05** at F4-vs-F1, and they are a biliary/ductular
@@ -65,16 +64,16 @@ are an F4-weighted jump, not a smooth gradient — e.g. EPCAM log2 vs F1 = +0.6 
 F4** — consistent with a cirrhosis-stage ductular reaction.)
 
 ## Results (detail)
-- **Independent corroboration — zonation + housekeeping flat at the expression level.** Every zonation/detox
+- **Independent count-based check — zonation + housekeeping flat at the expression level.** Every zonation/detox
   gene is non-significant at F4-vs-F1. Verbose, from `dge_planA_F4vsF1.csv`: **GLUL FDR 0.803** (logFC −0.33),
   CYP3A4 0.851, CYP2E1 0.903, ALDOB 0.846, CPS1 0.920, ASS1 0.962 — all far above the 0.05 cut. The lowest
   detox FDRs are **ADH4 0.428** (logFC −0.54) and SLCO1B3 0.571 (−0.64) — still non-significant. (Earlier
   drafts mis-stated "GLUL FDR 0.43"; 0.43 is ADH4's value, GLUL is 0.80 — corrected here and in F19.) No
   housekeeping gene is FDR-significant (ACTB mildly up +1.06 but FDR 0.33; GAPDH/MALAT1/PPIA/TBP flat). These
   are high-expression genes where the n=4 power limit does NOT bite, so their flatness is **genuine evidence**,
-  not absence of power — a second, independent method agreeing with the count instruments (not a re-proof, and
-  not a mere pipeline check). One honest limit (ChatGPT item 4): housekeeping flatness shows normalization is
-  sound, which is necessary but not the same as proving the model is perfectly specified.
+  not absence of power — an independent count-based sanity check agreeing with the count instruments (not the
+  primary proof). One honest limit (ChatGPT item 4): housekeeping flatness shows normalization is sound, which
+  is necessary but not the same as proving the model is perfectly specified.
 - **Discovery: 64 genes FDR<0.05 (62 up).** The program is **biliary / ductular / transdifferentiation**:
   **EPCAM +2.3, GRHL2 +3.1, SPINT2 +2.7, B3GNT3, SOX4, SOX9**, + inflammation **CXCL10 +5.4**. This is the
   ductular reaction of cirrhosis — and **SOX4/SOX9/EPCAM are exactly Paper 1's plasticity/transdifferentiation

@@ -1,11 +1,9 @@
 ================================================================================
 RE-ANALYSIS NARRATIVE — hepatocyte zonation & epithelial plasticity in MASLD snRNA-seq
-Re-analysis of Gribben et al., Nature 2024 (GSE202379). Plain text. 2026-06-23 (v2).
+Re-analysis of Gribben et al., Nature 2024 (GSE202379). Plain text. 2026-06-23.
 Scope: a 2-3 day graduate-hackathon re-analysis of the single-nucleus transcriptomic
 component only — not the paper's imaging, immunostaining, protein, organoid, or spatial
 evidence. Tightened after external review; claims stated with their resolution limits.
-One deliberate wording choice: the genome-wide DGE zonation result is called "independent
-corroboration," not a "sanity check" — it is a second method agreeing, not pipeline-checking.
 ================================================================================
 
 ## Scope and conclusion
@@ -176,12 +174,12 @@ donors, so F4-specific signals need caution.
 
 The results play two roles.
 
-First, they INDEPENDENTLY CORROBORATE the zonation result. Zonation genes are flat at donor-
-level expression: GLUL and the identity/detox set are not significantly changed (GLUL FDR
-~0.80), and housekeeping genes are stable. This is not the primary proof of preserved zonation
-— the anchor classification is — but it is genuine independent corroboration: a second method
-(per-gene donor-level expression) that shares no machinery with the anchor instruments,
-arriving at the same answer. It is more than a pipeline sanity check.
+First, they provide an INDEPENDENT COUNT-BASED CHECK on the zonation result. Zonation genes are
+flat at donor-level expression: GLUL and the identity/detox set are not significantly changed
+(GLUL FDR ~0.80), and housekeeping genes are stable. This is not the primary proof of preserved
+zonation — the anchor classification is — but it is an independent count-based sanity check,
+from a method (per-gene donor-level expression) that shares no machinery with the anchor
+instruments, agreeing with it.
 
 Second, the scan asks whether any other large hepatocyte program changes. Only a small set of
 genes reaches FDR significance at F4-vs-F1, and they are not a broad metabolic, detox,
