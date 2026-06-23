@@ -286,3 +286,21 @@ Question: are the fibrosis-trending genes hepatocyte-intrinsic or stromal/immune
 - **Cross-lineage burden (UMIs/10k):** 15/23 hits are >=3x more highly expressed in a NON-hepatocyte lineage than in hepatocytes (cholangiocyte/stellate/endothelial/immune) -> most consistent with low-level AMBIENT contamination of hepatocyte nuclei, not a hepatocyte program. Examples: ADAMTS9 (Stellate 17x), GUCY1A1 (Stellate 15x), EPB41L4A (Endothelial 7.5x), PAQR5/EVC/EVC2/FREM2/GABRB3/FAM83F (Cholangiocyte-dominated).
 - **Genuinely hepatocyte-intrinsic (5):** notably **A2M** (hep burden 8.1, hepatocyte-dominant; CPM 219->718) — a classic hepatocyte acute-phase/injury gene; plus ENPP3 (down), PTCHD1-AS, LINC01205, LINC02762. 3 mixed (ESRRG, DOK6, C6orf99).
 - **Synthesis for the correction:** transcriptome-wide, the hepatocyte ZONATION and XENOBIOTIC programs are unchanged across F0-F4 (all FDR>0.79) — the null holds genome-wide. The genes that DO trend are mostly ambient stromal/immune contamination (15/23) plus a SMALL genuine hepatocyte acute-phase response led by A2M. The earlier within-PC detox dip does NOT survive the genome-wide test. => retire "the only biopsy-internal change is a xenobiotic attenuation"; replace with "the biopsy hepatocyte transcriptome is broadly stable; no robust zonation/xenobiotic change; the only hepatocyte-intrinsic disease signal is a modest acute-phase response (A2M), not de-zonation."
+
+---
+## INTEGRATION (2026-06-23) -> writeup/SYNTHESIS.md
+Consolidated everything around the 4 post-professor claims, all re-verified this session:
+1. Sampling anomaly: GROUNDED in Paper 1 Methods — disease F0-F4 = 16g needle core biopsies; healthy AND end-stage = deceased-donor 1cm^3 organ cubes (HL1/HL3 + all end-stage multi-lobe). NO "atlas" source (cited ref only) — CORRECTION to earlier note. Stress (UMIs/10k, hep, donor-median): biopsy F0-F4 = 0.26/0.41/0.49/0.39/0.53 (flat,low); healthy = 1.16 [0.17-5.07] (HL1 multilobe 5.07; donor 98 = Biliary stone disease); end-stage = 10.15 [6.12-20.16]. Cross-lineage fold ex/bx: Hep 21.0x ~ Endo 20.2x (endo has NO zonation) > Stel 12.7 > Mac 9.5 > Chol 8.7 > Lym 4.5; HIF hep only 1.2x. Per-explant map (5 organs, 5 directions): CL104 PC 49.7%/PP:PC 0.13 (RETAINS PC); CL16 PC 3.2%/PP:PC 20.3 (PP collapse); CL18 dual 22.4% (co-expr explosion); CL103/CL17 PP-leaning. => snRNA leg cannot establish progressive disease-driven de-zonation; protein/imaging legs untouched; continuation = matched-sampling end-stage.
+2. Zonation preserved + 8-row confounder battery documented (depth/ambient/biliary/ploidy/discard/covariates/batch/stress-dose), all raw-count donor-level, none manufactures the null; batch flagged untestable.
+3. NEXT (today): within-zone DGE — pseudobulk WITHIN PC-anchor and WITHIN PP-anchor nuclei across F0-F4 + compositional audit. Not yet run.
+4. MDE kept as bounding device, grain of salt (tiny extreme strata, bounds only large effects, never "preserved").
+
+---
+## SIMPSON'S PARADOX (legacy -> real connection) — src/analysis/legacy_simpson.py -> legacy_simpson.csv; fig src/plotting/make_simpson_figure.py
+Reconstructed the legacy relative metric (PC-PP module anti-correlation, log-norm hepatocytes) to test whether the legacy "de-zonation collapse" is an aggregation/Simpson artifact. It is:
+- POOLED across the full stage axis (healthy->F0-F4->end-stage), per-donor anti-corr vs stage: Spearman +0.44 (p=0.002) = "collapse" (the dangerous claim).
+- STRATIFIED to acquisition-matched needle biopsy F0-F4: +0.29 (p=0.078, n.s.), driven by the n=2/n=4 extremes; interior F1-F3 stable ~ -0.25.
+- DEPTH-MATCHED COUNTS (proper): flat (all-sets census; DE FDR>0.79). => effect dissolves as confounds removed.
+- Textbook sign-reversal WITHIN healthy: per-donor anti-corr -0.21 (each donor zonated) but POOLED cells +0.009 (apparent de-zonation) — aggregation flips the sign.
+- Lurking variable = procurement stress / sampling mode, maximal in end-stage organ cubes, collinear with disease stage. Per-donor ladder: healthy -0.21, biopsy F0-F3 ~ -0.25, F4 -0.12, end-stage +0.04 (the jump is at end-stage).
+Deck: added 2 slides — "legacy approach + dangerous claim" (slide 4) and "Simpson's paradox reveal" (slide 7, embeds results/figures/h2/simpson_anticorr.png). Rebuilt Zonation_Reanalysis.pptx; both QA'd via PowerPoint COM.

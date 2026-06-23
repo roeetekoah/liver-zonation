@@ -81,6 +81,30 @@ qa.forEach((c,i)=>{const x=qx+i*(qw+qg);
 });
 pageno(s);
 
+// ---------- 2c LEGACY APPROACH + DANGEROUS CLAIM ----------
+s=content(); label(s,"the legacy approach",AMBER);
+title(s,"How we first read the data — and the claim it produced");
+s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:0.7,y:2.05,w:6.0,h:3.5,fill:{color:WHITE},rectRadius:0.08,shadow:shadow()});
+s.addText("The metrics we used at first",{x:0.95,y:2.2,w:5.5,h:0.4,fontFace:HF,fontSize:16,bold:true,color:TEAL,margin:0});
+s.addText([
+  {text:"z-scored zonation coordinate — ",options:{bold:true,color:INK}},{text:"z(PC) − z(PP) per cell\n",options:{color:MUTE,breakLine:true}},
+  {text:"PC–PP marker anti-correlation\n",options:{bold:true,color:INK,breakLine:true}},
+  {text:"coordinate spread / IQR per stage\n",options:{bold:true,color:INK,breakLine:true}},
+  {text:"zonation heatmaps & slope-loss plots",options:{bold:true,color:INK}}
+],{x:0.95,y:2.75,w:5.5,h:2.6,fontFace:BF,fontSize:14.5,lineSpacing:26,margin:0,valign:"top"});
+s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:6.95,y:2.05,w:5.65,h:3.5,fill:{color:DARK},rectRadius:0.08,shadow:shadow()});
+s.addText("The claim it produced",{x:7.2,y:2.2,w:5.2,h:0.4,fontFace:HF,fontSize:16,bold:true,color:"9FC0C4",margin:0});
+s.addText("“Hepatocytes lose their zonation;\nthe pericentral program turns off,\nstrongest at end-stage.”",
+  {x:7.2,y:2.85,w:5.2,h:1.5,fontFace:HF,fontSize:20,italic:true,color:WHITE,lineSpacing:26,margin:0});
+s.addText([{text:"Every metric is a ",options:{color:"CFE0E2"}},{text:"relative summary",options:{bold:true,color:AMBER}},
+  {text:" — z-scored, correlation-based, pooled across all samples. It hides who moved, how many, and from where.",options:{color:"CFE0E2"}}],
+  {x:7.2,y:4.4,w:5.2,h:1.0,fontFace:BF,fontSize:13.5,lineSpacing:19,margin:0});
+s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:0.7,y:5.75,w:11.9,h:0.95,fill:{color:PALE},rectRadius:0.07});
+s.addText([{text:"The trap:  ",options:{bold:true,color:AMBER}},
+  {text:"these statistics pool healthy, biopsy and end-stage samples together — across a hidden sampling discontinuity. The next slides show what that discontinuity is, and why it fakes a collapse.",options:{color:INK}}],
+  {x:1.0,y:5.9,w:11.3,h:0.65,fontFace:BF,fontSize:14,lineSpacing:19,margin:0,valign:"middle"});
+pageno(s);
+
 // ---------- 3 THE CONFOUND TABLE ----------
 s=content(); label(s,"the catch",AMBER);
 title(s,"Disease stage is confounded with how the tissue was collected");
@@ -135,6 +159,27 @@ s.addText([
   {text:"End-stage excluded as a disease endpoint.",options:{bold:true,color:WHITE}}
 ],{x:8.95,y:2.45,w:3.4,h:3.8,fontFace:BF,fontSize:14.5,lineSpacing:21,margin:0,valign:"top"});
 pageno(s,4);
+
+// ---------- 4b SIMPSON'S PARADOX ----------
+s=content(); label(s,"the paradox",AMBER);
+title(s,"Simpson's paradox: the collapse is between groups, not within them");
+s.addImage({path:"../results/figures/h2/simpson_anticorr.png",x:0.7,y:1.95,w:7.7,h:3.92});
+s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:8.6,y:1.95,w:4.0,h:2.55,fill:{color:WHITE},rectRadius:0.08,shadow:shadow()});
+s.addText("The collapse dissolves",{x:8.8,y:2.08,w:3.6,h:0.35,fontFace:HF,fontSize:15,bold:true,color:TEAL,margin:0});
+s.addText([
+  {text:"pooled (legacy):  ",options:{color:INK}},{text:"+0.44, p=.002\n",options:{bold:true,color:AMBER,breakLine:true}},
+  {text:"biopsy F0–F4 only:  ",options:{color:INK}},{text:"+0.29, p=.078 n.s.\n",options:{bold:true,color:INK,breakLine:true}},
+  {text:"depth-matched counts:  ",options:{color:INK}},{text:"flat",options:{bold:true,color:TEAL}}
+],{x:8.8,y:2.5,w:3.6,h:1.9,fontFace:BF,fontSize:13.5,lineSpacing:22,margin:0,valign:"top"});
+s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:8.6,y:4.65,w:4.0,h:1.2,fill:{color:PALE},rectRadius:0.07});
+s.addText([{text:"Lurking variable: ",options:{bold:true,color:AMBER}},
+  {text:"procurement stress, maximal in end-stage organ cubes — collinear with disease stage.",options:{color:INK}}],
+  {x:8.8,y:4.75,w:3.6,h:1.0,fontFace:BF,fontSize:12.5,lineSpacing:17,margin:0,valign:"middle"});
+s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:0.7,y:6.05,w:11.9,h:0.85,fill:{color:DARK},rectRadius:0.07});
+s.addText([{text:"Textbook reversal:  ",options:{bold:true,color:AMBER}},
+  {text:"each healthy donor is individually zonated (anti-corr −0.21), yet pooling the four flips the sign to +0.01 — “de-zonation” manufactured purely by aggregation.",options:{color:"CFE0E2"}}],
+  {x:1.0,y:6.18,w:11.3,h:0.6,fontFace:BF,fontSize:13.5,lineSpacing:18,margin:0,valign:"middle"});
+pageno(s);
 
 // ---------- 5 METHOD DISCIPLINE ----------
 s=content(); label(s,"how we measured");

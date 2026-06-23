@@ -1,0 +1,424 @@
+donor,stage,source,gene,nCells,raw_mean,dm_mean,det1,det2
+11,NASH w/o cirrhosis,needle_biopsy,FOS,989,0.0,0.0,0.0,0.0
+11,NASH w/o cirrhosis,needle_biopsy,JUN,989,0.0071,0.0016,0.0071,0.0
+11,NASH w/o cirrhosis,needle_biopsy,JUNB,989,0.0071,0.0047,0.0061,0.001
+11,NASH w/o cirrhosis,needle_biopsy,JUND,989,0.087,0.0487,0.0779,0.0091
+11,NASH w/o cirrhosis,needle_biopsy,ATF3,989,0.0192,0.0082,0.0192,0.0
+11,NASH w/o cirrhosis,needle_biopsy,DUSP1,989,0.0162,0.0072,0.0142,0.002
+11,NASH w/o cirrhosis,needle_biopsy,HSPA1A,989,0.0192,0.0094,0.0182,0.001
+11,NASH w/o cirrhosis,needle_biopsy,HSPA1B,989,0.0111,0.0044,0.0101,0.001
+11,NASH w/o cirrhosis,needle_biopsy,stress_mod,989,0.1668,0.0871,0.1365,0.0243
+12,NASH with cirrhosis,needle_biopsy,FOS,568,0.0,0.0,0.0,0.0
+12,NASH with cirrhosis,needle_biopsy,JUN,568,0.0405,0.0164,0.0352,0.0053
+12,NASH with cirrhosis,needle_biopsy,JUNB,568,0.007,0.0021,0.0053,0.0018
+12,NASH with cirrhosis,needle_biopsy,JUND,568,0.0722,0.0297,0.0651,0.007
+12,NASH with cirrhosis,needle_biopsy,ATF3,568,0.0018,0.0005,0.0018,0.0
+12,NASH with cirrhosis,needle_biopsy,DUSP1,568,0.0475,0.0185,0.0458,0.0018
+12,NASH with cirrhosis,needle_biopsy,HSPA1A,568,0.0299,0.0212,0.0264,0.0035
+12,NASH with cirrhosis,needle_biopsy,HSPA1B,568,0.0141,0.0079,0.0123,0.0018
+12,NASH with cirrhosis,needle_biopsy,stress_mod,568,0.213,0.0948,0.1761,0.0299
+15,NASH w/o cirrhosis,needle_biopsy,FOS,976,0.0,0.0,0.0,0.0
+15,NASH w/o cirrhosis,needle_biopsy,JUN,976,0.0205,0.0083,0.0174,0.002
+15,NASH w/o cirrhosis,needle_biopsy,JUNB,976,0.0072,0.0011,0.0072,0.0
+15,NASH w/o cirrhosis,needle_biopsy,JUND,976,0.0523,0.0188,0.0502,0.002
+15,NASH w/o cirrhosis,needle_biopsy,ATF3,976,0.0297,0.0075,0.0266,0.0031
+15,NASH w/o cirrhosis,needle_biopsy,DUSP1,976,0.0492,0.011,0.0441,0.0041
+15,NASH w/o cirrhosis,needle_biopsy,HSPA1A,976,0.0061,0.0011,0.0061,0.0
+15,NASH w/o cirrhosis,needle_biopsy,HSPA1B,976,0.0082,0.0022,0.0082,0.0
+15,NASH w/o cirrhosis,needle_biopsy,stress_mod,976,0.1732,0.0488,0.1434,0.0246
+16,NASH w/o cirrhosis,needle_biopsy,FOS,2149,0.0098,0.0017,0.0065,0.0014
+16,NASH w/o cirrhosis,needle_biopsy,JUN,2149,0.0745,0.0107,0.0628,0.0084
+16,NASH w/o cirrhosis,needle_biopsy,JUNB,2149,0.0163,0.0029,0.0154,0.0009
+16,NASH w/o cirrhosis,needle_biopsy,JUND,2149,0.0521,0.0094,0.0484,0.0033
+16,NASH w/o cirrhosis,needle_biopsy,ATF3,2149,0.0354,0.0067,0.0326,0.0023
+16,NASH w/o cirrhosis,needle_biopsy,DUSP1,2149,0.0591,0.0108,0.0512,0.0056
+16,NASH w/o cirrhosis,needle_biopsy,HSPA1A,2149,0.0093,0.0015,0.0093,0.0
+16,NASH w/o cirrhosis,needle_biopsy,HSPA1B,2149,0.0047,0.0013,0.0047,0.0
+16,NASH w/o cirrhosis,needle_biopsy,stress_mod,2149,0.2611,0.0439,0.2043,0.04
+19,NASH w/o cirrhosis,needle_biopsy,FOS,1387,0.0029,0.0006,0.0022,0.0007
+19,NASH w/o cirrhosis,needle_biopsy,JUN,1387,0.013,0.0015,0.0123,0.0007
+19,NASH w/o cirrhosis,needle_biopsy,JUNB,1387,0.0123,0.0009,0.0115,0.0007
+19,NASH w/o cirrhosis,needle_biopsy,JUND,1387,0.0353,0.008,0.0346,0.0007
+19,NASH w/o cirrhosis,needle_biopsy,ATF3,1387,0.0267,0.0056,0.0267,0.0
+19,NASH w/o cirrhosis,needle_biopsy,DUSP1,1387,0.0252,0.0058,0.0238,0.0007
+19,NASH w/o cirrhosis,needle_biopsy,HSPA1A,1387,0.0094,0.0009,0.0087,0.0007
+19,NASH w/o cirrhosis,needle_biopsy,HSPA1B,1387,0.0014,0.0002,0.0014,0.0
+19,NASH w/o cirrhosis,needle_biopsy,stress_mod,1387,0.1262,0.0233,0.1118,0.0123
+20,NASH w/o cirrhosis,needle_biopsy,FOS,2811,0.0011,0.0003,0.0011,0.0
+20,NASH w/o cirrhosis,needle_biopsy,JUN,2811,0.0203,0.0061,0.0192,0.0011
+20,NASH w/o cirrhosis,needle_biopsy,JUNB,2811,0.027,0.0066,0.0267,0.0004
+20,NASH w/o cirrhosis,needle_biopsy,JUND,2811,0.0302,0.0107,0.0288,0.0014
+20,NASH w/o cirrhosis,needle_biopsy,ATF3,2811,0.0242,0.0061,0.0224,0.0018
+20,NASH w/o cirrhosis,needle_biopsy,DUSP1,2811,0.0057,0.0019,0.0057,0.0
+20,NASH w/o cirrhosis,needle_biopsy,HSPA1A,2811,0.011,0.0036,0.0107,0.0004
+20,NASH w/o cirrhosis,needle_biopsy,HSPA1B,2811,0.0043,0.0012,0.0039,0.0004
+20,NASH w/o cirrhosis,needle_biopsy,stress_mod,2811,0.1238,0.0381,0.1099,0.0117
+21,NASH w/o cirrhosis,needle_biopsy,FOS,2847,0.0028,0.0005,0.0025,0.0004
+21,NASH w/o cirrhosis,needle_biopsy,JUN,2847,0.04,0.0094,0.0365,0.0035
+21,NASH w/o cirrhosis,needle_biopsy,JUNB,2847,0.0246,0.0049,0.0235,0.0011
+21,NASH w/o cirrhosis,needle_biopsy,JUND,2847,0.0825,0.0213,0.0748,0.007
+21,NASH w/o cirrhosis,needle_biopsy,ATF3,2847,0.0133,0.0023,0.013,0.0004
+21,NASH w/o cirrhosis,needle_biopsy,DUSP1,2847,0.045,0.0082,0.0429,0.0018
+21,NASH w/o cirrhosis,needle_biopsy,HSPA1A,2847,0.0239,0.0059,0.0232,0.0007
+21,NASH w/o cirrhosis,needle_biopsy,HSPA1B,2847,0.0021,0.0006,0.0021,0.0
+21,NASH w/o cirrhosis,needle_biopsy,stress_mod,2847,0.2343,0.0541,0.1914,0.0341
+22,NASH with cirrhosis,needle_biopsy,FOS,2073,0.0029,0.0009,0.0029,0.0
+22,NASH with cirrhosis,needle_biopsy,JUN,2073,0.0449,0.0178,0.04,0.0043
+22,NASH with cirrhosis,needle_biopsy,JUNB,2073,0.0048,0.0023,0.0048,0.0
+22,NASH with cirrhosis,needle_biopsy,JUND,2073,0.0294,0.0101,0.026,0.0029
+22,NASH with cirrhosis,needle_biopsy,ATF3,2073,0.015,0.0056,0.014,0.001
+22,NASH with cirrhosis,needle_biopsy,DUSP1,2073,0.0101,0.0047,0.0101,0.0
+22,NASH with cirrhosis,needle_biopsy,HSPA1A,2073,0.0159,0.0075,0.0154,0.0005
+22,NASH with cirrhosis,needle_biopsy,HSPA1B,2073,0.0092,0.0038,0.0092,0.0
+22,NASH with cirrhosis,needle_biopsy,stress_mod,2073,0.1322,0.0518,0.1153,0.0135
+3,NASH w/o cirrhosis,needle_biopsy,FOS,1441,0.0021,0.0007,0.0021,0.0
+3,NASH w/o cirrhosis,needle_biopsy,JUN,1441,0.0534,0.0075,0.0479,0.0049
+3,NASH w/o cirrhosis,needle_biopsy,JUNB,1441,0.0201,0.0032,0.018,0.0014
+3,NASH w/o cirrhosis,needle_biopsy,JUND,1441,0.1312,0.0172,0.1173,0.0104
+3,NASH w/o cirrhosis,needle_biopsy,ATF3,1441,0.0285,0.0028,0.0271,0.0014
+3,NASH w/o cirrhosis,needle_biopsy,DUSP1,1441,0.0541,0.0063,0.0507,0.0035
+3,NASH w/o cirrhosis,needle_biopsy,HSPA1A,1441,0.0354,0.0046,0.0333,0.0021
+3,NASH w/o cirrhosis,needle_biopsy,HSPA1B,1441,0.0083,0.0014,0.0083,0.0
+3,NASH w/o cirrhosis,needle_biopsy,stress_mod,1441,0.3331,0.0433,0.2588,0.0507
+30,Healthy control,healthy(deceased-donor),FOS,964,0.0,0.0,0.0,0.0
+30,Healthy control,healthy(deceased-donor),JUN,964,0.0342,0.0026,0.029,0.0031
+30,Healthy control,healthy(deceased-donor),JUNB,964,0.0114,0.0023,0.0104,0.001
+30,Healthy control,healthy(deceased-donor),JUND,964,0.0405,0.0054,0.0363,0.0021
+30,Healthy control,healthy(deceased-donor),ATF3,964,0.0405,0.0041,0.0373,0.0031
+30,Healthy control,healthy(deceased-donor),DUSP1,964,0.0239,0.0039,0.0218,0.001
+30,Healthy control,healthy(deceased-donor),HSPA1A,964,0.0311,0.0034,0.0301,0.001
+30,Healthy control,healthy(deceased-donor),HSPA1B,964,0.0135,0.001,0.0135,0.0
+30,Healthy control,healthy(deceased-donor),stress_mod,964,0.195,0.0223,0.1618,0.0249
+48,NASH w/o cirrhosis,needle_biopsy,FOS,803,0.0162,0.0065,0.0162,0.0
+48,NASH w/o cirrhosis,needle_biopsy,JUN,803,0.0274,0.013,0.0274,0.0
+48,NASH w/o cirrhosis,needle_biopsy,JUNB,803,0.0137,0.0038,0.0125,0.0012
+48,NASH w/o cirrhosis,needle_biopsy,JUND,803,0.0486,0.0198,0.0461,0.0025
+48,NASH w/o cirrhosis,needle_biopsy,ATF3,803,0.0772,0.0236,0.066,0.0087
+48,NASH w/o cirrhosis,needle_biopsy,DUSP1,803,0.0187,0.0092,0.0174,0.0012
+48,NASH w/o cirrhosis,needle_biopsy,HSPA1A,803,0.005,0.001,0.005,0.0
+48,NASH w/o cirrhosis,needle_biopsy,HSPA1B,803,0.0125,0.0051,0.0125,0.0
+48,NASH w/o cirrhosis,needle_biopsy,stress_mod,803,0.2192,0.08,0.1806,0.0286
+49,NASH w/o cirrhosis,needle_biopsy,FOS,1775,0.0017,0.0003,0.0017,0.0
+49,NASH w/o cirrhosis,needle_biopsy,JUN,1775,0.0361,0.0056,0.0327,0.0023
+49,NASH w/o cirrhosis,needle_biopsy,JUNB,1775,0.0169,0.0026,0.0158,0.0011
+49,NASH w/o cirrhosis,needle_biopsy,JUND,1775,0.1042,0.0145,0.0941,0.0096
+49,NASH w/o cirrhosis,needle_biopsy,ATF3,1775,0.0406,0.0054,0.0377,0.0028
+49,NASH w/o cirrhosis,needle_biopsy,DUSP1,1775,0.0518,0.0067,0.0445,0.0051
+49,NASH w/o cirrhosis,needle_biopsy,HSPA1A,1775,0.0214,0.0041,0.0214,0.0
+49,NASH w/o cirrhosis,needle_biopsy,HSPA1B,1775,0.0051,0.0015,0.0051,0.0
+49,NASH w/o cirrhosis,needle_biopsy,stress_mod,1775,0.2777,0.0404,0.2186,0.0451
+50,NASH w/o cirrhosis,needle_biopsy,FOS,789,0.0089,0.0014,0.0076,0.0013
+50,NASH w/o cirrhosis,needle_biopsy,JUN,789,0.0862,0.018,0.0646,0.0177
+50,NASH w/o cirrhosis,needle_biopsy,JUNB,789,0.0722,0.0085,0.0532,0.0101
+50,NASH w/o cirrhosis,needle_biopsy,JUND,789,0.1825,0.0364,0.1546,0.0228
+50,NASH w/o cirrhosis,needle_biopsy,ATF3,789,0.0406,0.0061,0.0355,0.0038
+50,NASH w/o cirrhosis,needle_biopsy,DUSP1,789,0.0545,0.0071,0.0494,0.0051
+50,NASH w/o cirrhosis,needle_biopsy,HSPA1A,789,0.0355,0.0068,0.033,0.0025
+50,NASH w/o cirrhosis,needle_biopsy,HSPA1B,789,0.0215,0.0054,0.0203,0.0013
+50,NASH w/o cirrhosis,needle_biopsy,stress_mod,789,0.5019,0.0871,0.3409,0.0951
+51,NAFLD,needle_biopsy,FOS,786,0.0064,0.0028,0.0038,0.0013
+51,NAFLD,needle_biopsy,JUN,786,0.0331,0.0091,0.028,0.0051
+51,NAFLD,needle_biopsy,JUNB,786,0.028,0.0063,0.0267,0.0013
+51,NAFLD,needle_biopsy,JUND,786,0.0776,0.02,0.0687,0.0089
+51,NAFLD,needle_biopsy,ATF3,786,0.0318,0.0081,0.0305,0.0013
+51,NAFLD,needle_biopsy,DUSP1,786,0.0534,0.0116,0.0496,0.0038
+51,NAFLD,needle_biopsy,HSPA1A,786,0.0229,0.0077,0.0216,0.0013
+51,NAFLD,needle_biopsy,HSPA1B,786,0.0102,0.0028,0.0102,0.0
+51,NAFLD,needle_biopsy,stress_mod,786,0.2634,0.0687,0.2099,0.042
+52,NASH w/o cirrhosis,needle_biopsy,FOS,148,0.0,0.0,0.0,0.0
+52,NASH w/o cirrhosis,needle_biopsy,JUN,148,0.027,0.0074,0.027,0.0
+52,NASH w/o cirrhosis,needle_biopsy,JUNB,148,0.0405,0.0111,0.027,0.0135
+52,NASH w/o cirrhosis,needle_biopsy,JUND,148,0.1014,0.0204,0.0946,0.0068
+52,NASH w/o cirrhosis,needle_biopsy,ATF3,148,0.0405,0.0167,0.0405,0.0
+52,NASH w/o cirrhosis,needle_biopsy,DUSP1,148,0.027,0.0111,0.027,0.0
+52,NASH w/o cirrhosis,needle_biopsy,HSPA1A,148,0.0,0.0,0.0,0.0
+52,NASH w/o cirrhosis,needle_biopsy,HSPA1B,148,0.0,0.0,0.0,0.0
+52,NASH w/o cirrhosis,needle_biopsy,stress_mod,148,0.2365,0.0648,0.2027,0.0338
+53,NASH w/o cirrhosis,needle_biopsy,FOS,105,0.0286,0.0114,0.019,0.0095
+53,NASH w/o cirrhosis,needle_biopsy,JUN,105,0.0381,0.0,0.0286,0.0095
+53,NASH w/o cirrhosis,needle_biopsy,JUNB,105,0.0381,0.0038,0.0286,0.0095
+53,NASH w/o cirrhosis,needle_biopsy,JUND,105,0.0571,0.0227,0.0571,0.0
+53,NASH w/o cirrhosis,needle_biopsy,ATF3,105,0.019,0.0227,0.019,0.0
+53,NASH w/o cirrhosis,needle_biopsy,DUSP1,105,0.0952,0.0417,0.0762,0.019
+53,NASH w/o cirrhosis,needle_biopsy,HSPA1A,105,0.0,0.0,0.0,0.0
+53,NASH w/o cirrhosis,needle_biopsy,HSPA1B,105,0.0,0.0,0.0,0.0
+53,NASH w/o cirrhosis,needle_biopsy,stress_mod,105,0.2762,0.1023,0.2,0.0381
+54,NASH w/o cirrhosis,needle_biopsy,FOS,838,0.0024,0.0003,0.0024,0.0
+54,NASH w/o cirrhosis,needle_biopsy,JUN,838,0.0895,0.0169,0.0704,0.0131
+54,NASH w/o cirrhosis,needle_biopsy,JUNB,838,0.0286,0.0068,0.0286,0.0
+54,NASH w/o cirrhosis,needle_biopsy,JUND,838,0.0979,0.0215,0.0871,0.0095
+54,NASH w/o cirrhosis,needle_biopsy,ATF3,838,0.0394,0.0137,0.0358,0.0024
+54,NASH w/o cirrhosis,needle_biopsy,DUSP1,838,0.0358,0.0068,0.0322,0.0036
+54,NASH w/o cirrhosis,needle_biopsy,HSPA1A,838,0.0072,0.002,0.0072,0.0
+54,NASH w/o cirrhosis,needle_biopsy,HSPA1B,838,0.0072,0.0013,0.0072,0.0
+54,NASH w/o cirrhosis,needle_biopsy,stress_mod,838,0.3079,0.0696,0.2291,0.0585
+55,NAFLD,needle_biopsy,FOS,646,0.0,0.0,0.0,0.0
+55,NAFLD,needle_biopsy,JUN,646,0.0248,0.0061,0.0232,0.0015
+55,NAFLD,needle_biopsy,JUNB,646,0.0372,0.0061,0.0356,0.0015
+55,NAFLD,needle_biopsy,JUND,646,0.1223,0.0314,0.1161,0.0046
+55,NAFLD,needle_biopsy,ATF3,646,0.0341,0.0049,0.0294,0.0046
+55,NAFLD,needle_biopsy,DUSP1,646,0.161,0.0294,0.1362,0.0217
+55,NAFLD,needle_biopsy,HSPA1A,646,0.0201,0.002,0.0201,0.0
+55,NAFLD,needle_biopsy,HSPA1B,646,0.017,0.0045,0.017,0.0
+55,NAFLD,needle_biopsy,stress_mod,646,0.4164,0.0824,0.3266,0.0743
+56,NAFLD,needle_biopsy,FOS,505,0.0079,0.0025,0.0079,0.0
+56,NAFLD,needle_biopsy,JUN,505,0.0871,0.0155,0.0653,0.0079
+56,NAFLD,needle_biopsy,JUNB,505,0.0277,0.0075,0.0277,0.0
+56,NAFLD,needle_biopsy,JUND,505,0.1762,0.0375,0.1545,0.0158
+56,NAFLD,needle_biopsy,ATF3,505,0.0772,0.019,0.0693,0.0079
+56,NAFLD,needle_biopsy,DUSP1,505,0.0891,0.017,0.0752,0.0099
+56,NAFLD,needle_biopsy,HSPA1A,505,0.0079,0.001,0.0079,0.0
+56,NAFLD,needle_biopsy,HSPA1B,505,0.0119,0.001,0.0119,0.0
+56,NAFLD,needle_biopsy,stress_mod,505,0.4851,0.103,0.3426,0.0871
+57,NASH w/o cirrhosis,needle_biopsy,FOS,470,0.0128,0.0055,0.0128,0.0
+57,NASH w/o cirrhosis,needle_biopsy,JUN,470,0.083,0.0153,0.0745,0.0064
+57,NASH w/o cirrhosis,needle_biopsy,JUNB,470,0.0574,0.0219,0.0574,0.0
+57,NASH w/o cirrhosis,needle_biopsy,JUND,470,0.1915,0.0449,0.1702,0.0191
+57,NASH w/o cirrhosis,needle_biopsy,ATF3,470,0.0489,0.0115,0.0447,0.0021
+57,NASH w/o cirrhosis,needle_biopsy,DUSP1,470,0.0532,0.012,0.0511,0.0021
+57,NASH w/o cirrhosis,needle_biopsy,HSPA1A,470,0.0426,0.0082,0.0404,0.0021
+57,NASH w/o cirrhosis,needle_biopsy,HSPA1B,470,0.0085,0.0049,0.0085,0.0
+57,NASH w/o cirrhosis,needle_biopsy,stress_mod,470,0.4979,0.1176,0.3596,0.0957
+6,NAFLD,needle_biopsy,FOS,2811,0.0046,0.0012,0.0046,0.0
+6,NAFLD,needle_biopsy,JUN,2811,0.0235,0.0049,0.0213,0.0021
+6,NAFLD,needle_biopsy,JUNB,2811,0.0189,0.0024,0.0164,0.0021
+6,NAFLD,needle_biopsy,JUND,2811,0.095,0.0161,0.085,0.0082
+6,NAFLD,needle_biopsy,ATF3,2811,0.0309,0.0043,0.0281,0.0025
+6,NAFLD,needle_biopsy,DUSP1,2811,0.1341,0.0205,0.1128,0.0164
+6,NAFLD,needle_biopsy,HSPA1A,2811,0.0295,0.0062,0.0238,0.0021
+6,NAFLD,needle_biopsy,HSPA1B,2811,0.0185,0.005,0.0157,0.0025
+6,NAFLD,needle_biopsy,stress_mod,2811,0.355,0.0615,0.2579,0.0647
+60,NAFLD,needle_biopsy,FOS,903,0.0,0.0,0.0,0.0
+60,NAFLD,needle_biopsy,JUN,903,0.0144,0.0049,0.0144,0.0
+60,NAFLD,needle_biopsy,JUNB,903,0.0066,0.0013,0.0066,0.0
+60,NAFLD,needle_biopsy,JUND,903,0.0343,0.0169,0.0343,0.0
+60,NAFLD,needle_biopsy,ATF3,903,0.0122,0.0033,0.0122,0.0
+60,NAFLD,needle_biopsy,DUSP1,903,0.0354,0.0124,0.0343,0.0011
+60,NAFLD,needle_biopsy,HSPA1A,903,0.0066,0.0033,0.0066,0.0
+60,NAFLD,needle_biopsy,HSPA1B,903,0.01,0.0046,0.01,0.0
+60,NAFLD,needle_biopsy,stress_mod,903,0.1196,0.046,0.1096,0.0089
+62,NASH w/o cirrhosis,needle_biopsy,FOS,408,0.0,0.0,0.0,0.0
+62,NASH w/o cirrhosis,needle_biopsy,JUN,408,0.0074,0.0,0.0074,0.0
+62,NASH w/o cirrhosis,needle_biopsy,JUNB,408,0.0172,0.0116,0.0172,0.0
+62,NASH w/o cirrhosis,needle_biopsy,JUND,408,0.0245,0.0089,0.0245,0.0
+62,NASH w/o cirrhosis,needle_biopsy,ATF3,408,0.0319,0.0196,0.0294,0.0025
+62,NASH w/o cirrhosis,needle_biopsy,DUSP1,408,0.0588,0.032,0.0539,0.0049
+62,NASH w/o cirrhosis,needle_biopsy,HSPA1A,408,0.0074,0.0053,0.0049,0.0025
+62,NASH w/o cirrhosis,needle_biopsy,HSPA1B,408,0.0025,0.0,0.0025,0.0
+62,NASH w/o cirrhosis,needle_biopsy,stress_mod,408,0.1495,0.0765,0.125,0.0196
+64,NASH w/o cirrhosis,needle_biopsy,FOS,750,0.0173,0.0042,0.0147,0.0027
+64,NASH w/o cirrhosis,needle_biopsy,JUN,750,0.0933,0.0194,0.08,0.012
+64,NASH w/o cirrhosis,needle_biopsy,JUNB,750,0.056,0.0087,0.0493,0.0053
+64,NASH w/o cirrhosis,needle_biopsy,JUND,750,0.1147,0.0215,0.0973,0.0173
+64,NASH w/o cirrhosis,needle_biopsy,ATF3,750,0.0467,0.0118,0.0453,0.0013
+64,NASH w/o cirrhosis,needle_biopsy,DUSP1,750,0.0893,0.0118,0.0747,0.0107
+64,NASH w/o cirrhosis,needle_biopsy,HSPA1A,750,0.0107,0.0014,0.0107,0.0
+64,NASH w/o cirrhosis,needle_biopsy,HSPA1B,750,0.0093,0.0014,0.0093,0.0
+64,NASH w/o cirrhosis,needle_biopsy,stress_mod,750,0.4373,0.0788,0.3107,0.0907
+67,NASH w/o cirrhosis,needle_biopsy,FOS,1496,0.0,0.0,0.0,0.0
+67,NASH w/o cirrhosis,needle_biopsy,JUN,1496,0.0481,0.016,0.0428,0.0053
+67,NASH w/o cirrhosis,needle_biopsy,JUNB,1496,0.0094,0.0034,0.0094,0.0
+67,NASH w/o cirrhosis,needle_biopsy,JUND,1496,0.0368,0.0153,0.0368,0.0
+67,NASH w/o cirrhosis,needle_biopsy,ATF3,1496,0.0221,0.0071,0.0201,0.002
+67,NASH w/o cirrhosis,needle_biopsy,DUSP1,1496,0.0287,0.0089,0.0274,0.0013
+67,NASH w/o cirrhosis,needle_biopsy,HSPA1A,1496,0.0201,0.0059,0.0201,0.0
+67,NASH w/o cirrhosis,needle_biopsy,HSPA1B,1496,0.0107,0.0032,0.0107,0.0
+67,NASH w/o cirrhosis,needle_biopsy,stress_mod,1496,0.1758,0.0601,0.1517,0.0214
+68,NASH with cirrhosis,needle_biopsy,FOS,518,0.0058,0.0011,0.0058,0.0
+68,NASH with cirrhosis,needle_biopsy,JUN,518,0.0618,0.0233,0.056,0.0039
+68,NASH with cirrhosis,needle_biopsy,JUNB,518,0.0193,0.0069,0.0193,0.0
+68,NASH with cirrhosis,needle_biopsy,JUND,518,0.1486,0.0518,0.1255,0.0193
+68,NASH with cirrhosis,needle_biopsy,ATF3,518,0.0425,0.0169,0.0386,0.0039
+68,NASH with cirrhosis,needle_biopsy,DUSP1,518,0.0483,0.019,0.0425,0.0039
+68,NASH with cirrhosis,needle_biopsy,HSPA1A,518,0.0193,0.0095,0.0174,0.0019
+68,NASH with cirrhosis,needle_biopsy,HSPA1B,518,0.0135,0.0037,0.0135,0.0
+68,NASH with cirrhosis,needle_biopsy,stress_mod,518,0.3591,0.1342,0.2664,0.0637
+7,NASH w/o cirrhosis,needle_biopsy,FOS,2096,0.0005,0.0,0.0005,0.0
+7,NASH w/o cirrhosis,needle_biopsy,JUN,2096,0.0611,0.0158,0.0549,0.0048
+7,NASH w/o cirrhosis,needle_biopsy,JUNB,2096,0.0105,0.0027,0.01,0.0005
+7,NASH w/o cirrhosis,needle_biopsy,JUND,2096,0.0725,0.0213,0.0644,0.0081
+7,NASH w/o cirrhosis,needle_biopsy,ATF3,2096,0.0248,0.0048,0.0229,0.0019
+7,NASH w/o cirrhosis,needle_biopsy,DUSP1,2096,0.1145,0.0245,0.1002,0.0134
+7,NASH w/o cirrhosis,needle_biopsy,HSPA1A,2096,0.0477,0.0108,0.0429,0.0038
+7,NASH w/o cirrhosis,needle_biopsy,HSPA1B,2096,0.0105,0.0038,0.0105,0.0
+7,NASH w/o cirrhosis,needle_biopsy,stress_mod,2096,0.3421,0.0828,0.261,0.0606
+70,NASH w/o cirrhosis,needle_biopsy,FOS,243,0.0041,0.0,0.0041,0.0
+70,NASH w/o cirrhosis,needle_biopsy,JUN,243,0.1358,0.0195,0.1029,0.0247
+70,NASH w/o cirrhosis,needle_biopsy,JUNB,243,0.0494,0.0113,0.0453,0.0041
+70,NASH w/o cirrhosis,needle_biopsy,JUND,243,0.3086,0.0484,0.2469,0.0535
+70,NASH w/o cirrhosis,needle_biopsy,ATF3,243,0.037,0.0062,0.0329,0.0041
+70,NASH w/o cirrhosis,needle_biopsy,DUSP1,243,0.0576,0.0093,0.0535,0.0041
+70,NASH w/o cirrhosis,needle_biopsy,HSPA1A,243,0.0206,0.0021,0.0165,0.0041
+70,NASH w/o cirrhosis,needle_biopsy,HSPA1B,243,0.0082,0.001,0.0082,0.0
+70,NASH w/o cirrhosis,needle_biopsy,stress_mod,243,0.6214,0.1008,0.3992,0.1523
+71,NASH w/o cirrhosis,needle_biopsy,FOS,137,0.0073,0.0,0.0073,0.0
+71,NASH w/o cirrhosis,needle_biopsy,JUN,137,0.0146,0.0177,0.0146,0.0
+71,NASH w/o cirrhosis,needle_biopsy,JUNB,137,0.0292,0.0202,0.0292,0.0
+71,NASH w/o cirrhosis,needle_biopsy,JUND,137,0.146,0.1086,0.1314,0.0146
+71,NASH w/o cirrhosis,needle_biopsy,ATF3,137,0.0438,0.0303,0.0438,0.0
+71,NASH w/o cirrhosis,needle_biopsy,DUSP1,137,0.0657,0.0278,0.0657,0.0
+71,NASH w/o cirrhosis,needle_biopsy,HSPA1A,137,0.0,0.0,0.0,0.0
+71,NASH w/o cirrhosis,needle_biopsy,HSPA1B,137,0.0,0.0,0.0,0.0
+71,NASH w/o cirrhosis,needle_biopsy,stress_mod,137,0.3066,0.2096,0.2774,0.0292
+72,NASH w/o cirrhosis,needle_biopsy,FOS,676,0.0178,0.002,0.0163,0.0015
+72,NASH w/o cirrhosis,needle_biopsy,JUN,676,0.1509,0.0286,0.1124,0.0281
+72,NASH w/o cirrhosis,needle_biopsy,JUNB,676,0.0533,0.0067,0.0429,0.0104
+72,NASH w/o cirrhosis,needle_biopsy,JUND,676,0.2012,0.0404,0.1746,0.0207
+72,NASH w/o cirrhosis,needle_biopsy,ATF3,676,0.0814,0.0172,0.0754,0.0059
+72,NASH w/o cirrhosis,needle_biopsy,DUSP1,676,0.1243,0.0243,0.108,0.0133
+72,NASH w/o cirrhosis,needle_biopsy,HSPA1A,676,0.0533,0.0078,0.0429,0.0104
+72,NASH w/o cirrhosis,needle_biopsy,HSPA1B,676,0.0192,0.0031,0.0192,0.0
+72,NASH w/o cirrhosis,needle_biopsy,stress_mod,676,0.7012,0.1324,0.4068,0.1598
+73,NASH w/o cirrhosis,needle_biopsy,FOS,1071,0.0019,0.0,0.0019,0.0
+73,NASH w/o cirrhosis,needle_biopsy,JUN,1071,0.0364,0.0036,0.0308,0.0037
+73,NASH w/o cirrhosis,needle_biopsy,JUNB,1071,0.0233,0.0041,0.0224,0.0009
+73,NASH w/o cirrhosis,needle_biopsy,JUND,1071,0.0598,0.0118,0.0588,0.0009
+73,NASH w/o cirrhosis,needle_biopsy,ATF3,1071,0.0355,0.0072,0.0345,0.0009
+73,NASH w/o cirrhosis,needle_biopsy,DUSP1,1071,0.0915,0.0147,0.0803,0.0084
+73,NASH w/o cirrhosis,needle_biopsy,HSPA1A,1071,0.014,0.001,0.0131,0.0009
+73,NASH w/o cirrhosis,needle_biopsy,HSPA1B,1071,0.0065,0.0012,0.0065,0.0
+73,NASH w/o cirrhosis,needle_biopsy,stress_mod,1071,0.2689,0.0444,0.2035,0.0486
+75,NASH with cirrhosis,needle_biopsy,FOS,444,0.0,0.0,0.0,0.0
+75,NASH with cirrhosis,needle_biopsy,JUN,444,0.1014,0.0243,0.0721,0.0158
+75,NASH with cirrhosis,needle_biopsy,JUNB,444,0.045,0.0053,0.036,0.0045
+75,NASH with cirrhosis,needle_biopsy,JUND,444,0.1261,0.0219,0.1171,0.0068
+75,NASH with cirrhosis,needle_biopsy,ATF3,444,0.0315,0.0041,0.0293,0.0023
+75,NASH with cirrhosis,needle_biopsy,DUSP1,444,0.0608,0.0124,0.0518,0.0068
+75,NASH with cirrhosis,needle_biopsy,HSPA1A,444,0.018,0.0018,0.018,0.0
+75,NASH with cirrhosis,needle_biopsy,HSPA1B,444,0.0135,0.0024,0.0113,0.0023
+75,NASH with cirrhosis,needle_biopsy,stress_mod,444,0.3964,0.0741,0.2815,0.0721
+76,NASH w/o cirrhosis,needle_biopsy,FOS,718,0.0014,0.0,0.0014,0.0
+76,NASH w/o cirrhosis,needle_biopsy,JUN,718,0.1114,0.0112,0.0891,0.0139
+76,NASH w/o cirrhosis,needle_biopsy,JUNB,718,0.0669,0.0086,0.0571,0.0097
+76,NASH w/o cirrhosis,needle_biopsy,JUND,718,0.1532,0.018,0.1295,0.0181
+76,NASH w/o cirrhosis,needle_biopsy,ATF3,718,0.0571,0.0076,0.0515,0.0056
+76,NASH w/o cirrhosis,needle_biopsy,DUSP1,718,0.0474,0.0061,0.0432,0.0028
+76,NASH w/o cirrhosis,needle_biopsy,HSPA1A,718,0.0362,0.0022,0.032,0.0028
+76,NASH w/o cirrhosis,needle_biopsy,HSPA1B,718,0.0139,0.0007,0.0111,0.0014
+76,NASH w/o cirrhosis,needle_biopsy,stress_mod,718,0.4875,0.0569,0.3231,0.0975
+77,NASH w/o cirrhosis,needle_biopsy,FOS,762,0.0026,0.0007,0.0026,0.0
+77,NASH w/o cirrhosis,needle_biopsy,JUN,762,0.0367,0.0095,0.0315,0.0052
+77,NASH w/o cirrhosis,needle_biopsy,JUNB,762,0.0262,0.0032,0.0236,0.0026
+77,NASH w/o cirrhosis,needle_biopsy,JUND,762,0.0761,0.0123,0.0709,0.0052
+77,NASH w/o cirrhosis,needle_biopsy,ATF3,762,0.0538,0.0112,0.0512,0.0026
+77,NASH w/o cirrhosis,needle_biopsy,DUSP1,762,0.0512,0.0077,0.0446,0.0052
+77,NASH w/o cirrhosis,needle_biopsy,HSPA1A,762,0.0157,0.0014,0.0131,0.0013
+77,NASH w/o cirrhosis,needle_biopsy,HSPA1B,762,0.0105,0.0018,0.0105,0.0
+77,NASH w/o cirrhosis,needle_biopsy,stress_mod,762,0.273,0.0492,0.2113,0.0472
+78,NAFLD,needle_biopsy,FOS,1121,0.0,0.0,0.0,0.0
+78,NAFLD,needle_biopsy,JUN,1121,0.0161,0.0041,0.0161,0.0
+78,NAFLD,needle_biopsy,JUNB,1121,0.0089,0.0025,0.0089,0.0
+78,NAFLD,needle_biopsy,JUND,1121,0.041,0.01,0.0375,0.0036
+78,NAFLD,needle_biopsy,ATF3,1121,0.0277,0.0095,0.025,0.0027
+78,NAFLD,needle_biopsy,DUSP1,1121,0.0312,0.0082,0.0294,0.0018
+78,NAFLD,needle_biopsy,HSPA1A,1121,0.0116,0.0018,0.0107,0.0009
+78,NAFLD,needle_biopsy,HSPA1B,1121,0.0036,0.0007,0.0036,0.0
+78,NAFLD,needle_biopsy,stress_mod,1121,0.1401,0.0381,0.1169,0.0205
+8,NASH w/o cirrhosis,needle_biopsy,FOS,2876,0.0007,0.0002,0.0007,0.0
+8,NASH w/o cirrhosis,needle_biopsy,JUN,2876,0.0435,0.0072,0.0386,0.0035
+8,NASH w/o cirrhosis,needle_biopsy,JUNB,2876,0.0195,0.0034,0.0191,0.0003
+8,NASH w/o cirrhosis,needle_biopsy,JUND,2876,0.0643,0.0103,0.0598,0.0045
+8,NASH w/o cirrhosis,needle_biopsy,ATF3,2876,0.0487,0.0074,0.0414,0.0049
+8,NASH w/o cirrhosis,needle_biopsy,DUSP1,2876,0.0942,0.0164,0.0817,0.0097
+8,NASH w/o cirrhosis,needle_biopsy,HSPA1A,2876,0.0205,0.0021,0.0188,0.0017
+8,NASH w/o cirrhosis,needle_biopsy,HSPA1B,2876,0.0059,0.0012,0.0056,0.0003
+8,NASH w/o cirrhosis,needle_biopsy,stress_mod,2876,0.2973,0.0489,0.2298,0.0511
+83,NASH w/o cirrhosis,needle_biopsy,FOS,225,0.0,0.0,0.0,0.0
+83,NASH w/o cirrhosis,needle_biopsy,JUN,225,0.0533,0.0102,0.0311,0.0133
+83,NASH w/o cirrhosis,needle_biopsy,JUNB,225,0.0356,0.0102,0.0356,0.0
+83,NASH w/o cirrhosis,needle_biopsy,JUND,225,0.1378,0.0698,0.1244,0.0133
+83,NASH w/o cirrhosis,needle_biopsy,ATF3,225,0.0978,0.0305,0.0889,0.0044
+83,NASH w/o cirrhosis,needle_biopsy,DUSP1,225,0.0711,0.0233,0.0667,0.0044
+83,NASH w/o cirrhosis,needle_biopsy,HSPA1A,225,0.0178,0.0029,0.0178,0.0
+83,NASH w/o cirrhosis,needle_biopsy,HSPA1B,225,0.0,0.0,0.0,0.0
+83,NASH w/o cirrhosis,needle_biopsy,stress_mod,225,0.4133,0.1439,0.2622,0.0978
+84,NAFLD,needle_biopsy,FOS,301,0.0,0.0,0.0,0.0
+84,NAFLD,needle_biopsy,JUN,301,0.0266,0.0052,0.0233,0.0033
+84,NAFLD,needle_biopsy,JUNB,301,0.0233,0.0052,0.0233,0.0
+84,NAFLD,needle_biopsy,JUND,301,0.0365,0.0078,0.0332,0.0033
+84,NAFLD,needle_biopsy,ATF3,301,0.0432,0.0104,0.0432,0.0
+84,NAFLD,needle_biopsy,DUSP1,301,0.1262,0.0217,0.103,0.0166
+84,NAFLD,needle_biopsy,HSPA1A,301,0.0233,0.0035,0.0233,0.0
+84,NAFLD,needle_biopsy,HSPA1B,301,0.0133,0.0017,0.0133,0.0
+84,NAFLD,needle_biopsy,stress_mod,301,0.2924,0.0556,0.2292,0.0498
+9,NASH w/o cirrhosis,needle_biopsy,FOS,2917,0.0,0.0,0.0,0.0
+9,NASH w/o cirrhosis,needle_biopsy,JUN,2917,0.0219,0.0052,0.0202,0.0017
+9,NASH w/o cirrhosis,needle_biopsy,JUNB,2917,0.0048,0.0011,0.0045,0.0003
+9,NASH w/o cirrhosis,needle_biopsy,JUND,2917,0.0267,0.0062,0.0257,0.001
+9,NASH w/o cirrhosis,needle_biopsy,ATF3,2917,0.0192,0.0051,0.0178,0.0014
+9,NASH w/o cirrhosis,needle_biopsy,DUSP1,2917,0.025,0.0065,0.0237,0.0014
+9,NASH w/o cirrhosis,needle_biopsy,HSPA1A,2917,0.0158,0.0038,0.0154,0.0003
+9,NASH w/o cirrhosis,needle_biopsy,HSPA1B,2917,0.0041,0.0006,0.0041,0.0
+9,NASH w/o cirrhosis,needle_biopsy,stress_mod,2917,0.1176,0.0274,0.1039,0.012
+98,Healthy control,healthy(deceased-donor),FOS,297,0.0572,0.0018,0.0034,0.0034
+98,Healthy control,healthy(deceased-donor),JUN,297,0.2222,0.019,0.1145,0.0303
+98,Healthy control,healthy(deceased-donor),JUNB,297,0.0471,0.0036,0.037,0.0034
+98,Healthy control,healthy(deceased-donor),JUND,297,0.1616,0.0181,0.1279,0.0135
+98,Healthy control,healthy(deceased-donor),ATF3,297,0.1987,0.0109,0.0606,0.0034
+98,Healthy control,healthy(deceased-donor),DUSP1,297,0.0976,0.0136,0.0707,0.0135
+98,Healthy control,healthy(deceased-donor),HSPA1A,297,0.0976,0.0072,0.0404,0.0135
+98,Healthy control,healthy(deceased-donor),HSPA1B,297,0.0236,0.0,0.0202,0.0034
+98,Healthy control,healthy(deceased-donor),stress_mod,297,0.9057,0.0725,0.3535,0.1145
+CL103,end stage,explant,FOS,2065,0.5879,0.0897,0.2901,0.1201
+CL103,end stage,explant,JUN,2065,1.9056,0.2649,0.6194,0.385
+CL103,end stage,explant,JUNB,2065,0.5182,0.0753,0.2964,0.108
+CL103,end stage,explant,JUND,2065,0.8935,0.1529,0.4751,0.2029
+CL103,end stage,explant,ATF3,2065,1.2383,0.1793,0.4068,0.2199
+CL103,end stage,explant,DUSP1,2065,1.6155,0.2369,0.6257,0.3705
+CL103,end stage,explant,HSPA1A,2065,0.7971,0.1091,0.3201,0.1613
+CL103,end stage,explant,HSPA1B,2065,0.4881,0.0754,0.2354,0.1075
+CL103,end stage,explant,stress_mod,2065,8.0441,1.1844,0.9482,0.8426
+CL104,end stage,explant,FOS,1960,0.3648,0.1996,0.2332,0.0791
+CL104,end stage,explant,JUN,1960,0.8372,0.2892,0.4357,0.1577
+CL104,end stage,explant,JUNB,1960,0.326,0.1182,0.225,0.0526
+CL104,end stage,explant,JUND,1960,0.2372,0.1064,0.1781,0.0301
+CL104,end stage,explant,ATF3,1960,0.2199,0.092,0.1469,0.026
+CL104,end stage,explant,DUSP1,1960,0.7311,0.358,0.4571,0.1643
+CL104,end stage,explant,HSPA1A,1960,0.6597,0.3648,0.3112,0.1724
+CL104,end stage,explant,HSPA1B,1960,0.3985,0.2221,0.2337,0.0939
+CL104,end stage,explant,stress_mod,1960,3.7745,1.756,0.8403,0.652
+CL16,end stage,explant,FOS,6117,1.0007,0.1918,0.3497,0.188
+CL16,end stage,explant,JUN,6117,4.8915,1.0072,0.7654,0.581
+CL16,end stage,explant,JUNB,6117,0.2485,0.0528,0.169,0.0502
+CL16,end stage,explant,JUND,6117,1.3335,0.2773,0.5359,0.3016
+CL16,end stage,explant,ATF3,6117,2.1457,0.4302,0.5141,0.3384
+CL16,end stage,explant,DUSP1,6117,2.092,0.4245,0.7113,0.4713
+CL16,end stage,explant,HSPA1A,6117,2.1965,0.4696,0.5272,0.3487
+CL16,end stage,explant,HSPA1B,6117,0.7234,0.157,0.3366,0.164
+CL16,end stage,explant,stress_mod,6117,14.6317,3.0063,0.9686,0.912
+CL17,end stage,explant,FOS,4305,0.0695,0.0179,0.0502,0.0116
+CL17,end stage,explant,JUN,4305,0.5001,0.1138,0.276,0.1045
+CL17,end stage,explant,JUNB,4305,0.1294,0.0272,0.1029,0.0193
+CL17,end stage,explant,JUND,4305,0.6885,0.169,0.3784,0.1568
+CL17,end stage,explant,ATF3,4305,0.3998,0.0927,0.2244,0.079
+CL17,end stage,explant,DUSP1,4305,1.1526,0.2685,0.5515,0.2797
+CL17,end stage,explant,HSPA1A,4305,0.6216,0.1537,0.2397,0.1175
+CL17,end stage,explant,HSPA1B,4305,0.2293,0.0585,0.1452,0.0481
+CL17,end stage,explant,stress_mod,4305,3.7907,0.9091,0.8279,0.6325
+CL18,end stage,explant,FOS,8650,0.1584,0.0367,0.1015,0.0284
+CL18,end stage,explant,JUN,8650,1.0787,0.2626,0.5016,0.2531
+CL18,end stage,explant,JUNB,8650,0.1423,0.0352,0.1142,0.0207
+CL18,end stage,explant,JUND,8650,0.5868,0.1525,0.3393,0.1316
+CL18,end stage,explant,ATF3,8650,0.5227,0.1162,0.2695,0.1062
+CL18,end stage,explant,DUSP1,8650,1.514,0.3968,0.6584,0.3821
+CL18,end stage,explant,HSPA1A,8650,1.4696,0.4236,0.4317,0.2671
+CL18,end stage,explant,HSPA1B,8650,0.3748,0.0985,0.2264,0.0829
+CL18,end stage,explant,stress_mod,8650,5.8473,1.519,0.9266,0.8082
+HL1,Healthy control,healthy(deceased-donor),FOS,1640,0.0329,0.0109,0.0299,0.0018
+HL1,Healthy control,healthy(deceased-donor),JUN,1640,0.4476,0.0911,0.2372,0.1055
+HL1,Healthy control,healthy(deceased-donor),JUNB,1640,0.2341,0.0603,0.186,0.0372
+HL1,Healthy control,healthy(deceased-donor),JUND,1640,0.1616,0.0384,0.1256,0.0226
+HL1,Healthy control,healthy(deceased-donor),ATF3,1640,0.0787,0.0172,0.053,0.0128
+HL1,Healthy control,healthy(deceased-donor),DUSP1,1640,0.4384,0.0951,0.278,0.0951
+HL1,Healthy control,healthy(deceased-donor),HSPA1A,1640,1.3646,0.2748,0.5104,0.2841
+HL1,Healthy control,healthy(deceased-donor),HSPA1B,1640,0.7152,0.1699,0.4183,0.1677
+HL1,Healthy control,healthy(deceased-donor),stress_mod,1640,3.4732,0.7567,0.8049,0.603
+HL2,Healthy control,healthy(deceased-donor),FOS,849,0.0165,0.0041,0.013,0.0012
+HL2,Healthy control,healthy(deceased-donor),JUN,849,0.1402,0.0346,0.1095,0.0188
+HL2,Healthy control,healthy(deceased-donor),JUNB,849,0.2709,0.0787,0.2155,0.0483
+HL2,Healthy control,healthy(deceased-donor),JUND,849,0.0424,0.0147,0.04,0.0024
+HL2,Healthy control,healthy(deceased-donor),ATF3,849,0.0742,0.0237,0.0636,0.0082
+HL2,Healthy control,healthy(deceased-donor),DUSP1,849,0.3428,0.0918,0.2261,0.073
+HL2,Healthy control,healthy(deceased-donor),HSPA1A,849,0.0636,0.0197,0.0577,0.0059
+HL2,Healthy control,healthy(deceased-donor),HSPA1B,849,0.0318,0.0084,0.0318,0.0
+HL2,Healthy control,healthy(deceased-donor),stress_mod,849,0.9823,0.2756,0.5324,0.2462

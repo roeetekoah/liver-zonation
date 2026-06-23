@@ -1,9 +1,0 @@
-<svg viewBox="0 0 460 200" xmlns="http://www.w3.org/2000/svg" width="460" height="200">
-  <line x1="55" y1="18" x2="55" y2="158" stroke="#3a4654" stroke-width="1.2"/><line x1="55" y1="158" x2="430" y2="158" stroke="#3a4654" stroke-width="1.2"/>
-  <text x="14" y="92" font-size="9" fill="#3a4654" font-family="Arial" transform="rotate(-90 14,92)">de-zonation score</text>
-  <polyline points="85,145 160,124 240,90 320,55 400,40" fill="none" stroke="#c05621" stroke-width="2.4"/>
-  <circle cx="85" cy="145" r="4" fill="#2f855a"/><circle cx="160" cy="124" r="4" fill="#2f855a"/><circle cx="240" cy="90" r="4" fill="#c05621"/><circle cx="320" cy="55" r="4" fill="#c05621"/><circle cx="400" cy="40" r="4" fill="#c53030"/>
-  <line x1="85" y1="137" x2="85" y2="153" stroke="#888"/><line x1="240" y1="82" x2="240" y2="98" stroke="#888"/><line x1="400" y1="32" x2="400" y2="48" stroke="#888"/>
-  <text x="72" y="173" font-size="8" fill="#3a4654" font-family="Arial">Healthy</text><text x="143" y="173" font-size="8" fill="#3a4654" font-family="Arial">MASLD</text><text x="227" y="173" font-size="8" fill="#3a4654" font-family="Arial">MASH</text><text x="300" y="173" font-size="8" fill="#3a4654" font-family="Arial">Cirrhosis</text><text x="376" y="173" font-size="8" fill="#3a4654" font-family="Arial">End-stage</text>
-  <text x="120" y="30" font-size="8.5" fill="#5a6472" font-family="Arial" font-style="italic">illustrative expected shape (H1)</text>
-</svg>

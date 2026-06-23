@@ -1,0 +1,7 @@
+contrast,n_low,n_high,metric,scale,mean_low,mean_high,diff,se,welch_df,t_ci90_lo,t_ci90_hi,boot_ci90_lo,boot_ci90_hi,rel20_margin,exclude_abs_0p05,exclude_abs_0p10,exclude_rel_20pct,tightest_bound_t,tightest_bound_boot
+F1vF4,8,4,PC_anchor_fraction,fraction,0.24796,0.27161,0.02366,0.08405,4.84,-0.14699,0.1943,-0.09298,0.15261,0.04959,False,False,False,0.1943,0.15261
+F1vF4,8,4,PP_anchor_fraction,fraction,0.23915,0.22061,-0.01854,0.06646,5.31,-0.15077,0.11369,-0.11911,0.07599,0.04783,False,False,False,0.15077,0.11911
+F1vF4,8,4,PP_to_PC_ratio,ratio,1.19689,1.06974,-0.12715,0.44179,6.48,-0.97443,0.72013,-0.79923,0.50182,0.23938,,,False,0.97443,0.79923
+F1vF3,8,12,PC_anchor_fraction,fraction,0.24796,0.21002,-0.03794,0.0449,10.65,-0.11881,0.04294,-0.1105,0.02895,0.04959,False,False,False,0.11881,0.1105
+F1vF3,8,12,PP_anchor_fraction,fraction,0.23915,0.29125,0.0521,0.04888,17.15,-0.03288,0.13708,-0.02488,0.12784,0.04783,False,False,False,0.13708,0.12784
+F1vF3,8,12,PP_to_PC_ratio,ratio,1.19689,1.66572,0.46883,0.4325,17.99,-0.28117,1.21883,-0.18785,1.16063,0.23938,,,False,1.21883,1.16063
