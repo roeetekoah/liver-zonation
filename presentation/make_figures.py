@@ -28,6 +28,8 @@ plt.rcParams.update({
     "legend.frameon":False, "legend.fontsize":12.5, "legend.handlelength":1.3, "legend.handletextpad":0.5})
 STAGES=["F0","F1","F2","F3","F4"]
 from matplotlib.lines import Line2D
+from matplotlib.patches import Patch
+from matplotlib.colors import to_rgba
 
 def clean(ax):   # consistent minimalist axes: light spines, no ticks, soft y-grid only
     for sp in ("left","bottom"): ax.spines[sp].set_color(EDGE); ax.spines[sp].set_linewidth(1.0)
@@ -98,12 +100,12 @@ def panel(ax, col, color, title, pct=True, ratio=False):
     ax.set_xticks(range(5)); ax.set_xticklabels(STAGES); ax.set_xlim(-0.6,4.6); ax.set_ylim(0,top*1.18)
     ax.set_title(title, loc="left", fontsize=14.5); clean(ax)
 fig,axes=plt.subplots(2,2,figsize=(11.5,7.4))
-panel(axes[0,0],"PC_f",PC,"No pericentral depletion"); axes[0,0].set_ylabel("PC-anchor %")
-panel(axes[0,1],"dual2_f",DUAL,"Co-expression stays rare"); axes[0,1].set_ylabel("Dual (≥2 UMI) %")
+panel(axes[0,0],"PC_f",PC,"Pericentral anchor"); axes[0,0].set_ylabel("PC-anchor %")
+panel(axes[0,1],"dual2_f",DUAL,"Dual co-expression"); axes[0,1].set_ylabel("Dual (≥2 UMI) %")
 axes[0,1].axhline(2.9, color=CONFOUND, ls="--", lw=1.5)
 axes[0,1].text(4.0,2.9,"confounded explants ≈2.9%  (~7×)", color=CONFOUND, fontsize=10, va="bottom", ha="right")
-panel(axes[1,0],"null_f",NULL,"No zonal turn-off"); axes[1,0].set_ylabel("Null %")
-panel(axes[1,1],"pppc","#B45309","No composition shift", ratio=True); axes[1,1].set_ylabel("PP : PC ratio")
+panel(axes[1,0],"null_f",NULL,"Null (double-negative)"); axes[1,0].set_ylabel("Null %")
+panel(axes[1,1],"pppc","#B45309","PP : PC balance", ratio=True); axes[1,1].set_ylabel("PP : PC ratio")
 fig.suptitle("Across biopsy F0–F4, no large de-zonation route appears   ·   donor = point, line = median",
              fontsize=13, color=MUTE, x=0.5, y=1.005)
 fig.tight_layout(); fig.savefig(f"{OUT}/fig_anchor2x2.png", bbox_inches="tight"); plt.close(fig)
@@ -119,39 +121,111 @@ def bigpanel(ax,col,color,title,ylab):
     ax.set_xticks(range(5)); ax.set_xticklabels(STAGES, fontsize=15)
     ax.set_title(title, fontweight="bold", loc="left", fontsize=17); ax.set_ylabel(ylab, fontsize=15)
     ax.grid(axis="y", color=GRID); ax.set_axisbelow(True)
-bigpanel(a1,"PC_f",PC,"No pericentral depletion","PC-anchor % of hepatocyte nuclei")
-bigpanel(a2,"dual2_f",DUAL,"Co-expression stays rare","Dual (≥2 UMI) %")
+bigpanel(a1,"PC_f",PC,"Pericentral anchor","PC-anchor % of hepatocyte nuclei")
+bigpanel(a2,"dual2_f",DUAL,"Dual co-expression","Dual (≥2 UMI) %")
 a2.axhline(2.9, color=CONFOUND, ls="--", lw=2)
 a2.text(4.05,2.95,"confounded explants ≈ 2.9%  (~7×)", color=CONFOUND, fontsize=12, va="bottom", ha="right", fontweight="bold")
 a1.text(0.02,0.97,"donor = point, line = median", transform=a1.transAxes, fontsize=12, color=MUTE, va="top")
 fig.tight_layout(); fig.savefig(f"{OUT}/fig_result2.png", bbox_inches="tight"); plt.close(fig)
 
-# ---- headline result v3: PC depletion + PP depletion + dual, F1-F4 (F0 n=2 dropped), value-labelled ----
+# ---- headline result v3: PC depletion + PP depletion + dual, F1-F4 (F0 n=2 dropped) — BOX PLOTS ----
 SR=["F1","F2","F3","F4"]
-fig,axs=plt.subplots(1,3,figsize=(12.4,5.7))
-def rpanel(ax,col,color,title,ylab,explant_line=None,dec=0,legend=False):
-    top=0
-    for i,st in enumerate(SR):
-        v=bio[bio.Fs==st][col].values*100; top=max(top,v.max())
-        ax.scatter(np.full(len(v),i)+jitter(len(v),0.13), v, s=46, color=color, alpha=0.4,
-                   edgecolor="none", zorder=3)
-        med=np.median(v); ax.plot([i-0.34,i+0.34],[med]*2,color=color,lw=3.2,solid_capstyle="round",zorder=4)
-        ax.annotate(f"{med:.{dec}f}%",(i,med),xytext=(0,8),textcoords="offset points",
-                    ha="center",va="bottom",fontsize=12,fontweight="bold",color=color,zorder=6)
-    ax.set_xticks(range(4)); ax.set_xticklabels(SR)
-    ax.set_xlim(-0.6,3.6); ax.set_ylim(0, top*1.15)
+
+def boxpanel(ax,col,color,title,ylab,scale=100,explant_line=None,dec=0,
+             legend=False,box_legend=False,top_pad=1.20):
+    """Box plot of the per-donor distribution per stage, with donor points overlaid and
+    the donor-median annotated. scale=100 -> percent; scale=1 -> raw ratio."""
+    data=[bio[bio.Fs==st][col].values*scale for st in SR]
+    top=max((v.max() if len(v) else 0) for v in data)
+    light=to_rgba(color,0.12)
+    bp=ax.boxplot(data, positions=range(len(SR)), widths=0.52, patch_artist=True,
+                  showfliers=False, whis=(0,100), zorder=2,
+                  medianprops=dict(color=color,lw=3,solid_capstyle="round"),
+                  boxprops=dict(facecolor=light,edgecolor=color,lw=1.4),
+                  whiskerprops=dict(color=color,lw=1.2),
+                  capprops=dict(color=color,lw=1.2))
+    for i,v in enumerate(data):
+        n=len(v)
+        ax.scatter(np.full(n,i)+jitter(n,0.10), v, s=40, color=color, alpha=0.55,
+                   edgecolor="white", linewidth=0.6, zorder=4)
+        if n:
+            med=np.median(v)
+            ax.annotate(f"{med:.{dec}f}%" if scale==100 else f"{med:.{dec}f}",
+                        (i,med),xytext=(0.32,0),textcoords="offset fontsize",
+                        ha="left",va="center",fontsize=11.5,fontweight="bold",color=color,zorder=6)
+        ax.annotate(f"n={n}",(i,0),xytext=(0,-20),textcoords="offset points",
+                    ha="center",va="top",fontsize=10,color=MUTE,zorder=6)
+    ax.set_xticks(range(len(SR))); ax.set_xticklabels(SR)
+    ax.set_xlim(-0.6,len(SR)-0.4); ax.set_ylim(0, top*top_pad)
     ax.set_title(title, loc="left"); ax.set_ylabel(ylab)
     clean(ax)
     if explant_line is not None:
         ax.axhline(explant_line, color=CONFOUND, ls=(0,(4,3)), lw=1.6)
-        ax.text(3.45,explant_line,"  explants ≈ 2.9% (~7×)",color=CONFOUND,fontsize=11,va="center",ha="right",fontweight="bold")
-    if legend: donor_legend(ax,color,"upper left")
-rpanel(axs[0],"PC_f",PC,"No pericentral depletion","PC-anchor %", legend=True)
-rpanel(axs[1],"PP_f",PP,"No periportal depletion","PP-anchor %")
-rpanel(axs[2],"dual2_f",DUAL,"Co-expression stays rare","Dual (≥2 UMI) %",explant_line=2.9,dec=1)
-fig.suptitle("Matched biopsy fibrosis F1–F4   ·   each point = one donor   (F0 n=2 omitted; full F0–F4 in backup)",
+        ax.text(len(SR)-0.55,explant_line,"  explants ≈ 2.9% (~7×)",color=CONFOUND,
+                fontsize=10.5,va="bottom",ha="right",fontweight="bold")
+    if legend:
+        ax.legend(handles=[Line2D([0],[0],marker="o",ls="",mfc=color,mec="white",ms=8,
+                                  alpha=0.7,label="donor"),
+                           Line2D([0],[0],color=color,lw=3,label="median"),
+                           Patch(facecolor=light,edgecolor=color,lw=1.4,label="IQR (box) · range (whisker)")],
+                  loc="upper left", fontsize=11)
+
+fig,axs=plt.subplots(1,3,figsize=(12.4,5.9))
+boxpanel(axs[0],"PC_f",PC,"Pericentral anchor","PC-anchor %", legend=True)
+boxpanel(axs[1],"PP_f",PP,"Periportal anchor","PP-anchor %")
+boxpanel(axs[2],"dual2_f",DUAL,"Dual co-expression","Dual (≥2 UMI) %",explant_line=2.9,dec=1)
+fig.suptitle("Matched biopsy fibrosis F1–F4   ·   box = per-donor distribution, each point = one donor   (F0 n=2 omitted; full F0–F4 in backup)",
              fontsize=12.5, color=MUTE, x=0.5, y=1.005, ha="center")
 fig.tight_layout(rect=(0,0,1,0.97)); fig.savefig(f"{OUT}/fig_result3.png", bbox_inches="tight", pad_inches=0.15); plt.close(fig)
+
+# ===================== FIG SECONDARY — null fraction + PP:PC ratio (box, F1-F4) =====================
+fig,(s1,s2)=plt.subplots(1,2,figsize=(9.6,5.5))
+boxpanel(s1,"null_f",NULL,"Null (double-negative)","Null (double-negative) %", legend=True)
+boxpanel(s2,"pppc",DUAL,"PP : PC balance","PP : PC anchor ratio", scale=1, dec=2, top_pad=1.22)
+s2.axhline(1.0, color=MUTE, ls=(0,(4,3)), lw=1.2, zorder=1)
+s2.text(len(SR)-0.55, 1.0, "  balanced (1:1)", color=MUTE, fontsize=10.5, va="bottom", ha="right")
+fig.suptitle("Secondary endpoints across biopsy F1–F4   ·   box = per-donor distribution, each point = one donor",
+             fontsize=12.5, color=MUTE, x=0.5, y=1.005, ha="center")
+fig.tight_layout(rect=(0,0,1,0.97)); fig.savefig(f"{OUT}/fig_secondary.png", bbox_inches="tight", pad_inches=0.15); plt.close(fig)
+
+# ===================== FIG GRADIENT SCHEMATIC — anti-diagonal compression vs dimming =====================
+TEAL="#2C7A86"; AMBER="#E0701C"
+def _poles(rng,n):
+    """Two clouds at the poles of the anti-diagonal: bottom-right (PC-anchors) and top-left (PP-anchors)."""
+    a=np.column_stack([rng.normal(0.78,0.07,n), rng.normal(0.22,0.07,n)])   # high PC / low PP
+    b=np.column_stack([rng.normal(0.22,0.07,n), rng.normal(0.78,0.07,n)])   # low PC / high PP
+    return np.vstack([a,b])
+rng=np.random.RandomState(3); N=140
+before=_poles(rng,N)
+# compression: drift toward the MIDDLE of the anti-diagonal (one central cloud)
+mid=np.array([0.5,0.5]); compress=before+(mid-before)*0.72+rng.normal(0,0.05,before.shape)
+# dimming: pull toward the ORIGIN, keeping anti-diagonal orientation
+dim=before*0.42+rng.normal(0,0.05,before.shape)
+fig,(g1,g2)=plt.subplots(1,2,figsize=(11.0,5.6))
+def _grad_ax(ax,after,after_color,title,after_label):
+    ax.plot([0.05,0.95],[0.95,0.05],color=EDGE,ls="--",lw=1.4,zorder=1)   # anti-diagonal axis
+    ax.text(0.07,0.07,"zonation gradient\n(anti-diagonal)",color=MUTE,fontsize=9.5,
+            ha="left",va="bottom",style="italic",rotation=-45,rotation_mode="anchor")
+    ax.scatter(before[:,0],before[:,1],s=26,color=NULL,alpha=0.45,edgecolor="none",zorder=2,label="intact (before)")
+    ax.scatter(after[:,0],after[:,1],s=30,color=after_color,alpha=0.75,edgecolor="white",lw=0.4,zorder=3,label=after_label)
+    ax.set_xlim(0,1); ax.set_ylim(0,1); ax.set_aspect("equal")
+    ax.set_xticks([0,0.5,1]); ax.set_yticks([0,0.5,1])
+    ax.set_xlabel("pericentral program"); ax.set_ylabel("periportal program")
+    ax.set_title(title, loc="left")
+    for sp in ("left","bottom"): ax.spines[sp].set_color(EDGE)
+    ax.tick_params(length=0); ax.grid(False)
+    ax.legend(loc="upper right", fontsize=10.5, markerscale=1.1)
+_grad_ax(g1,compress,TEAL,"Compression","compressed (after)")
+g1.annotate("",xy=(0.5,0.5),xytext=(0.78,0.22),arrowprops=dict(arrowstyle="->",color=TEAL,lw=1.6,alpha=0.7))
+g1.annotate("",xy=(0.5,0.5),xytext=(0.22,0.78),arrowprops=dict(arrowstyle="->",color=TEAL,lw=1.6,alpha=0.7))
+g1.text(0.5,0.40,"poles → middle",color=TEAL,fontsize=10,ha="center",fontweight="bold")
+_grad_ax(g2,dim,AMBER,"Dimming","dimmed (after)")
+g2.annotate("",xy=(0.30,0.085),xytext=(0.78,0.22),arrowprops=dict(arrowstyle="->",color=AMBER,lw=1.6,alpha=0.7))
+g2.annotate("",xy=(0.085,0.30),xytext=(0.22,0.78),arrowprops=dict(arrowstyle="->",color=AMBER,lw=1.6,alpha=0.7))
+g2.text(0.30,0.22,"poles → origin",color=AMBER,fontsize=10,ha="left",fontweight="bold")
+fig.suptitle("Two de-zonation modes in anchor-program space   ·   SCHEMATIC (illustrative, synthetic cells)",
+             fontsize=12.5, color=MUTE, x=0.5, y=1.01, ha="center")
+fig.tight_layout(rect=(0,0,1,0.96)); fig.savefig(f"{OUT}/fig_gradient_schematic.png", bbox_inches="tight", pad_inches=0.12); plt.close(fig)
 
 # ===================== FIG 3 — TOST equivalence (F4 vs F1 PC-anchor) =====================
 eq=pd.read_csv(f"{T}/equivalence_bound.csv")
@@ -272,6 +346,61 @@ for i,(dn,row) in enumerate(ex.iterrows()): ax.text(i, tot[i]+1.5, f"PP:PC {row[
 # title comes from the slide headline + figure caption; legend gets the cleared top strip
 ax.legend(frameon=False, ncol=4, loc="lower center", bbox_to_anchor=(0.5,1.01))
 fig.tight_layout(); fig.savefig(f"{OUT}/fig_explant.png", bbox_inches="tight"); plt.close(fig)
+
+# ===================== FIG GRADIENT (stretch) — per-cell zonal balance, deck style =====================
+# Regenerates results/figures/h2/gradient_polarization_dist.png in the clean deck aesthetic.
+# x = per-cell PC/(PC+PP) program balance after binomial down-thinning to 1,500 UMIs/nucleus (8-draw avg),
+# donor-balanced (<=300 informative nuclei/donor). y = fraction of cells per bin. Biopsy F1-F4 + explant.
+try:
+    Bz=1500; NDRAW=8; CAP=300
+    PCprog=["GLUL","CYP3A4","CYP2E1","CYP1A2","ADH4","AKR1D1","SLCO1B3"]
+    PPprog=["CPS1","ASS1","ALDOB","PCK1","HAL","ARG1"]
+    dfc=pd.read_csv("data/processed/paper1/raw_panel_counts.csv",low_memory=False); dfc["donor"]=dfc["donor"].astype(str)
+    mdc=pd.read_csv("data/processed/paper1/metadata_all_cells.csv",
+                    usecols=["Patient.ID","Fibrosis.score..F0.4."],low_memory=False).rename(
+                    columns={"Patient.ID":"donor","Fibrosis.score..F0.4.":"F"})
+    mdc["donor"]=mdc["donor"].astype(str); mdc["F"]=pd.to_numeric(mdc["F"],errors="coerce")
+    dfc=dfc.merge(mdc.groupby("donor")["F"].first().reset_index(),on="donor",how="left")
+    hep=dfc[dfc["annotation"]=="Hepatocytes"].copy()
+    hep["grp"]=np.where(hep["donor"].str.startswith("CL"),"Explant",
+               np.where(hep["stage"]=="Healthy control","Healthy",hep["F"].map({0:"F0",1:"F1",2:"F2",3:"F3",4:"F4"})))
+    h=hep[hep["E_raw"]>=Bz].copy(); E=h["E_raw"].values; rng=np.random.RandomState(0); p=Bz/E
+    def _thin(genes):
+        acc=np.zeros(len(h))
+        for g in genes:
+            if g in h:
+                a=np.zeros(len(h))
+                for _ in range(NDRAW): a+=rng.binomial(h[g].values.astype(int),p)
+                acc+=a/NDRAW
+        return acc
+    PCv=_thin(PCprog); PPv=_thin(PPprog); tot=PCv+PPv
+    h["frac"]=np.where(tot>0,PCv/np.maximum(tot,1),np.nan); h["inf"]=tot>=3
+    panels=["F1","F2","F3","F4","Explant"]
+    pcols={"F1":BIOPSY,"F2":BIOPSY,"F3":BIOPSY,"F4":BIOPSY,"Explant":CONFOUND}
+    fig,axes=plt.subplots(1,5,figsize=(15.5,4.0),sharey=True); bins=np.linspace(0,1,21); bc=(bins[:-1]+bins[1:])/2
+    def _panel(grp):
+        s=h[(h["grp"]==grp)&(h["inf"])]
+        parts=[g.sample(min(len(g),CAP),random_state=1) for _,g in s.groupby("donor")]
+        sb=pd.concat(parts) if parts else s; v=sb["frac"].dropna().values
+        return sb,v,np.histogram(v,bins=bins,weights=np.ones(len(v))/max(len(v),1))[0]
+    _,_,hF1=_panel("F1")   # F1 reference distribution — overlaid on every panel to show it barely moves
+    for ax,grp in zip(axes.ravel(),panels):
+        sb,v,_=_panel(grp); col=pcols[grp]
+        ax.hist(v,bins=bins,weights=np.ones(len(v))/max(len(v),1),color=to_rgba(col,0.85),edgecolor="white",linewidth=0.5,zorder=3)
+        if grp!="F1":   # the "does the cloud move?" cue: same F1 outline on every later stage
+            ax.plot(bc,hF1,color=INK,lw=1.5,ls=(0,(3,2)),drawstyle="steps-mid",zorder=5)
+        ax.axvline(0.5,color=EDGE,ls=(0,(4,3)),lw=1.1,zorder=2)
+        ax.set_title(f"{grp}\n(donors={sb['donor'].nunique()}, n={len(v):,})",loc="left",fontsize=12.5)
+        ax.set_xlim(0,1); ax.set_xticks([0,0.5,1]); ax.set_xticklabels(["0","0.5","1"]); clean(ax); ax.grid(axis="x",visible=False)
+    axes[0].set_ylabel("fraction of cells in bin")
+    axes[4].legend(handles=[Line2D([0],[0],color=INK,lw=1.5,ls=(0,(3,2)),label="F1 reference")],loc="upper right",fontsize=10.5,frameon=False)
+    fig.text(0.5,-0.01,"per-cell zonal balance   PC / (PC + PP)      ( 0 = periportal  ·  1 = pericentral )",ha="center",fontsize=12.5,color=MUTE)
+    fig.suptitle("Per-cell zonal balance by stage — the distribution barely moves across biopsy F1–F4 (dashed = F1 reference); only the confounded explant collapses to one pole",
+                 fontsize=12.5, color=MUTE, x=0.5, y=1.04, ha="center")
+    fig.tight_layout(rect=(0,0,1,0.96)); fig.savefig(f"{OUT}/fig_gradient.png", bbox_inches="tight", pad_inches=0.12); plt.close(fig)
+    print("wrote fig_gradient.png (per-cell data found)")
+except Exception as e:
+    print("SKIPPED fig_gradient.png (blocked):", e)
 
 print("wrote figures to", OUT)
 for f in sorted(os.listdir(OUT)): print("  ", f)

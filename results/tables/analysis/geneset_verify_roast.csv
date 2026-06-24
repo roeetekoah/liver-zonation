@@ -1,0 +1,11 @@
+"gene_set","NGenes","PropDown","PropUp","Direction","PValue","FDR"
+"CTRL_EMT",15,0,0.466666666666667,"Up",0.0017,0.0151666666666667
+"xenobiotic_CYP",13,0.538461538461538,0,"Down",0.004,0.0151666666666667
+"cholangiocyte_ductular",10,0,0.5,"Up",0.0046,0.0151666666666667
+"pericentral_anchors",20,0.15,0,"Down",0.0323,0.080625
+"CTRL_interferon",20,0.05,0.4,"Up",0.1321,0.219785714285714
+"periportal_anchors",20,0,0.3,"Up",0.1373,0.219785714285714
+"detox_phase2",16,0.125,0.0625,"Down",0.1539,0.219785714285714
+"urea_cycle",9,0.222222222222222,0,"Down",0.1829,0.2285625
+"bile_acid_lipid",20,0.05,0.25,"Down",0.7015,0.779388888888889
+"CTRL_ER_stress",20,0,0,"Up",0.932,0.932

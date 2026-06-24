@@ -17,18 +17,23 @@ const COURSE="Computational Genomics 76553  ·  HUJI  ·  MASLD snRNA-seq hackat
 const sh=()=>({type:"outer",color:"000000",blur:7,offset:3,angle:90,opacity:0.12});
 
 const p=new pptxgen(); p.layout="LAYOUT_WIDE"; p.author="Roee Tekoah, Shira Gelbstein";
-p.title="Matched biopsies preserve hepatocyte transcriptional zonation in MASLD";
+p.title="No transcriptional de-zonation signal in matched MASLD biopsies — but the pericentral detox program dims";
 
-// --- helpers: kicker + short headline; footer; figure caption; classification chip ---
-function head(s,kicker,headline){
+// --- helpers: kicker + short headline (+ optional act tag top-right); footer; caption; chips ---
+function head(s,kicker,headline,section){
   s.addShape(p.shapes.RECTANGLE,{x:0.5,y:0.34,w:0.16,h:0.26,fill:{color:ORANGE}});
-  s.addText(kicker,{x:0.74,y:0.30,w:12.0,h:0.35,fontSize:13,bold:true,color:ORANGE,charSpacing:3,align:"left",margin:0});
+  s.addText(kicker,{x:0.74,y:0.30,w:8.6,h:0.35,fontSize:13,bold:true,color:ORANGE,charSpacing:3,align:"left",margin:0});
+  if(section) s.addText(section,{x:9.4,y:0.32,w:3.45,h:0.3,fontSize:11,bold:true,color:TEAL,charSpacing:2,align:"right",margin:0});
   s.addText(headline,{x:0.48,y:0.64,w:12.4,h:0.85,fontSize:28,bold:true,color:INK,fontFace:SERIF,align:"left",valign:"top",margin:0});
 }
 let _pg=1;  // slide 1 (title) has no footer; first foot() call is slide 2
 function foot(s){ _pg++;
   s.addText(COURSE,{x:0.5,y:7.12,w:10.5,h:0.3,fontSize:10.5,color:MUTE,align:"left",margin:0});
   s.addText(String(_pg),{x:12.2,y:7.12,w:0.6,h:0.3,fontSize:10.5,color:MUTE,align:"right",margin:0});
+}
+function fcite(s,txt){ // paper-style citation footnote, set apart at the slide foot
+  s.addShape(p.shapes.LINE,{x:0.5,y:6.78,w:3.2,h:0,line:{color:"C9C0B2",width:0.75}});
+  s.addText(txt,{x:0.5,y:6.84,w:11.6,h:0.26,fontSize:10,italic:true,color:"6B6256",align:"left",margin:0});
 }
 function img(s,file,box){ // fit within (box.w x box.h) preserving the PNG's native aspect — exact, no stretch
   const d=pngSize(A+file), ar=d.w/d.h;
@@ -54,8 +59,8 @@ s.addShape(p.shapes.RECTANGLE,{x:0,y:0,w:0.28,h:7.5,fill:{color:TEAL}});
 s.addShape(p.shapes.RECTANGLE,{x:0.28,y:0,w:0.12,h:7.5,fill:{color:AMBER}});
 s.addText("LIVER GENOMICS  ·  SINGLE-NUCLEUS RE-ANALYSIS",
   {x:0.85,y:1.15,w:11.9,h:0.4,fontSize:15,bold:true,color:"9FC0C4",charSpacing:3,align:"left"});
-s.addText("Matched biopsies preserve hepatocyte transcriptional zonation in MASLD",
-  {x:0.85,y:1.7,w:11.6,h:1.7,fontSize:38,bold:true,color:WHITE,fontFace:SERIF,align:"left",valign:"top"});
+s.addText("No transcriptional de-zonation signal in matched MASLD biopsies — but the pericentral detox program dims",
+  {x:0.85,y:1.65,w:11.7,h:2.1,fontSize:31,bold:true,color:WHITE,fontFace:SERIF,align:"left",valign:"top"});
 s.addText("A critical re-analysis of the single-nucleus RNA-seq in Gribben et al., Nature 2024 (GSE202379)",
   {x:0.85,y:3.55,w:11.6,h:0.5,fontSize:18,italic:true,color:"C9D6D3",align:"left"});
 s.addShape(p.shapes.LINE,{x:0.85,y:4.55,w:5.0,h:0,line:{color:ORANGE,width:1.5}});
@@ -65,80 +70,118 @@ s.addText("Computational Genomics (76553)  ·  Hebrew University of Jerusalem  �
   {x:0.85,y:5.3,w:11.6,h:0.4,fontSize:15,color:"9CB0AC",align:"left"});
 s.addText("47 donors  ·  ~99,809 nuclei  ·  69,426 hepatocytes  ·  raw-count, donor-level analysis",
   {x:0.85,y:6.35,w:11.6,h:0.4,fontSize:13,color:"7E8F8B",align:"left"});
-s.addNotes("Title slide. We are Roee Tekoah and Shira Gelbstein; this is our hackathon re-analysis of the single-nucleus RNA-seq in Gribben et al., Nature 2024, asking whether the evidence for progressive hepatocyte de-zonation in MASLD survives once tissue acquisition is controlled. One-line answer in the title: matched biopsies preserve transcriptional zonation.");
+s.addNotes("Title slide. We are Roee Tekoah and Shira Gelbstein; this is our hackathon re-analysis of the single-nucleus RNA-seq in Gribben et al., Nature 2024, asking whether the evidence for progressive hepatocyte de-zonation in MASLD survives once tissue acquisition is controlled. One-line answer: in matched biopsies we find no detectable progressive de-zonation — a large collapse is excluded, subtle drift is not. We are not claiming zonation is 'preserved' in any positive sense, and we do not touch the paper's imaging/protein evidence.");
 
-// ============================================================ SLIDE 2 — BACKGROUND
+// ============================================================ SLIDE 2 — BACKGROUND  [BACKGROUND]
 s=p.addSlide(); s.background={color:BG};
-head(s,"BACKGROUND","Hepatocytes are transcriptionally zonated");
-s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:1.0,y:1.85,w:5.2,h:0.55,fill:{color:PC},rectRadius:0.05});
-s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:6.2,y:1.85,w:5.2,h:0.55,fill:{color:PP},rectRadius:0.05});
-s.addText("Pericentral (zone 3)",{x:1.0,y:1.85,w:5.2,h:0.55,fontSize:15,bold:true,color:WHITE,align:"center",valign:"middle"});
-s.addText("Periportal (zone 1)",{x:6.2,y:1.85,w:5.2,h:0.55,fontSize:15,bold:true,color:WHITE,align:"center",valign:"middle"});
+head(s,"BACKGROUND","Hepatocytes are transcriptionally zonated","BACKGROUND");
+s.addShape(p.shapes.RECTANGLE,{x:1.0,y:1.85,w:10.4,h:0.55,fill:{color:PP}});
+s.addShape(p.shapes.RECTANGLE,{x:1.0,y:1.85,w:5.2,h:0.55,fill:{color:PC}});
+s.addText("Pericentral (zone 3)",{x:1.15,y:1.85,w:5.0,h:0.55,fontSize:15,bold:true,color:WHITE,align:"left",valign:"middle"});
+s.addText("Periportal (zone 1)",{x:6.3,y:1.85,w:5.0,h:0.55,fontSize:15,bold:true,color:WHITE,align:"right",valign:"middle"});
 s.addText("Central vein",{x:0.6,y:2.45,w:2.4,h:0.3,fontSize:12.5,color:MUTE,align:"left"});
 s.addText("Portal tract",{x:9.4,y:2.45,w:2.4,h:0.3,fontSize:12.5,color:MUTE,align:"right"});
 s.addText([{text:"GLUL, CYP3A4, CYP2E1 ",options:{bold:true,color:PC}},{text:"— drug metabolism (Wnt-driven)",options:{color:INK}}],
   {x:1.0,y:2.8,w:5.2,h:0.35,fontSize:14,align:"center"});
 s.addText([{text:"ASS1, CPS1, PCK1, HAL, ALDOB ",options:{bold:true,color:PP}},{text:"— urea cycle",options:{color:INK}}],
   {x:6.2,y:2.8,w:5.2,h:0.35,fontSize:14,align:"center"});
-s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:1.0,y:3.75,w:10.4,h:1.9,fill:{color:"FEF2F2"},rectRadius:0.08,shadow:sh()});
-s.addText("THE PUBLISHED CLAIM",{x:1.25,y:3.95,w:9.9,h:0.35,fontSize:13,bold:true,color:CONFOUND,charSpacing:2,align:"left"});
-s.addText([{text:"“Hepatocytes lose their zonation.”  ",options:{bold:true,fontSize:19,color:INK}},
-  {text:"Gribben et al. report that, as human MASLD progresses, hepatocytes co-express pericentral + periportal markers and transdifferentiate toward cholangiocytes (epithelial plasticity).",options:{fontSize:15,color:"334155"}}],
-  {x:1.25,y:4.35,w:9.9,h:1.2,align:"left",valign:"top"});
-foot(s,2);
+s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:1.0,y:3.75,w:10.4,h:1.95,fill:{color:TEALD},rectRadius:0.08,shadow:sh()});
+s.addText([{text:"THE PUBLISHED CLAIM   ",options:{bold:true,fontSize:13,color:"9FC0C4",charSpacing:2}},
+  {text:"— Gribben et al., Nature 2024",options:{fontSize:12,color:"7E9DA0"}}],
+  {x:1.25,y:3.9,w:9.9,h:0.35,align:"left"});
+s.addText("“Hepatocytes lose their zonation.”",{x:1.25,y:4.2,w:9.9,h:0.4,fontSize:19,bold:true,color:WHITE,fontFace:SERIF,align:"left",valign:"top"});
+s.addText([
+  {text:"In end-stage disease, hepatocytes co-express pericentral + periportal markers — validated by imaging and protein.",options:{bullet:true,color:"D7E6E8",breakLine:true}},
+  {text:"Hepatocyte↔cholangiocyte transdifferentiation, which they note “seems to occur,” “prominent in end-stage.”",options:{bullet:true,color:"D7E6E8"}}],
+  {x:1.5,y:4.7,w:9.6,h:0.9,fontSize:13.5,align:"left",valign:"top",paraSpaceAfter:8});
+foot(s);
 s.addNotes("Minimal background: the liver lobule is zonated — pericentral hepatocytes (near the central vein) run one program (GLUL, CYP3A4, the CYP/detox genes), periportal hepatocytes (near the portal tract) run another (ASS1, CPS1, PCK1, urea cycle). Gribben et al.'s claim is that in MASLD hepatocytes lose this zonation and acquire cholangiocyte-like identity. That is what we test.");
 
-// ============================================================ SLIDE 3 — THE QUESTION + PIVOT
+// ============================================================ SLIDE 3 — THE QUESTION + LEGACY RULER (merged)  [BACKGROUND]
 s=p.addSlide(); s.background={color:BG};
-head(s,"THE QUESTION","Disease — or how the tissue was taken?");
-s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:1.0,y:1.85,w:10.4,h:1.5,fill:{color:LIGHT},rectRadius:0.08});
-s.addText("Our research question",{x:1.25,y:2.0,w:9.9,h:0.35,fontSize:13,bold:true,color:KICK,charSpacing:2,align:"left"});
-s.addText("Does hepatocyte zonation degrade across MASLD progression — and is that degradation linked to the hepatocyte→cholangiocyte transdifferentiation Paper 1 reported?",
-  {x:1.25,y:2.4,w:9.9,h:0.9,fontSize:18,italic:true,color:INK,align:"left",valign:"top"});
-s.addText("The pivot — how we test it",{x:1.0,y:3.75,w:10.4,h:0.35,fontSize:13,bold:true,color:KICK,charSpacing:2,align:"left"});
-s.addText([
-  {text:"Earlier, a relative / correlation ruler suggested a collapse — but it conflates sequencing depth, tissue source and biology.",options:{bullet:true,breakLine:true}},
-  {text:"We instead count molecules: raw UMI counts, depth-normalized, with the donor (~47) as the unit of inference.",options:{bullet:true,breakLine:true,bold:true,color:BIOPSY}},
-  {text:"And we test on the acquisition-matched needle-biopsy axis only (next slide explains why).",options:{bullet:true}}],
-  {x:1.4,y:4.25,w:10.0,h:2.0,fontSize:18,color:INK,align:"left",paraSpaceAfter:8});
-foot(s,3);
-s.addNotes("The research question, posed as in our own project framing: does hepatocyte zonation degrade across MASLD, and is that linked to the transdifferentiation Paper 1 reported? The pivot is methodological — we abandoned a relative/correlation ruler (which conflates depth, tissue and biology) for raw molecule counts at the donor level, and we restrict to the acquisition-matched biopsy axis, which the next slide motivates.");
-
-// ============================================================ SLIDE 3b — THE LEGACY APPROACH
-s=p.addSlide(); s.background={color:BG};
-head(s,"THE LEGACY APPROACH","The metric that produced the collapse");
-s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:0.7,y:1.85,w:6.4,h:1.35,fill:{color:LIGHT},rectRadius:0.07});
-s.addText("WHAT WE FIRST USED",{x:0.95,y:1.98,w:5.9,h:0.3,fontSize:12,bold:true,color:MUTE,charSpacing:2,align:"left"});
-s.addText("A z-scored zonation coordinate, marker–marker correlations, and spread / slope-loss plots — pooled across all samples.",
-  {x:0.95,y:2.3,w:5.9,h:0.85,fontSize:15,color:INK,align:"left",valign:"top"});
-s.addShape(p.shapes.LINE,{x:3.9,y:3.35,w:0,h:0.35,line:{color:MUTE,width:1.6,endArrowType:"triangle"}});
-s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:0.7,y:3.85,w:6.4,h:1.5,fill:{color:"FBEEE9"},line:{color:CONFOUND,width:1},rectRadius:0.07});
-s.addText("THE CLAIM IT PRODUCED",{x:0.95,y:3.98,w:5.9,h:0.3,fontSize:12,bold:true,color:CONFOUND,charSpacing:2,align:"left"});
+head(s,"THE QUESTION","The question — and the ruler that first answered it","BACKGROUND");
+s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:0.7,y:1.42,w:12.2,h:0.82,fill:{color:LIGHT},rectRadius:0.07});
+s.addText([{text:"Our question:  ",options:{bold:true,color:KICK}},
+  {text:"Does hepatocyte zonation degrade across MASLD — and is that linked to the hepatocyte→cholangiocyte transdifferentiation Paper 1 described?",options:{italic:true,color:INK}}],
+  {x:0.95,y:1.46,w:11.7,h:0.74,fontSize:16,align:"left",valign:"middle"});
+// left: the old ruler + the claim it produced
+s.addText("THE OLD RULER",{x:0.7,y:2.55,w:6.0,h:0.3,fontSize:13,bold:true,color:MUTE,charSpacing:2,align:"left"});
+s.addText("We first read it with a z-scored zonation coordinate and marker–marker correlations, pooled across all samples.",
+  {x:0.7,y:2.88,w:6.0,h:0.85,fontSize:15,color:INK,align:"left",valign:"top"});
+s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:0.7,y:3.95,w:6.0,h:1.55,fill:{color:"FBEEE9"},line:{color:CONFOUND,width:1},rectRadius:0.07});
+s.addText("THE COLLAPSE IT PRODUCED",{x:0.92,y:4.07,w:5.6,h:0.3,fontSize:12,bold:true,color:CONFOUND,charSpacing:2,align:"left"});
 s.addText("“Hepatocytes lose their zonation; the pericentral program turns off, strongest at end-stage.”",
-  {x:0.95,y:4.3,w:5.9,h:0.95,fontSize:16,italic:true,bold:true,color:SLATE,align:"left",valign:"top"});
-s.addText("THE TRAP",{x:7.6,y:1.95,w:5.0,h:0.3,fontSize:13,bold:true,color:ORANGE,charSpacing:2,align:"left"});
+  {x:0.92,y:4.4,w:5.6,h:1.0,fontSize:15,italic:true,bold:true,color:SLATE,align:"left",valign:"top"});
+// right: the trap
+s.addText("THE TRAP",{x:7.1,y:2.55,w:5.8,h:0.3,fontSize:13,bold:true,color:ORANGE,charSpacing:2,align:"left"});
 s.addText([
-  {text:"Every metric is a relative summary — it hides who moved, how many, and from where.",options:{bullet:true,breakLine:true}},
-  {text:"They pool healthy + biopsy + end-stage across a hidden sampling discontinuity.",options:{bullet:true,breakLine:true}},
+  {text:"A relative summary — it hides who moved, how many, and from where.",options:{bullet:true,breakLine:true}},
+  {text:"It pools healthy + biopsy + end-stage across a hidden sampling break.",options:{bullet:true,breakLine:true}},
   {text:"Depth, cell number and tissue source all bend a z-score or correlation.",options:{bullet:true,breakLine:true}},
-  {text:"→ so we switched to raw molecule counts (next slide: why the samples differ).",options:{bullet:true,bold:true,color:BIOPSY}}],
-  {x:7.85,y:2.45,w:5.0,h:3.0,fontSize:17,color:INK,align:"left",paraSpaceAfter:9});
+  {text:"Even biopsy-only it stays depth-sensitive and conflates turn-off / de-zonation / noise.",options:{bullet:true,breakLine:true}},
+  {text:"→ so we switched to raw molecule counts (next: why the samples differ).",options:{bullet:true,bold:true,color:BIOPSY}}],
+  {x:7.35,y:2.9,w:5.55,h:3.2,fontSize:15.5,color:INK,align:"left",paraSpaceAfter:8});
 foot(s);
-s.addNotes("Show the legacy approach and the claim it produced, then dismantle it. We first read the data with a z-scored relative ruler and marker correlations — which produced the headline 'hepatocytes lose zonation, pericentral turns off.' But every such metric is a relative summary pooled across all samples; it hides who moved and is bent by depth, cell number and tissue source. That motivated the pivot to raw molecule counts on the matched axis.");
+s.addNotes("Merged question + legacy ruler. The research question (does zonation degrade across MASLD, and is it linked to the transdifferentiation Paper 1 described). We first read it with a relative ruler — z-scored coordinate + marker correlations pooled over all samples — which produced 'hepatocytes lose zonation; pericentral turns off.' The trap: a relative summary hides who moved, pools across a hidden sampling discontinuity, and is bent by depth/cell-number/tissue-source; and per the relative-ruler postmortem, even biopsy-only the ruler stays depth-sensitive and conflates turn-off vs de-zonation vs noise. So we switched to raw molecule counts on the matched axis.");
 
-// ============================================================ SLIDE 3c — THE FOUR CLASSES (vocabulary)
+// ============================================================ SLIDE 4 — THE ACQUISITION CONFOUND  [THE CATCH]
 s=p.addSlide(); s.background={color:BG};
-head(s,"THE VOCABULARY","Every hepatocyte falls in one of four classes");
-s.addText("Before asking how zonation could break down, we fix the words. Each hepatocyte either runs the pericentral program, the periportal program, both at once, or neither — four mutually exclusive classes:",
-  {x:0.7,y:1.5,w:12.3,h:0.6,fontSize:16,color:INK,align:"left"});
-// axis headers — periportal across the top, pericentral down the left
-s.addText("PERIPORTAL  PROGRAM   (ASS1, CPS1, PCK1 …)",{x:2.95,y:2.18,w:9.15,h:0.3,fontSize:12.5,bold:true,color:PP,charSpacing:1,align:"center",margin:0});
+head(s,"THE ACQUISITION CONFOUND","Stage is entangled with how the tissue was taken","THE CATCH");
+// deceased-donor ends (Healthy, End-stage) sit OUTSIDE the biopsy group with equal flanking gaps
+const xs=[1.0,2.85,4.15,5.45,6.75,8.05,9.65], lab=["Healthy","F0","F1","F2","F3","F4","End-stage"];
+const colb=[CONFOUND,BIOPSY,BIOPSY,BIOPSY,BIOPSY,BIOPSY,ENDSTAGE], wd=[1.4,1.15,1.15,1.15,1.15,1.15,2.2];
+for(let i=0;i<lab.length;i++){
+  s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:xs[i],y:1.95,w:wd[i],h:0.7,fill:{color:colb[i]},rectRadius:0.06,shadow:sh()});
+  s.addText(lab[i],{x:xs[i],y:1.95,w:wd[i],h:0.7,fontSize:15,bold:true,color:WHITE,align:"center",valign:"middle"});
+}
+s.addShape(p.shapes.LINE,{x:1.0,y:1.73,w:10.85,h:0,line:{color:MUTE,width:1.5,endArrowType:"triangle"}});
+s.addText("deceased-donor\norgan cubes",{x:0.6,y:2.85,w:2.2,h:0.7,fontSize:13,color:CONFOUND,align:"center"});
+s.addText("16-gauge needle biopsies, right lobe",{x:2.85,y:2.85,w:6.35,h:0.4,fontSize:14,bold:true,color:BIOPSY,align:"center"});
+s.addText("explanted cirrhotic\norgans, multi-lobe",{x:9.65,y:2.85,w:2.2,h:0.7,fontSize:13,color:ENDSTAGE,align:"center"});
+s.addShape(p.shapes.RECTANGLE,{x:0.92,y:1.9,w:1.56,h:1.75,fill:{type:"none"},line:{color:CONFOUND,width:2,dashType:"dash"}});
+s.addShape(p.shapes.RECTANGLE,{x:9.57,y:1.9,w:2.36,h:1.75,fill:{type:"none"},line:{color:CONFOUND,width:2,dashType:"dash"}});
+s.addText("both ends: not acquisition-matched",{x:8.6,y:3.7,w:3.3,h:0.3,fontSize:12,bold:true,color:CONFOUND,align:"center"});
+s.addText("47 donors   ·   biopsy axis F0/F1/F2/F3/F4 = 2 / 8 / 12 / 12 / 4   ·   end-stage = 5   ·   healthy = 4",
+  {x:1.0,y:4.25,w:11.0,h:0.4,fontSize:16,bold:true,color:INK,align:"center"});
+s.addText("Primary inference: biopsy F1–F4 (F0 n=2 shown for context).",
+  {x:1.0,y:4.72,w:11.0,h:0.35,fontSize:14,italic:true,color:BIOPSY,align:"center"});
+s.addText([
+  {text:"The full trajectory is also an acquisition trajectory — this is the core confound (the others are audited later).",options:{bullet:true,breakLine:true}},
+  {text:"So healthy / end-stage comparisons cannot cleanly isolate disease biology — we use biopsy-only F1–F4.",options:{bullet:true,bold:true,color:BIOPSY}}],
+  {x:1.7,y:5.2,w:10.0,h:1.1,fontSize:18,color:INK,align:"left",paraSpaceAfter:5});
+s.addText("Verified directly from the paper’s Methods and the dataset (GSE202379) metadata.",
+  {x:1.7,y:6.5,w:10.5,h:0.3,fontSize:12.5,italic:true,color:MUTE,align:"left"});
+foot(s);
+s.addNotes("The load-bearing confound. Disease stage is collinear with how the tissue was obtained: healthy and end-stage are deceased-donor organ tissue and explants; F0–F4 are needle biopsies. So a 'progressive' trajectory can be manufactured by procurement, ischemia, dissociation or batch. This is THE structural confound; the others (depth, ambient, batch, etc.) are audited on the later audit slide. We restrict the disease axis to the matched biopsies, F1–F4.");
+
+// ============================================================ SLIDE 5 — STRESS  [THE CATCH]
+s=p.addSlide(); s.background={color:BG};
+head(s,"WHY IT MATTERS","Endpoints carry organ-wide stress","THE CATCH");
+img(s,"fig_stress.png",{x:0.3,y:1.5,w:9.0,h:4.3});
+figcap(s,0.3,5.85,9.0,"Figure 1.  Procurement-stress module by tissue source (donor-level); the same immediate-early spike appears in non-zonated endothelium.");
+s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:9.5,y:1.65,w:3.5,h:1.45,fill:{color:"FEF2F2"},rectRadius:0.08,shadow:sh()});
+s.addText("Same stress spike in hepatocytes AND endothelium",
+  {x:9.6,y:1.72,w:3.3,h:1.3,fontSize:16,bold:true,color:STRESS,align:"left",valign:"middle"});
+s.addText([
+  {text:"FOS, JUN, ATF3, DUSP1, HSPA1A/B — the documented snRNA dissociation artifact¹.",options:{bullet:true,breakLine:true}},
+  {text:"Acute handling, not hypoxia: hypoxia (HIF) genes stay flat (1.7–2.6×) while these spike 18×.",options:{bullet:true,breakLine:true}},
+  {text:"Endothelium (no zonation program) spikes 18× too → most consistent with organ-wide handling, not a zonation-specific change.",options:{bullet:true,color:STRESS,bold:true}}],
+  {x:9.55,y:3.25,w:3.45,h:2.9,fontSize:12.5,color:INK,align:"left",paraSpaceAfter:7});
+fcite(s,"¹ Dissociation / handling artifact: van den Brink et al. 2017; O’Flanagan et al. 2019; Denisenko et al. 2020.");
+foot(s);
+s.addNotes("The decisive cross-lineage control: stress is ~22x higher in end-stage explants than biopsies — but endothelial cells, which have no zonation program, show the same ~18x immediate-early spike as hepatocytes. So this is organ-wide acute handling stress (not hypoxia — HIF stays flat at 1.7-2.6x), not a hepatocyte zonation program — which justifies excluding the deceased-donor and explant endpoints.");
+
+// ============================================================ SLIDE 6 — THE VOCABULARY  [METHOD]
+s=p.addSlide(); s.background={color:BG};
+head(s,"THE VOCABULARY","Every hepatocyte falls in one of four classes","METHOD");
+s.addText("Before asking how zonation could break down, we fix the words. Each hepatocyte falls into one of four mutually exclusive classes:",
+  {x:0.7,y:1.5,w:12.3,h:0.5,fontSize:16,color:INK,align:"left"});
+s.addText("PERIPORTAL PROGRAM  (varies across columns →)   ASS1, CPS1, PCK1 …",{x:2.95,y:2.18,w:9.15,h:0.3,fontSize:12,bold:true,color:PP,charSpacing:1,align:"center",margin:0});
 s.addText("not detected",{x:2.95,y:2.5,w:4.45,h:0.3,fontSize:12.5,bold:true,color:MUTE,align:"center",margin:0});
 s.addText("detected",{x:7.65,y:2.5,w:4.45,h:0.3,fontSize:12.5,bold:true,color:MUTE,align:"center",margin:0});
-s.addText("PERICENTRAL\nPROGRAM\n(GLUL, CYP …)",{x:0.4,y:2.45,w:2.4,h:0.85,fontSize:12.5,bold:true,color:PC,align:"center",margin:0});
+s.addText("PERICENTRAL\nPROGRAM\n(varies down rows ↓)\nGLUL, CYP …",{x:0.35,y:2.4,w:2.5,h:1.05,fontSize:12,bold:true,color:PC,align:"center",margin:0});
 s.addText("detected",{x:0.4,y:3.5,w:2.4,h:0.3,fontSize:12.5,bold:true,color:MUTE,align:"center",margin:0});
 s.addText("not detected",{x:0.4,y:5.2,w:2.4,h:0.3,fontSize:12.5,bold:true,color:MUTE,align:"center",margin:0});
-// 2x2 grid of definition cards — colours match the mechanism chips on the next slide
 classbox(s,2.95,2.9,4.45,1.55,"PC-anchor","Pericentral identity — pericentral genes detected, periportal genes silent.",PC);
 classbox(s,7.65,2.9,4.45,1.55,"Dual","Co-expression — both programs detectable in the same nucleus.",DUAL);
 classbox(s,2.95,4.6,4.45,1.55,"Null","Double-negative — neither program detectable.",NULL,INK);
@@ -148,12 +191,12 @@ s.addText([{text:"These four classes are the vocabulary. ",options:{bold:true}},
   {text:" across them — the next slide is the four ways that can happen, in these same colours.",options:{}}],
   {x:0.7,y:6.35,w:12.3,h:0.5,fontSize:13.5,italic:true,color:MUTE,align:"left"});
 foot(s);
-s.addNotes("Definitions before mechanisms. Every hepatocyte is sorted into exactly one of four classes by which zonation program it runs: PC-anchor (pericentral only), PP-anchor (periportal only), Dual (both — the co-expression state), or Null (neither — double-negative). The 2x2 is pericentral detected/not against periportal detected/not. The card colours are carried onto the next slide, where each failure mode is a change in how cells distribute across these four boxes. 'Detected' here is operationalised on the later method slide as the >=2-UMI, depth-normalized rule.");
+s.addNotes("Definitions before mechanisms. Every hepatocyte is sorted into exactly one of four classes by which zonation program it runs: PC-anchor (pericentral only), PP-anchor (periportal only), Dual (both — the co-expression state), or Null (neither — double-negative). The 2x2 is pericentral detected/not against periportal detected/not. The card colours carry onto the next slide.");
 
-// ============================================================ SLIDE 4 — FAILURE MODES
+// ============================================================ SLIDE 7 — WHAT WE TEST  [METHOD]
 s=p.addSlide(); s.background={color:BG};
-head(s,"WHAT WE TEST","Zonation loss is not one mechanism");
-s.addText("If the zonation expression signal breaks down, it can do so in distinct ways — each has its own count signature, which we test separately:",
+head(s,"WHAT WE TEST","Zonation loss is not one mechanism","METHOD");
+s.addText("If the zonation expression signal breaks down, it can do so in distinct ways — each with its own count signature:",
   {x:0.7,y:1.6,w:12.0,h:0.7,fontSize:17,color:INK,align:"left"});
 chip(s,1.0,2.6,2.6,1.2,"Depletion\n(an anchor box ↓)",PC);
 chip(s,3.85,2.6,2.6,1.2,"Co-expression\n(the dual box ↑)",DUAL);
@@ -167,222 +210,194 @@ s.addText([{text:"We expected pericentral depletion — but an ",options:{}},
   {x:1.0,y:4.25,w:11.9,h:0.7,fontSize:15,color:"334155",align:"left",valign:"top"});
 s.addText("Any relative summary — a z-score, a marker correlation, a UMAP axis — is scale-free by construction: it divides out the absolute level, so it reads the gradient’s shape, not how many cells sit where. The four box-counts above collapse into one number; only counting molecules tells them apart.",
   {x:1.0,y:5.35,w:11.9,h:1.3,fontSize:15,italic:true,color:MUTE,align:"left",valign:"top"});
-foot(s,4);
-s.addNotes("De-zonation is not one event but several, each a different movement among the four boxes from the previous slide. Depletion = an anchor (pole-identity) box shrinks — pericentral OR periportal. Turn-off = the null, double-negative box grows. These are dissociable, which is the question that keeps coming up: a pole can convert to the opposite pole (depletion with the null box untouched), and cells can go double-negative without any single pole shrinking (turn-off with no depletion). Co-expression fills the dual box; composition shift tilts the PP:PC ratio. A single correlation or z-score collapses all four into one number; absolute box counts keep them separate. All four are flat across biopsy F1-F4. Two further routes act on the gradient itself rather than the boxes — gradient compression and dimming — and get their own slide next.");
-
-// ============================================================ SLIDE 4b — THE GRADIENT AXIS (compression + dimming)
-// mini line-schematic of a zonation gradient (yf: 0=top/high expression, 1=bottom/low)
-function gplot(s,px,py,pw,ph,lines){
-  s.addShape(p.shapes.LINE,{x:px,y:py,w:0,h:ph,line:{color:"C2CBCB",width:1}});
-  s.addShape(p.shapes.LINE,{x:px,y:py+ph,w:pw,h:0,line:{color:"C2CBCB",width:1}});
-  for(const ln of lines){ const x1=px+ln.x1*pw,y1=py+ln.y1*ph,x2=px+ln.x2*pw,y2=py+ln.y2*ph;
-    // OOXML extents must be non-negative — use abs() and flipV for rising lines
-    const x=Math.min(x1,x2),y=Math.min(y1,y2),w=Math.abs(x2-x1),h=Math.abs(y2-y1),flipV=((x2-x1)*(y2-y1)<0);
-    s.addShape(p.shapes.LINE,{x,y,w,h,flipV:flipV,line:{color:ln.c,width:ln.w||3,dashType:ln.d}}); }
-}
-s=p.addSlide(); s.background={color:BG};
-head(s,"THE GRADIENT AXIS","Beyond the boxes — zonation is a gradient");
-s.addText("The four classes are discrete bins. Zonation is really a continuous gradient, which can weaken two further ways the box-counts can’t see — one of shape, one of level:",
-  {x:0.7,y:1.55,w:12.3,h:0.6,fontSize:16,color:INK,align:"left"});
-// --- card A: COMPRESSION (shape) ---
-s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:0.6,y:2.25,w:6.0,h:3.55,fill:{color:"FFFFFF"},line:{color:"E2DCCF",width:1},rectRadius:0.06,shadow:sh()});
-s.addText([{text:"Compression  ",options:{bold:true,fontSize:19,color:TEAL,fontFace:SERIF}},{text:"the gradient flattens",options:{italic:true,fontSize:14,color:MUTE}}],
-  {x:0.9,y:2.42,w:5.4,h:0.4,align:"left",margin:0});
-gplot(s,0.95,3.0,1.9,1.45,[
-  {x1:0,y1:0.95,x2:1,y2:0.08,c:"B7C1C1",w:2,d:"dash"},
-  {x1:0,y1:0.58,x2:1,y2:0.44,c:TEAL,w:3.5}]);
-s.addText([{text:"— before    ",options:{color:"9AA6A6"}},{text:"— after",options:{color:TEAL,bold:true}}],
-  {x:0.95,y:4.5,w:1.95,h:0.25,fontSize:10.5,align:"center",margin:0});
-s.addText("Per-cell PC↔PP balance drifts toward the middle — the contrast between poles shrinks.",
-  {x:3.05,y:3.0,w:3.35,h:1.4,fontSize:13.5,color:INK,align:"left",valign:"top"});
-s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:0.9,y:4.95,w:5.4,h:0.66,fill:{color:"E7F0EE"},rectRadius:0.05});
-s.addText([{text:"Mild, non-monotone (peak F3); both poles stay populated → ",options:{color:"14532D"}},{text:"gradient present.",options:{bold:true,color:"14532D"}}],
-  {x:1.05,y:4.97,w:5.15,h:0.62,fontSize:12.5,align:"left",valign:"middle"});
-// --- card B: DIMMING (amplitude) ---
-s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:6.85,y:2.25,w:6.0,h:3.55,fill:{color:"FFFFFF"},line:{color:"E2DCCF",width:1},rectRadius:0.06,shadow:sh()});
-s.addText([{text:"Dimming  ",options:{bold:true,fontSize:19,color:AMBER,fontFace:SERIF}},{text:"the gradient drops",options:{italic:true,fontSize:14,color:MUTE}}],
-  {x:7.15,y:2.42,w:5.4,h:0.4,align:"left",margin:0});
-gplot(s,7.2,3.0,1.9,1.45,[
-  {x1:0,y1:0.82,x2:1,y2:0.08,c:"B7C1C1",w:2,d:"dash"},
-  {x1:0,y1:1.0,x2:1,y2:0.34,c:AMBER,w:3.5}]);
-s.addText([{text:"— before    ",options:{color:"9AA6A6"}},{text:"— after",options:{color:AMBER,bold:true}}],
-  {x:7.2,y:4.5,w:1.95,h:0.25,fontSize:10.5,align:"center",margin:0});
-s.addText("Cells keep their balance, but the program’s overall level falls (same shape, lower).",
-  {x:9.3,y:3.0,w:3.35,h:1.4,fontSize:13.5,color:INK,align:"left",valign:"top"});
-s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:7.15,y:4.95,w:5.4,h:0.66,fill:{color:"FBEEE2"},rectRadius:0.05});
-s.addText([{text:"Nominal ~30% dip (12.7→8.9 UMI/nuc) — borderline; not corroborated genome-wide → ",options:{color:"7C2D12"}},{text:"dropped.",options:{bold:true,color:"7C2D12"}}],
-  {x:7.3,y:4.97,w:5.15,h:0.62,fontSize:12,align:"left",valign:"middle"});
-s.addText([{text:"On matched biopsies the gradient holds its shape, and the one amplitude hint doesn’t hold up — consistent with the flat box-counts. ",options:{}},
-  {text:"Only the explant collapses to a single pole.",options:{italic:true,color:MUTE}}],
-  {x:0.7,y:6.05,w:12.3,h:0.6,fontSize:14.5,color:"334155",align:"left",valign:"top"});
 foot(s);
-s.addNotes("The continuous-gradient axis, which the discrete box-counts cannot capture. Two routes here, and they are distinct facets: compression is a loss of SHAPE — the per-cell PC/(PC+PP) balance drifts toward the middle, contrast between poles shrinks (still a relative measure); dimming is a loss of LEVEL — the program's absolute magnitude falls while the balance is unchanged. Compression: down-thinned, donor-balanced per-cell balance histograms (results/figures/h2/gradient_polarization_dist.png) show a mild, non-monotone middle drift peaking at F3 with both poles staying populated — gradient present, not collapsed; only the explant collapses to the periportal pole. Dimming: a nominal ~30% within-PC detox dip (12.7 to 8.9 down-thinned UMIs/nucleus, F1 to F4). It is borderline to begin with — only about 1.4x the ~26% minimum detectable effect at n=8 vs 4 — and it is NOT corroborated by the genome-wide donor-level pseudobulk DGE of the same genes (CYP2E1 FDR .98, CYP1A2 .91, ADH4 .97, GLUL ~.80, all non-significant). Since those detox genes are expressed mostly in PC cells, a real dimming should have left a donor-level footprint; none appears, so we drop it rather than report it. We do not claim the DGE formally disproves dimming. Net: the gradient is preserved in shape and, where testable, in amplitude — matching the flat anchor counts.");
+s.addNotes("De-zonation is not one event but several, each a different movement among the four boxes. Depletion = an anchor (pole-identity) box shrinks — pericentral OR periportal. Turn-off = the null, double-negative box grows. These are dissociable: a pole can convert to the opposite pole (depletion with the null box untouched), and cells can go double-negative without any single pole shrinking (turn-off with no depletion). Co-expression fills the dual box; composition shift tilts the PP:PC ratio. A single correlation collapses all four into one number; absolute box counts keep them separate.");
 
-// ============================================================ SLIDE 5 — THE CONFOUND
+// ============================================================ SLIDE 8 — THE GRADIENT AXIS  [METHOD]
 s=p.addSlide(); s.background={color:BG};
-head(s,"THE CONFOUND","Stage is entangled with acquisition");
-const xs=[1.0,2.55,3.85,5.15,6.45,7.75,9.5], lab=["Healthy","F0","F1","F2","F3","F4","End-stage"];
-const colb=[CONFOUND,BIOPSY,BIOPSY,BIOPSY,BIOPSY,BIOPSY,ENDSTAGE], wd=[1.4,1.2,1.2,1.2,1.2,1.2,2.2];
-for(let i=0;i<lab.length;i++){
-  s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:xs[i],y:1.95,w:wd[i],h:0.7,fill:{color:colb[i]},rectRadius:0.06,shadow:sh()});
-  s.addText(lab[i],{x:xs[i],y:1.95,w:wd[i],h:0.7,fontSize:15,bold:true,color:WHITE,align:"center",valign:"middle"});
-}
-s.addShape(p.shapes.LINE,{x:1.0,y:1.73,w:10.7,h:0,line:{color:MUTE,width:1.5,endArrowType:"triangle"}});
-s.addText("deceased-donor\norgan cubes",{x:0.7,y:2.85,w:2.0,h:0.7,fontSize:13,color:CONFOUND,align:"center"});
-s.addText("16-gauge needle biopsies, right lobe",{x:2.55,y:2.85,w:6.6,h:0.4,fontSize:14,bold:true,color:BIOPSY,align:"center"});
-s.addText("explanted cirrhotic\norgans, multi-lobe",{x:9.5,y:2.85,w:2.2,h:0.7,fontSize:13,color:ENDSTAGE,align:"center"});
-s.addShape(p.shapes.RECTANGLE,{x:0.95,y:1.9,w:1.5,h:1.75,fill:{type:"none"},line:{color:CONFOUND,width:2,dashType:"dash"}});
-s.addShape(p.shapes.RECTANGLE,{x:9.45,y:1.9,w:2.3,h:1.75,fill:{type:"none"},line:{color:CONFOUND,width:2,dashType:"dash"}});
-s.addText("not acquisition-matched",{x:8.8,y:3.7,w:3.0,h:0.3,fontSize:12,bold:true,color:CONFOUND,align:"center"});
-s.addText("47 donors   ·   biopsy axis F0/F1/F2/F3/F4 = 2 / 8 / 12 / 12 / 4   ·   end-stage = 5   ·   healthy = 4",
-  {x:1.0,y:4.25,w:11.0,h:0.4,fontSize:16,bold:true,color:INK,align:"center"});
-s.addText("Primary inference: biopsy F1–F4 (F0 n=2 shown for context).",
-  {x:1.0,y:4.72,w:11.0,h:0.35,fontSize:14,italic:true,color:BIOPSY,align:"center"});
-s.addText([
-  {text:"The full trajectory is also an acquisition trajectory.",options:{bullet:true,breakLine:true}},
-  {text:"So healthy / end-stage comparisons cannot cleanly isolate disease biology — we use biopsy-only F1–F4.",options:{bullet:true,bold:true,color:BIOPSY}}],
-  {x:1.7,y:5.25,w:10.0,h:1.2,fontSize:18,color:INK,align:"left",paraSpaceAfter:5});
-foot(s,5);
-s.addNotes("The load-bearing point. Disease stage is collinear with how the tissue was obtained: healthy and end-stage are deceased-donor organ tissue and explants; F0–F4 are needle biopsies. So a 'progressive' trajectory can be manufactured by procurement, ischemia, dissociation or batch. We restrict the disease axis to the matched biopsies, F1–F4.");
+head(s,"THE GRADIENT AXIS","Beyond the boxes — zonation is a gradient","METHOD");
+s.addText([{text:"The four classes are discrete bins — but zonation is a continuous gradient, cells strung along an anti-diagonal. Box-counts catch every jump between bins; they ",options:{}},
+  {text:"miss a gradient that quietly flattens or dims in place",options:{bold:true}},
+  {text:", with no cell changing bin. For that we read the gradient directly:",options:{}}],
+  {x:0.7,y:1.5,w:12.3,h:0.6,fontSize:15.5,color:INK,align:"left"});
+img(s,"fig_gradient_schematic.png",{x:0.4,y:2.05,w:7.7,h:4.05});
+s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:8.25,y:2.1,w:4.65,h:1.95,fill:{color:"FFFFFF"},line:{color:"E2DCCF",width:1},rectRadius:0.06,shadow:sh()});
+s.addText([{text:"Compression  ",options:{bold:true,fontSize:17,color:TEAL,fontFace:SERIF}},{text:"shape",options:{italic:true,fontSize:13,color:MUTE}}],
+  {x:8.45,y:2.22,w:4.25,h:0.35,align:"left",margin:0});
+s.addText("Per-cell PC↔PP balance drifts toward the middle — the contrast between poles shrinks.",
+  {x:8.45,y:2.62,w:4.25,h:0.8,fontSize:12.5,color:INK,align:"left",valign:"top"});
+s.addText([{text:"Mild, non-monotone (peak F3); both poles stay populated → ",options:{color:"14532D"}},{text:"gradient present.",options:{bold:true,color:"14532D"}}],
+  {x:8.45,y:3.48,w:4.25,h:0.5,fontSize:11.5,italic:true,align:"left",valign:"top"});
+s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:8.25,y:4.2,w:4.65,h:1.95,fill:{color:"FFFFFF"},line:{color:"E2DCCF",width:1},rectRadius:0.06,shadow:sh()});
+s.addText([{text:"Dimming  ",options:{bold:true,fontSize:17,color:AMBER,fontFace:SERIF}},{text:"level",options:{italic:true,fontSize:13,color:MUTE}}],
+  {x:8.45,y:4.32,w:4.25,h:0.35,align:"left",margin:0});
+s.addText("The pericentral detox program — PC’s functional signature — drops in level. Cells keep their balance; the volume falls.",
+  {x:8.45,y:4.72,w:4.25,h:0.85,fontSize:12.5,color:INK,align:"left",valign:"top"});
+s.addText([{text:"Real ~30% per-cell dip — confirmed by gene-set testing → ",options:{color:"7C2D12"}},{text:"a finding (see Results).",options:{bold:true,color:"7C2D12"}}],
+  {x:8.45,y:5.6,w:4.25,h:0.5,fontSize:11.5,italic:true,align:"left",valign:"top"});
+s.addText([{text:"On matched biopsies the gradient holds its shape (no compression)",options:{bold:true}},
+  {text:" — but its level dims: the pericentral detox program quiets (confirmed in the results). ",options:{}},
+  {text:"Only the explant collapses to a single pole.",options:{italic:true,color:MUTE}}],
+  {x:0.45,y:6.25,w:7.7,h:0.7,fontSize:12.5,color:"334155",align:"left",valign:"top"});
+foot(s);
+s.addNotes("The continuous-gradient axis, which the discrete box-counts cannot capture. Compression is a loss of SHAPE (per-cell PC/(PC+PP) balance drifts to the middle); dimming is a loss of LEVEL (the program's absolute magnitude falls while the balance is unchanged). Compression: mild non-monotone middle drift peaking at F3, both poles populated — gradient present; only the explant collapses. Dimming: a nominal ~30% within-PC detox dip, borderline (~1.4x the ~26% MDE) and not corroborated by genome-wide pseudobulk DGE of the same genes — dropped, not a finding (we do not claim the DGE formally disproves it).");
 
-// ============================================================ SLIDE 6 — STRESS
+// ============================================================ SLIDE 9 — METHOD  [METHOD]
 s=p.addSlide(); s.background={color:BG};
-head(s,"WHY IT MATTERS","Endpoints carry organ-wide stress");
-img(s,"fig_stress.png",{x:0.3,y:1.5,w:9.0,h:4.3});
-figcap(s,0.3,5.85,9.0,"Figure 1.  Procurement-stress module by tissue source (donor-level); the same immediate-early spike appears in non-zonated endothelium.");
-s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:9.5,y:1.65,w:3.5,h:1.45,fill:{color:"FEF2F2"},rectRadius:0.08,shadow:sh()});
-s.addText("Same stress spike in hepatocytes AND endothelium",
-  {x:9.6,y:1.72,w:3.3,h:1.3,fontSize:16,bold:true,color:STRESS,align:"left",valign:"middle"});
-s.addText([
-  {text:"FOS, JUN, JUNB, JUND, ATF3, DUSP1, HSPA1A/B.",options:{bullet:true,breakLine:true}},
-  {text:"Endothelium has no zonation program.",options:{bullet:true,breakLine:true,bold:true}},
-  {text:"→ acquisition / procurement signal, not zonation biology.",options:{bullet:true,color:STRESS,bold:true}}],
-  {x:9.55,y:3.35,w:3.45,h:2.6,fontSize:15.5,color:INK,align:"left",paraSpaceAfter:8});
-foot(s,6);
-s.addNotes("The decisive cross-lineage control: stress is ~22x higher in end-stage explants than biopsies — but endothelial cells, which have no zonation program, show the same ~18x immediate-early spike as hepatocytes. So this is organ-wide acute handling stress, not a hepatocyte zonation program — which justifies excluding the deceased-donor and explant endpoints.");
-
-// ============================================================ SLIDE 7 — METHOD
-s=p.addSlide(); s.background={color:BG};
-head(s,"HOW WE MEASURE","Raw-count anchor classification");
-const steps=["raw UMI counts","down-thin to 1,500","marker ON if ≥ 2 UMI","classify nucleus","fraction per donor"];
+head(s,"HOW WE MEASURE","Raw-count anchor classification","METHOD");
+const steps=["raw UMI counts","down-thin to 1,500","marker ON if ≥ 2 UMI","classify nucleus (e.g. PC)","fraction per donor"];
 let px=0.6; for(let i=0;i<steps.length;i++){ const w=2.35;
   s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:px,y:1.7,w:w,h:0.8,fill:{color:i==2?"EDE9FE":LIGHT},line:{color:i==2?DUAL:"CBD5E1",width:1.2},rectRadius:0.07});
   s.addText(steps[i],{x:px,y:1.7,w:w,h:0.8,fontSize:14,bold:i==2,color:i==2?DUAL:INK,align:"center",valign:"middle",margin:3});
   if(i<steps.length-1) s.addShape(p.shapes.LINE,{x:px+w,y:2.1,w:0.22,h:0,line:{color:MUTE,width:1.6,endArrowType:"triangle"}});
   px+=w+0.22; }
-chip(s,1.0,3.1,2.7,1.0,"PC-anchor\nPC on / PP off",PC);
-chip(s,4.0,3.1,2.7,1.0,"PP-anchor\nPP on / PC off",PP);
-chip(s,7.0,3.1,2.7,1.0,"Dual\nboth programs on",DUAL);
-chip(s,10.0,3.1,2.3,1.0,"Null\nneither on",NULL,INK);
 s.addText([
-  {text:"Why raw counts: ",options:{bold:true}},{text:"a single KRT19 or GLUL molecule may be ambient — absolute detection matters, so SCT-normalized values are the wrong object.\n",options:{breakLine:true}},
-  {text:"≥2-UMI threshold ",options:{bold:true,color:DUAL}},{text:"suppresses single-molecule ambient.    ",options:{}},
-  {text:"Unit = donor (~47), never the nucleus ",options:{bold:true,color:BIOPSY}},{text:"→ no pseudoreplication.\n",options:{breakLine:true}},
-  {text:"Robust across the sensitivity grid ",options:{bold:true}},{text:"(anchor genes, periportal rule, ALDOB in/out, 1 vs 2 UMI).",options:{}}],
-  {x:1.0,y:4.5,w:11.6,h:1.9,fontSize:16,color:INK,align:"left",valign:"top",paraSpaceAfter:7});
-foot(s,7);
-s.addNotes("Why raw counts: a single marker molecule may be ambient, so absolute molecule detection matters and SCT-normalized values are the wrong object. We down-thin every nucleus to a common 1,500-UMI budget, call a marker on only at >=2 UMIs, classify each hepatocyte PC/PP/dual/null, and infer at the donor level (~47) to avoid pseudoreplication. Robust across the marker/threshold sensitivity grid.");
-
-// ============================================================ SLIDE 8 — RESULT
-s=p.addSlide(); s.background={color:BG};
-head(s,"THE RESULT","Matched biopsies stay zonated");
-img(s,"fig_result3.png",{x:0.2,y:1.55,w:9.1,h:4.1});
-figcap(s,0.2,5.75,9.1,"Figure 2.  Pericentral and periportal depletion and dual co-expression across matched biopsy F1–F4 (donor=point, value-labelled; F0 n=2 in backup).");
-s.addText([
-  {text:"The other two mechanisms (F1→F4 donor-median):\n",options:{bold:true,color:SLATE,breakLine:true}},
-  {text:"Null (turn-off): ",options:{bold:true,color:"475569"}},{text:"44 / 36 / 39 / 39% — stable.\n",options:{breakLine:true}},
-  {text:"PP : PC ratio: ",options:{bold:true,color:PP}},{text:"1.16 / 1.01 / 1.10 / 1.18 — flat.\n\n",options:{breakLine:true}},
-  {text:"Bound: ",options:{bold:true,color:PC}},{text:"a large shift (~20 pp) is excluded; a subtle drift ≤10 pp is not (F4 n=4).",options:{italic:true,color:MUTE}}],
-  {x:9.45,y:1.65,w:3.65,h:3.5,fontSize:15,color:INK,align:"left",valign:"top"});
-s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:9.45,y:5.35,w:3.65,h:0.95,fill:{color:SLATE},rectRadius:0.08,shadow:sh()});
-s.addText("Anchor fractions do not support large biopsy-axis de-zonation.",
-  {x:9.6,y:5.4,w:3.35,h:0.85,fontSize:15,bold:true,color:"FFFFFF",align:"left",valign:"middle"});
-foot(s,8);
-s.addNotes("The core result. Pericentral-anchor fraction is flat/non-monotone across F0-F4 — no depletion. Dual co-expression at the ambient-robust >=2-UMI cut stays ~0.4% and does not trend (vs ~2.9% in the confounded explants). Null and PP:PC are also flat. The equivalence bound excludes a large ~20-percentage-point shift but cannot exclude subtle drift below ~10 points (F4 n=4).");
-
-// ============================================================ SLIDE 8b — THE CONFOUNDER AUDIT
-s=p.addSlide(); s.background={color:BG};
-head(s,"THE CONFOUNDER AUDIT","Every confounder we could test, tested in counts");
-s.addText("Two jobs: (a) the structural confounds that make the original trajectory uninterpretable, and (b) the within-biopsy checks that the preserved-zonation null is not itself an artifact.",
-  {x:0.7,y:1.55,w:12.2,h:0.55,fontSize:14,italic:true,color:MUTE,align:"left"});
-const AUD=[
-  [{text:"Confounder",options:{bold:true}},{text:"What we did  (test · numbers)",options:{bold:true}},{text:"Verdict",options:{bold:true}}],
-  ["Tissue source","organ-cube / explant ends are not acquisition-matched to needle biopsy","excluded → biopsy-only F1–F4"],
-  ["Procurement stress","IEG+HSP across 6 lineages; hep 18× ≈ endothelial 18× (no zonation)","organ-wide handling, not zonation"],
-  ["Sequencing batch","run × source Cramér’s V = 0.84; run × F (biopsy) = 0.40","ends confounded; biopsy estimable"],
-  ["Lobe (caudate)","marker detection R / C / L within explants","lobe-invariant"],
-  ["Sequencing depth","binomial down-thin to B = 1,000 / 1,500 / 3,000 UMIs","PC-share flat at every B (SD 0.006–0.010)"],
-  ["Ambient RNA (“soup”)","corr( ALB burden , dual fraction ) across 38 donors = +0.04","does not drive co-expression"],
-  ["Cholangiocyte mis-annotation","KRT19⁺ ≤ 0.001, EPCAM⁺ ≤ 0.003 in every anchor class","not contaminating cholangiocytes"],
-  ["Ploidy / complexity","nFeatures by stage: 2218 / 3063 / 3169 / 2641 / 1984","non-monotone — does not track stage"],
-  ["Depth-match discard","3.5–7.8 % dropped below B, uniformly lower-detection","depth-driven, not PC-biased"],
-  ["Clinical covariates","partial corr( detox , F | Age ) = −0.32; Age–F = +0.43","demographics do not explain trends"],
-];
-s.addTable(AUD,{x:0.7,y:2.2,w:12.2,colW:[2.7,6.6,2.9],fontSize:11,color:INK,
-  border:{pt:0.5,color:"D7D0C4"}, fill:{color:"FFFFFF"}, rowH:0.4, valign:"middle", align:"left", margin:[2,5,2,5]});
+  {text:"Raw counts, not SCT: ",options:{bold:true}},{text:"a single molecule may be ambient — absolute detection is what matters.\n",options:{breakLine:true}},
+  {text:"Depth-matched¹: ",options:{bold:true,color:BIOPSY}},{text:"down-thin every nucleus to 1,500 UMIs so depth can’t drive detection (stable at 1k / 1.5k / 3k).\n",options:{breakLine:true}},
+  {text:"≥2 UMI, not ≥1: ",options:{bold:true,color:DUAL}},{text:"kills ambient soup — apparent co-expression 7–10% → 0.2–0.5%.\n",options:{breakLine:true}},
+  {text:"Donor is the unit (~47): ",options:{bold:true,color:BIOPSY}},{text:"no pseudoreplication. Robust on 6 marker sets (2–1,637 genes, incl. Paper 2’s own).",options:{}}],
+  {x:1.0,y:3.4,w:11.6,h:2.5,fontSize:16,color:INK,align:"left",valign:"top",paraSpaceAfter:11});
+fcite(s,"¹ Depth-matched down-sampling: Amezquita et al., Nat. Methods 2020.   ·   Raw-extraction integrity: 9/9 sanity checks pass (integer UMIs; 69,426 hepatocytes match the paper).");
 foot(s);
-s.addNotes("Show the full extent of the confounder work. Top four are the structural confounds that make the original full-trajectory comparison uninterpretable (source, stress, batch, lobe). The remaining six are within-biopsy checks that our preserved-zonation null is not an artifact — depth, ambient RNA, cholangiocyte mis-annotation, ploidy, the depth-match discard, and clinical covariates. Every one was tested in counts at the donor level; none manufactures the result. Batch at the single-experiment-label level is perfectly confounded and we flag it as untestable rather than absent.");
+s.addNotes("Why raw counts: a single marker molecule may be ambient, so absolute detection matters and SCT-normalized values are the wrong object. Down-thin every nucleus to a common 1,500-UMI budget, call a marker on at >=2 UMIs, classify each hepatocyte PC/PP/dual/null, infer at the donor level (~47). The >=2 cut matters: at >=1 UMI apparent co-expression is ~7-10% (ambient soup), collapsing ~40x to ~0.2-0.5% at >=2. Robust on 6 marker sets spanning 2 to 1,637 genes (incl. Paper 2's own) and the full threshold grid. Raw-extraction integrity: 9/9 sanity checks pass (integer UMIs, library 920-49,854 not the SCT band, hepatocyte count = the paper's 69,426).");
 
-// ============================================================ SLIDE 9 — GENOME-WIDE
+// ============================================================ SLIDE 10 — RESULT  [RESULTS]
 s=p.addSlide(); s.background={color:BG};
-head(s,"GENOME-WIDE","One signal: biliary markers");
-img(s,"fig_volcano.png",{x:0.3,y:1.5,w:8.7,h:4.5});
-figcap(s,0.3,6.05,8.7,"Figure 3.  Genome-wide pseudobulk differential expression, cirrhotic F4 vs F1 (edgeR).");
-s.addText([
-  {text:"Pseudobulk per donor; edgeR TMM + NB quasi-likelihood.\n",options:{breakLine:true}},
-  {text:"64 genes FDR<0.05 — mostly biliary/ductular.\n",options:{bold:true,breakLine:true}},
-  {text:"Zonation genes not significant (GLUL FDR 0.80).\n",options:{color:PC,breakLine:true}},
-  {text:"“No large single-gene program outside the biliary burden.”",options:{italic:true,color:BILIARY}}],
-  {x:9.2,y:1.8,w:3.8,h:3.4,fontSize:16,color:INK,align:"left",valign:"top",paraSpaceAfter:8});
-s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:9.2,y:5.5,w:3.8,h:0.8,fill:{color:LIGHT},rectRadius:0.06});
-s.addText("Caveat: weak coordinated pathways still need gene-set testing.",
-  {x:9.35,y:5.55,w:3.5,h:0.7,fontSize:13,italic:true,color:MUTE,align:"left",valign:"middle"});
-foot(s,9);
-s.addNotes("Pseudobulk per donor — donors, not cells, are the replicates. This is an independent count-based check (zonation genes flat, GLUL FDR 0.80) plus a discovery layer: only 64 of ~21,000 genes are significant, and they are biliary/ductular markers, not a broad program. Careful wording: no large single-GENE program outside the biliary burden — gene-set testing is still owed for weak coordinated pathways.");
+head(s,"THE RESULT","No depletion signal across matched biopsies","RESULTS");
+img(s,"fig_result3.png",{x:0.2,y:1.55,w:9.1,h:4.1});
+figcap(s,0.2,5.7,9.1,"Figure 2.  Pericentral / periportal anchor and dual co-expression across matched biopsy F1–F4 (box = per-donor spread; each point = one donor).");
+s.addText([{text:"F0 omitted: ",options:{bold:true,color:CONFOUND}},
+  {text:"its 2 donors disagree by 16.6 pp on the pericentral anchor (44% vs 28%) — too unstable to anchor a trend; F0 carries the highest PC fraction of any stage, so dropping it doesn’t flatter the result. Full F0–F4 in backup.",options:{color:MUTE}}],
+  {x:0.2,y:6.12,w:9.1,h:0.7,fontSize:11.5,italic:true,align:"left",valign:"top"});
+s.addText([{text:"Why we can still read it. ",options:{bold:true,color:SLATE}},
+  {text:"Donors scatter ~25–35 pp within each stage (SD ≈ 12), but the donor is the replicate — each stage average has SE ≈ SD/√n ≈ 4 pp. The spread is the same at every stage: noise around a flat line, not a hidden trend.",options:{}}],
+  {x:9.45,y:1.6,w:3.65,h:2.7,fontSize:12,color:INK,align:"left",valign:"top"});
+s.addText([{text:"Null (turn-off):  ",options:{bold:true,color:"475569"}},{text:"44 / 36 / 39 / 39% — flat.",options:{bold:true,color:INK}}],
+  {x:9.45,y:4.4,w:3.65,h:0.35,fontSize:13,align:"left",valign:"top"});
+s.addText([{text:"PP : PC ratio:  ",options:{bold:true,color:DUAL}},{text:"1.16 / 1.01 / 1.10 / 1.18 — flat.",options:{bold:true,color:INK}}],
+  {x:9.45,y:4.82,w:3.65,h:0.35,fontSize:13,align:"left",valign:"top"});
+s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:9.45,y:5.4,w:3.65,h:1.0,fill:{color:"E7F0EE"},line:{color:TEAL,width:1},rectRadius:0.07});
+s.addText([{text:"Equivalence (TOST).  ",options:{bold:true,color:TEALD}},{text:"A shift > ±19 pp is excluded; a ≤10-pp drift is not (F4 n=4; robustness backup).",options:{color:INK}}],
+  {x:9.6,y:5.46,w:3.4,h:0.9,fontSize:12,align:"left",valign:"middle"});
+foot(s);
+s.addNotes("The core result. Pericentral-anchor fraction is flat/non-monotone across F1-F4 — no depletion. Dual co-expression at the ambient-robust >=2-UMI cut stays ~0.4% and does not trend (vs ~2.9% in the confounded explants). Null and PP:PC are also flat. The donor is the replicate, so each stage average has SE ~ SD/sqrt(n) ~ 4 pp despite the ~12 pp per-donor spread; the spread is the same at every stage (noise around a flat line). Equivalence bound excludes a >19 pp shift but cannot exclude a <=10 pp drift (F4 n=4).");
 
-// ============================================================ SLIDE 10 — SOURCE
+// ============================================================ SLIDE 11 — GRADIENT IN DATA  [RESULTS]
 s=p.addSlide(); s.background={color:BG};
-head(s,"SOURCE","The biliary burden looks compositional");
-img(s,"fig_compositional.png",{x:0.3,y:1.5,w:12.7,h:3.9});
-figcap(s,0.3,5.45,12.7,"Figure 4.  Source attribution — cross-lineage abundance, decontX ambient removal, and the F4 ductular reaction.");
+head(s,"THE GRADIENT, IN DATA","Cells stay spread across the zones — no collapse","RESULTS");
+s.addText([{text:"Each panel: where hepatocytes fall on the pericentral ↔ periportal axis.  ",options:{bold:true,color:INK}},
+  {text:"A spread of positions = zonation present;  cells bunched into one pile = collapse.",options:{color:MUTE}}],
+  {x:0.7,y:1.48,w:12.3,h:0.35,fontSize:14.5,align:"left",margin:0});
+img(s,"fig_gradient.png",{x:0.4,y:1.98,w:12.5,h:3.25});
+figcap(s,0.4,5.35,12.5,"Figure 3.  Per-cell zonal balance by stage (down-thinned to 1,500 UMIs, ≤300 nuclei/donor). Dashed outline = the F1 distribution, repeated on each panel: biopsy F1–F4 barely move; only the explant collapses to the periportal pole.");
 s.addText([
-  {text:"Strong: ",options:{bold:true,color:"065F46"}},{text:"biliary genes far more abundant in cholangiocytes; hepatocyte co-expression rare (~0.4%).   ",options:{}},
-  {text:"Suggestive: ",options:{bold:true,color:"B45309"}},{text:"decontX halves the hits (ambient contribution — not proof).   ",options:{}},
-  {text:"Open: ",options:{bold:true,color:CONFOUND}},{text:"EPCAM/SPINT2/B3GNT3 survive.  ",options:{}},
-  {text:"CXCL10 = possible real inflammation (does not track cholangiocytes).",options:{color:STRESS,bold:true}}],
-  {x:0.6,y:5.95,w:12.2,h:1.0,fontSize:15,color:INK,align:"left"});
-foot(s,10);
-s.addNotes("Distinguish evidence levels. Strong: the genes are 5-78x more abundant in cholangiocytes and per-cell hepatocyte co-expression is ~0.4%. Suggestive: decontX halves the hits and drops SOX4/SOX9 — supports an ambient contribution but is not proof. Open: EPCAM/SPINT2/B3GNT3 survive. So the dominant evidence points to composition/ambient RNA, but a rare intrinsic state is not excluded; CXCL10 is set aside as a candidate real inflammatory signal.");
+  {text:"Across biopsy F1–F4 the mass stays spread — the middle [0.4–0.6) drifts only 22 → 24 → 28 → 26% (peak F3, then reverts), non-monotone and mild. ",options:{}},
+  {text:"Only the confounded explant collapses to a single (periportal) pole.",options:{bold:true,color:CONFOUND}}],
+  {x:0.7,y:5.9,w:12.2,h:0.95,fontSize:14.5,color:INK,align:"left",valign:"top"});
+foot(s);
+s.addNotes("The per-cell gradient view — the most direct test of compression. x-axis is each cell's pericentral share PC/(PC+PP): 0 = all periportal, 1 = all pericentral; a spread of positions means zonation is intact, cells bunching into one pile means collapse. Across biopsy F1-F4 the distribution stays spread, with only a mild non-monotone middle drift peaking at F3 (it reverts at F4) — gradient present, not collapsed. The explant collapses onto the periportal pole — the same acquisition confound. On the rightward lean: the histograms center above 0.5 because the pericentral program is summed over 7 broadly/highly expressed CYP/detox genes vs 6 periportal genes — a marker-set asymmetry, not biology, and irrelevant to the claim, which is the CHANGE across stages (the lean is constant and cancels out). The dashed reference line marks the F1 centre, repeated across panels, to show it does not move.");
 
-// ============================================================ SLIDE 11 — CONCLUSION
+// ============================================================ SLIDE 12 — THE CONFOUNDER AUDIT  [RESULTS]
+s=p.addSlide(); s.background={color:BG};
+head(s,"THE CONFOUNDER AUDIT","Ten confounders, tested in counts — none explains it","RESULTS");
+s.addText("If the flat result were an artifact, one of these would have shown it. Every confounder we could test, tested at the donor level — none manufactures the result. (Full numbers in backup.)",
+  {x:0.7,y:1.55,w:12.2,h:0.5,fontSize:14,italic:true,color:MUTE,align:"left"});
+const aud=[
+ ["Tissue source","excluded → biopsy-only F1–F4"],
+ ["Procurement stress","organ-wide handling, not zonation"],
+ ["Sequencing batch","ends confounded; biopsy estimable"],
+ ["Lobe (R / C / L)","lobe-invariant"],
+ ["Sequencing depth","flat at every budget (B-sweep)"],
+ ["Ambient RNA (“soup”)","does not drive co-expression"],
+ ["Cholangiocyte mis-annotation","not contaminating cells"],
+ ["Ploidy / complexity","does not track stage"],
+ ["Depth-match discard","depth-driven, not PC-biased"],
+ ["Clinical covariates","demographics don’t explain it"],
+];
+for(let i=0;i<aud.length;i++){
+  const col=Math.floor(i/5), row=i%5;
+  const x=0.6+col*6.32, y=2.3+row*0.82;
+  s.addShape(p.shapes.ROUNDED_RECTANGLE,{x,y,w:6.05,h:0.74,fill:{color:"FFFFFF"},line:{color:"E2DCCF",width:1},rectRadius:0.05,shadow:sh()});
+  s.addText("✓",{x:x+0.1,y,w:0.45,h:0.74,fontSize:18,bold:true,color:BIOPSY,align:"center",valign:"middle",margin:0});
+  s.addText([{text:aud[i][0],options:{bold:true,color:INK}},{text:"   —  "+aud[i][1],options:{color:MUTE}}],
+    {x:x+0.6,y,w:5.4,h:0.74,fontSize:14,align:"left",valign:"middle",margin:0});
+}
+s.addText("Caudate = Couinaud segment I, a lobe with its own blood supply, often spared in cirrhosis — checked so the multi-lobe explant sampling isn’t skewing detection.",
+  {x:0.6,y:6.55,w:12.3,h:0.3,fontSize:11,italic:true,color:"A99E8C",align:"left"});
+foot(s);
+s.addNotes("The full confounder battery, as a rigor-flash. Top four are the structural confounds that make the original full-trajectory comparison uninterpretable (source, stress, batch, lobe). The remaining six are within-biopsy checks that our no-detectable-de-zonation null is not an artifact — depth, ambient RNA, cholangiocyte mis-annotation, ploidy, the depth-match discard, and clinical covariates. Every one tested in counts at the donor level; none manufactures the result. Exact numbers (Cramer's V, correlations, nFeatures, etc.) are on the audit-detail backup. Batch at the single-experiment-label level is perfectly confounded — flagged untestable, not absent.");
+
+// ============================================================ SLIDE 13 — GENOME-WIDE  [RESULTS]
+s=p.addSlide(); s.background={color:BG};
+head(s,"GENOME-WIDE","What single genes miss: the detox program dims","RESULTS");
+img(s,"fig_volcano.png",{x:0.3,y:1.6,w:7.4,h:4.25});
+figcap(s,0.3,6.0,7.4,"Figure 4.  Genome-wide pseudobulk differential expression, cirrhotic F4 vs F1 (edgeR).");
+s.addText([{text:"Per gene, nothing usable moves¹. ",options:{bold:true}},
+  {text:"64 of ~21,000 genes pass FDR — mostly biliary/ductular; the zonation genes are flat (GLUL FDR 0.80).",options:{}}],
+  {x:8.0,y:1.65,w:5.0,h:0.95,fontSize:13,color:INK,align:"left",valign:"top"});
+s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:8.0,y:2.72,w:5.0,h:2.52,fill:{color:"FBF0E2"},line:{color:AMBER,width:1},rectRadius:0.06,shadow:sh()});
+s.addText([{text:"Gene-set testing² reveals the one real change. ",options:{bold:true,color:"7C2D12"}},
+  {text:"The pericentral detox program (PC’s functional signature) dims coordinately with fibrosis — CYP set FDR 2×10⁻⁶ — though no single gene clears per-gene FDR. Robust to composition (TMM; survives removing the rising genes) and confirmed per cell (within-PC burden: Spearman −0.48, p=0.003). The one signal our counts had hinted at, set aside as borderline — now significant.",options:{color:INK}}],
+  {x:8.2,y:2.82,w:4.65,h:2.34,fontSize:12,align:"left",valign:"top"});
+s.addText([{text:"Like a radio: ",options:{bold:true,color:TEAL}},
+  {text:"the paper claimed a genre change (cells switch identity); we find the genre held — the volume dropped a notch.",options:{italic:true,color:INK}}],
+  {x:8.0,y:5.38,w:5.0,h:0.7,fontSize:12.5,align:"left",valign:"top"});
+s.addText("Validating controls behaved (fibrosis genes up, unrelated flat). Sets & methods in backup.",
+  {x:8.0,y:6.18,w:5.0,h:0.3,fontSize:10.5,italic:true,color:"A99E8C",align:"left"});
+fcite(s,"¹ Pseudobulk: Squair et al. 2021; edgeR / TMM: Robinson, McCarthy & Smyth 2010; Robinson & Oshlack 2010.    ² Gene-set: camera — Wu & Smyth 2012; ROAST — Wu et al. 2010; GSEA — gseapy.");
+foot(s);
+s.addNotes("Per-gene pseudobulk: nothing usable moves (64/21,000 significant, mostly biliary; zonation flat, GLUL FDR 0.80). The reveal: gene-set testing (camera + GSEA, donor-level, biopsy F0-F4) finds the pericentral detox program dims coordinately with fibrosis — CYP set FDR 2e-6, no single gene significant. We adversarially verified it is NOT a compositional artifact: it survives TMM normalization, survives removing the up-going biliary/stromal genes, and is confirmed by the within-PC depth-matched detox burden per cell (Spearman -0.48, p=0.003, exceeds the MDE) — a measure composition cannot touch. Honest limit: in the strictly self-contained test only the CYP core clears alone. This was the one count-based hint (the within-PC dip) we'd conservatively set aside; the proper test confirms it. Cells keep their zonal identity (the genre); the program's level dims (the volume). Validating controls behaved: EMT/interferon up (real fibrosis biology), ER-stress flat. Full gene sets and methods in backup.");
+
+// ============================================================ SLIDE 14 — SOURCE  [RESULTS]
+s=p.addSlide(); s.background={color:BG};
+head(s,"SOURCE","The biliary burden looks compositional","RESULTS");
+img(s,"fig_compositional.png",{x:0.3,y:1.5,w:12.7,h:3.35});
+figcap(s,0.3,4.92,12.7,"Figure 5.  Source attribution — cross-lineage abundance, decontX ambient-RNA removal, and the F4 ductular reaction.");
+const lad=[
+ ["STRONG","Biliary genes are cholangiocyte genes; hepatocyte co-expression ~0.4%","065F46","E7F2ED"],
+ ["SUGGESTIVE","decontX¹ halves the hits — an ambient contribution, not proof","B45309","FBF0E2"],
+ ["OPEN","EPCAM / SPINT2 / B3GNT3 survive — a rare intrinsic state not excluded; CXCL10 a separate inflammatory lead","BE123C","FBEEE9"]];
+let ly=5.28;
+for(const row of lad){
+  s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:0.6,y:ly,w:12.2,h:0.42,fill:{color:row[3]},rectRadius:0.05});
+  s.addText(row[0],{x:0.78,y:ly,w:1.9,h:0.42,fontSize:12,bold:true,color:row[2],charSpacing:1,valign:"middle",margin:0});
+  s.addText(row[1],{x:2.7,y:ly,w:9.9,h:0.42,fontSize:13,color:INK,valign:"middle",margin:0});
+  ly+=0.47;
+}
+fcite(s,"¹ Ambient-RNA removal: decontX — Yang et al., Genome Biol. 2020.    Source attribution is a lead, not a closed verdict.");
+foot(s);
+s.addNotes("Distinguish evidence levels. Strong: the genes are 5-78x more abundant in cholangiocytes and per-cell hepatocyte co-expression is ~0.4%. Suggestive: decontX halves the hits and drops SOX4/SOX9 — supports an ambient contribution but not proof. Open: EPCAM/SPINT2/B3GNT3 survive — a rare intrinsic state is not excluded; CXCL10 is set aside as a candidate real inflammatory signal. So the dominant evidence points to composition/ambient RNA, a lead not a closed verdict.");
+
+// ============================================================ SLIDE 15 — CONCLUSION  [DARK]
 s=p.addSlide(); s.background={color:DARK};
 s.addShape(p.shapes.RECTANGLE,{x:0,y:0,w:0.28,h:7.5,fill:{color:TEAL}});
 s.addShape(p.shapes.RECTANGLE,{x:0.28,y:0,w:0.12,h:7.5,fill:{color:AMBER}});
 s.addShape(p.shapes.RECTANGLE,{x:0.85,y:0.5,w:0.16,h:0.26,fill:{color:AMBER}});
 s.addText("CONCLUSION",{x:1.08,y:0.46,w:11.5,h:0.4,fontSize:14,bold:true,color:AMBER,charSpacing:3,align:"left"});
-s.addText("Preservation, not progressive collapse",
-  {x:0.85,y:0.85,w:11.6,h:0.8,fontSize:30,bold:true,color:WHITE,fontFace:SERIF,align:"left",valign:"middle"});
+s.addText("Zonal identity holds — the pericentral detox program dims",
+  {x:0.85,y:0.85,w:11.8,h:0.8,fontSize:29,bold:true,color:WHITE,fontFace:SERIF,align:"left",valign:"middle"});
 const cols=[
-  {h:"Conclusions",c:"F0B27A",items:["Full healthy→end-stage trajectory is source-confounded.","In biopsy F1–F4, hepatocyte transcriptional zonation is preserved.","Main DGE signal = biliary/ductular burden, most consistent with composition / ambient RNA."]},
-  {h:"Limits",c:"FCA5A5",items:["snRNA-seq ≠ lobule geometry / spatial architecture.","Imaging / protein / organoid evidence not re-analyzed.","F4 has only 4 biopsy donors.","Gene-level DGE can miss weak coordinated pathways."]},
-  {h:"Next",c:"9CC6CC",items:["CAMERA / ROAST gene-set tests.","Leave-one-F4-donor-out DGE.","Quantitative contamination model.","Spatial / independent biopsy validation."]}
+  {h:"Conclusions",c:"F0B27A",items:["Full healthy→end-stage trajectory is source-confounded.","In biopsy F1–F4 cells keep zonal identity — no de-zonation (large shift excluded).","Two real biopsy-internal signals: a compositional biliary burden, and a confirmed pericentral-detox dimming (gene-set + per-cell)."]},
+  {h:"Limits",c:"FCA5A5",items:["“PC-like program,” not lobular location — counts can’t see spatial position.","Imaging / protein / organoid evidence not re-analyzed.","F4 has only 4 biopsy donors.","Detox dimming: the self-contained test clears only the CYP core; the broader claim leans on the per-cell measure."]},
+  {h:"Next",c:"9CC6CC",items:["Spatial / independent-biopsy validation of the detox-dimming gradient.","Leave-one-F4-donor-out DGE.","Quantitative contamination model for the biliary lead.","Functional readout of pericentral detox capacity."]}
 ];
 const takes=[
-  {n:"01",t:"Matched biopsies stay zonated",s:"Across F1–F4 every count route — depletion, co-expression, turn-off, composition — is flat, and the gradient holds its shape."},
-  {n:"02",t:"The trajectory was acquisition, not disease",s:"Healthy and end-stage are deceased-donor cubes and explants; the apparent “progression” tracks how the tissue was taken."},
-  {n:"03",t:"The biliary signal looks compositional",s:"The lone genome-wide change is a biliary / ductular burden, most consistent with composition / ambient RNA."}];
-let ty=1.92; for(const k of takes){
+  {n:"01",t:"Cells keep their zonal identity",s:"No transcriptional de-zonation signal: every count route — depletion, co-expression, turn-off, composition — is flat, and the gradient holds its shape."},
+  {n:"02",t:"The dramatic trajectory is confounded by acquisition",s:"Healthy and end-stage are deceased-donor cubes and explants; the “progression” tracks how the tissue was taken."},
+  {n:"03",t:"One real change: the pericentral detox program dims",s:"Cells stay put, but the detox program’s level drops with fibrosis — caught only by gene-set + per-cell tests. The biliary signal is a separate compositional lead."}];
+let ty=1.95; for(const k of takes){
   s.addText(k.n,{x:0.92,y:ty,w:1.15,h:0.7,fontSize:34,bold:true,color:AMBER,fontFace:SERIF,align:"left",valign:"top",margin:0});
   s.addText(k.t,{x:2.2,y:ty+0.02,w:10.5,h:0.45,fontSize:21,bold:true,color:WHITE,fontFace:SERIF,align:"left",valign:"top",margin:0});
   s.addText(k.s,{x:2.22,y:ty+0.5,w:10.4,h:0.5,fontSize:14.5,color:"C9D6D3",align:"left",valign:"top",margin:0});
   ty+=1.0; }
-s.addShape(p.shapes.LINE,{x:2.22,y:4.98,w:10.3,h:0,line:{color:"2E4A4D",width:1}});
-s.addText("The snRNA-seq evidence for progressive de-zonation does not survive matched-source re-analysis — what looked like a disease trajectory was, in large part, an acquisition trajectory.",
-  {x:0.92,y:5.18,w:11.9,h:0.9,fontSize:17,bold:true,italic:true,color:WHITE,align:"left",valign:"top"});
-s.addText("Scope — snRNA-seq transcriptomes only: imaging, protein and organoid evidence are untouched, and a weak coordinated gene-set program is not excluded.",
-  {x:0.92,y:6.5,w:11.9,h:0.5,fontSize:13,color:"8FA3A0",align:"left",valign:"top"});
-foot(s,11);
-s.addNotes("Close on the methodological lesson: in single-cell disease atlases, acquisition matching can dominate apparent disease trajectories. Bottom line, narrow and honest: the snRNA-seq transcriptomic evidence for progressive de-zonation does not survive matched-source re-analysis; imaging/protein/organoid evidence is untouched; the biliary burden is most consistent with composition/ambient RNA, a rare intrinsic state not excluded.");
+s.addShape(p.shapes.LINE,{x:2.22,y:5.0,w:10.3,h:0,line:{color:"2E4A4D",width:1}});
+s.addText([{text:"We correct one evidence leg",options:{bold:true,color:WHITE}},
+  {text:" — the snRNA marker-correlation. The paper’s imaging and protein staining are untouched.",options:{color:"C9D6D3"}}],
+  {x:0.92,y:5.2,w:11.9,h:0.5,fontSize:16,italic:true,align:"left",valign:"top"});
+s.addText("Scope — a “PC-like program,” not lobular location; a weak coordinated gene-set program is not excluded; F4 is only 4 donors.",
+  {x:0.92,y:6.45,w:11.9,h:0.4,fontSize:12.5,color:"8FA3A0",align:"left",valign:"top"});
+foot(s);
+s.addNotes("Close on the methodological lesson: in single-cell disease atlases, acquisition matching can dominate apparent disease trajectories. Bottom line, narrow and honest: the snRNA-seq evidence for progressive de-zonation does not survive matched-source re-analysis — we correct one evidence leg, the marker-correlation; imaging/protein/organoid untouched; the biliary burden is most consistent with composition/ambient RNA, a rare intrinsic state not excluded.");
 
 // ============================================================ BACKUPS
 function back(kicker,t){ const b=p.addSlide(); b.background={color:BG};
@@ -393,41 +408,60 @@ function bbul(b,items,y){ b.addText(items.map(t=>({text:t,options:{bullet:true,b
   {x:0.8,y:y||1.6,w:11.6,h:5.0,fontSize:20,color:INK,align:"left",valign:"top"}); }
 let b;
 
-b=back("DE-ZONATION MECHANISMS","Full four-mechanism panel (F0–F4)");
-img(b,"fig_anchor2x2.png",{x:1.3,y:1.5,w:9.2,h:5.0});
-figcap(b,1.3,6.5,9.2,"Figure 5.  Depletion, co-expression, turn-off and composition across biopsy fibrosis — none shows a large monotone change.");
-b.addText([{text:"None of the four routes shows a large monotone biopsy-axis change.\n\n",options:{bold:true,breakLine:true}},
-  {text:"Confounded explants: dual ≈ 2.9% (~7×).",options:{color:CONFOUND}}],
-  {x:10.7,y:2.6,w:2.4,h:3.0,fontSize:15,color:INK,align:"left"});
-
 b=back("SCOPE","Are you overturning the paper? No");
 bbul(b,["We re-tested only the snRNA-seq transcriptional zonation/plasticity evidence.",
   "We did NOT test imaging, protein staining, organoids, or 3D architecture.",
   "Claim: matched biopsy transcriptomes do not show progressive zonation loss.",
   "We agree the strong signal is an end-stage phenomenon."]);
 
-b=back("LOBE","Caudate lobe? Lobe-invariant");
+b=back("SECONDARY ENDPOINTS","Null and the PP : PC ratio are flat too");
+img(b,"fig_secondary.png",{x:0.3,y:1.65,w:9.0,h:4.35});
+figcap(b,0.3,6.05,9.0,"Figure 6.  Null (double-negative) fraction and the periportal : pericentral anchor ratio across biopsy F1–F4 (box = per-donor spread; each point = one donor).");
+b.addText([
+  {text:"Null (double-negative): ",options:{bold:true,color:"475569"}},{text:"≈ 44 / 36 / 39 / 39% — no rise across stages.\n\n",options:{breakLine:true}},
+  {text:"PP : PC ratio: ",options:{bold:true,color:DUAL}},{text:"≈ 1.16 / 1.01 / 1.10 / 1.18 — hovers around the balanced 1 : 1 line.\n\n",options:{breakLine:true}},
+  {text:"Same large person-to-person spread as the anchors, same absence of a stage trend.",options:{italic:true,color:MUTE}}],
+  {x:9.5,y:1.75,w:3.6,h:4.3,fontSize:13.5,color:INK,align:"left",valign:"top"});
+
+b=back("LOBE","Right, caudate and left lobes all agree");
 img(b,"fig_lobe.png",{x:0.8,y:1.5,w:7.6,h:5.0});
-figcap(b,0.8,6.5,7.6,"Figure 6.  Zonation-marker detection across Right / Caudate / Left lobes in end-stage explants.");
-b.addText([{text:"Detection matches across lobes.\n",options:{bold:true,breakLine:true}},
+figcap(b,0.8,6.5,7.6,"Figure 7.  Zonation-marker detection across Right / Caudate / Left lobes in end-stage explants.");
+b.addText([{text:"Detection matches across all three lobes.\n",options:{bold:true,breakLine:true}},
   {text:"Lobe does not explain the signal; explant-vs-biopsy acquisition still does.",options:{}}],
   {x:8.7,y:2.6,w:4.0,h:2.5,fontSize:18,color:INK,align:"left"});
 
 b=back("END-STAGE","Five organs, five phenotypes");
 img(b,"fig_explant.png",{x:0.8,y:1.5,w:8.2,h:5.0});
-figcap(b,0.8,6.5,8.2,"Figure 7.  Per-explant anchor fractions — end-stage is heterogeneous, not one coherent program.");
+figcap(b,0.8,6.5,8.2,"Figure 8.  Per-explant anchor fractions — end-stage is heterogeneous, not one coherent program.");
 b.addText([{text:"PC-anchor 3% → 50%;  PP:PC 0.13 → 20.\n",options:{bold:true,breakLine:true}},
   {text:"Dramatic but NOT one program — pooling manufactures a uniform “collapse.”",options:{}}],
   {x:9.2,y:2.6,w:3.6,h:2.6,fontSize:17,color:INK,align:"left"});
 
 b=back("ROBUSTNESS","Sensitivity grid + equivalence bound");
 img(b,"fig_tost.png",{x:6.6,y:1.6,w:6.4,h:4.0});
-figcap(b,6.6,5.65,6.4,"Figure 8.  Equivalence bound on the F4-vs-F1 pericentral-anchor change.");
+figcap(b,6.6,5.65,6.4,"Figure 9.  Equivalence bound on the F4-vs-F1 pericentral-anchor change.");
 b.addText([{text:"Stable across every variant:\n",options:{bold:true,breakLine:true}},
   {text:"anchor genes, periportal rule, ALDOB in/out, CPS1-based, 1 vs 2 UMI.\n\n",options:{breakLine:true}},
   {text:"No depletion · no dual rise · no turn-off — in all.\n\n",options:{bold:true,color:BIOPSY,breakLine:true}},
-  {text:"Bound: large shift (~20 pp) excluded; subtle drift ≤10 pp not (F4 n=4).",options:{italic:true,color:MUTE}}],
+  {text:"Bound (TOST): large shift (~19 pp) excluded; subtle drift ≤10 pp not (F4 n=4).",options:{italic:true,color:MUTE}}],
   {x:0.7,y:1.8,w:5.7,h:4.2,fontSize:16,color:INK,align:"left",valign:"top"});
+
+b=back("AUDIT DETAIL","Confounder battery — the numbers");
+const AUD=[
+  [{text:"Confounder",options:{bold:true}},{text:"What we did  (test · numbers)",options:{bold:true}},{text:"Verdict",options:{bold:true}}],
+  ["Tissue source","organ-cube / explant ends are not acquisition-matched to needle biopsy","excluded → biopsy-only F1–F4"],
+  ["Procurement stress","IEG+HSP across 6 lineages; hep 18× ≈ endothelial 18× (no zonation)","organ-wide handling, not zonation"],
+  ["Sequencing batch","run × source Cramér’s V = 0.84; run × F (biopsy) = 0.40","ends confounded; biopsy estimable"],
+  ["Lobe (R / C / L)","marker detection across right / caudate / left lobes in explants","lobe-invariant"],
+  ["Sequencing depth","binomial down-thin to B = 1,000 / 1,500 / 3,000 UMIs","PC-share flat at every B (SD 0.006–0.010)"],
+  ["Ambient RNA (“soup”)","corr( ALB burden , dual fraction ) across 38 donors = +0.04","does not drive co-expression"],
+  ["Cholangiocyte mis-annotation","KRT19⁺ ≤ 0.001, EPCAM⁺ ≤ 0.003 in every anchor class","not contaminating cholangiocytes"],
+  ["Ploidy / complexity","nFeatures by stage: 2218 / 3063 / 3169 / 2641 / 1984","non-monotone — does not track stage"],
+  ["Depth-match discard","3.5–7.8 % dropped below B, uniformly lower-detection","depth-driven, not PC-biased"],
+  ["Clinical covariates","partial corr( detox , F | Age ) = −0.32; Age–F = +0.43","demographics do not explain trends"],
+];
+b.addTable(AUD,{x:0.7,y:1.7,w:12.2,colW:[2.7,6.6,2.9],fontSize:11,color:INK,
+  border:{pt:0.5,color:"D7D0C4"}, fill:{color:"FFFFFF"}, rowH:0.42, valign:"middle", align:"left", margin:[2,5,2,5]});
 
 b=back("METHODS","Why raw counts, why pseudobulk");
 bbul(b,["Raw counts: marker co-detection + ambient sensitivity need molecules, not SCT residuals.",
@@ -441,18 +475,42 @@ bbul(b,["decontX models a native + ambient RNA mixture and subtracts the estimat
   "But it can remove true hybrid signal OR leave residual contamination.",
   "Source attribution is a lead, not a closed verdict; CXCL10 is a separate candidate inflammatory signal."]);
 
-b=back("NEXT","The one analysis still owed: gene-set testing");
-bbul(b,["Gene-level FDR can miss a coordinated WEAK program (many genes, small shifts).",
-  "CAMERA + ROAST on pre-specified sets: PC, PP, detox, urea cycle, bile-acid/lipid,",
-  "mitochondrial, ER stress, interferon, hypoxia, EMT/fetal/progenitor, cholangiocyte/ductular.",
-  "Closes the caveat behind “no other large hepatocyte program.”"]);
+b=back("GENE-SET RESULT","Ten pre-specified sets — the detox program goes down");
+const GS=[
+  [{text:"Gene set",options:{bold:true}},{text:"Zone / program (identity)",options:{bold:true}},{text:"n",options:{bold:true}},{text:"Dir",options:{bold:true}},{text:"camera FDR",options:{bold:true}}],
+  ["xenobiotic_CYP","PC detox — phase-I (CYP)","13","↓","2×10⁻⁶"],
+  ["detox_phase2","PC detox — phase-II (UGT/GST/SULT)","16","↓","7×10⁻³"],
+  ["pericentral_anchors","PC identity (Paper 2 landmarks)","20","↓","1.5×10⁻⁴"],
+  ["periportal_anchors","PP identity (Paper 2 landmarks)","20","↑","1.5×10⁻²"],
+  ["urea_cycle","PP program (nitrogen)","9","↓","0.12  (ns)"],
+  ["bile_acid_lipid","mixed metabolism","20","–","0.72  (ns)"],
+  ["cholangiocyte_ductular","biliary / bile-duct markers","10","↑","1.9×10⁻⁵"],
+  ["CTRL_interferon","inflammation  (+control)","20","↑","1.5×10⁻³"],
+  ["CTRL_EMT","fibrogenesis / scar  (+control)","20","↑","9×10⁻⁶"],
+  ["CTRL_ER_stress","unfolded-protein resp.  (−control)","20","–","0.72  (ns)"],
+];
+b.addTable(GS,{x:0.6,y:1.55,w:12.2,colW:[2.7,4.3,0.7,0.8,3.7],fontSize:12,color:INK,
+  border:{pt:0.5,color:"D7D0C4"}, fill:{color:"FFFFFF"}, rowH:0.4, valign:"middle", align:"left", margin:[2,5,2,5]});
+b.addText("Donor-level, biopsy F0–F4, limma::camera (GSEA agrees). Pre-specified, no fishing: PC/PP identity = Paper 2’s own landmark genes; CYP / detox / urea / bile = KEGG·HGNC cores; biliary = plasticity.txt + markers; controls = MSigDB Hallmark cores. The validating controls behaved (fibrogenesis & inflammation ↑, ER-stress flat) — proof the test detects real biology, not noise. The pericentral detox + identity programs fall; the see-saw (PP ↑) and biliary ↑ are why we adversarially controlled for composition (it survived).",
+  {x:0.6,y:5.95,w:12.3,h:1.1,fontSize:11.5,italic:true,color:MUTE,align:"left"});
+
+b=back("METHODS GLOSSARY","Gene-set testing, in one breath each");
+b.addText([
+  {text:"Pseudobulk  ",options:{bold:true,color:INK}},{text:"— sum each donor’s hepatocyte counts into one profile per donor (donor = unit of inference).\n",options:{breakLine:true}},
+  {text:"CPM  ",options:{bold:true,color:INK}},{text:"— each gene as a share of the donor’s total counts; simple, but compositional (a few surging genes shrink everyone else’s share).\n",options:{breakLine:true}},
+  {text:"TMM  ",options:{bold:true,color:BIOPSY}},{text:"— the scaling factor is taken from the bulk of genes after trimming the extreme movers, so surging genes can’t set it → composition-robust.\n",options:{breakLine:true}},
+  {text:"Per-gene DGE  ",options:{bold:true,color:INK}},{text:"— test each gene on its own for a fibrosis trend (edgeR); misses a weak shift shared by many genes.\n",options:{breakLine:true}},
+  {text:"Gene-set test  ",options:{bold:true,color:AMBER}},{text:"— test a whole pre-specified set at once. camera = competitive (more shifted than the rest of the genome?; Wu & Smyth 2012); ROAST = self-contained (does the set move against zero?; Wu et al. 2010).\n",options:{breakLine:true}},
+  {text:"Within-PC burden  ",options:{bold:true,color:BIOPSY}},{text:"— count detox molecules per pericentral cell after equalizing read depth: per-cell, absolute, immune to composition.\n",options:{breakLine:true}},
+  {text:"Adversarial check  ",options:{bold:true}},{text:"— redo with TMM, with ROAST, with the rising genes removed, and with the per-cell burden; all four agreed → the dimming is real.",options:{}}],
+  {x:0.8,y:1.7,w:11.9,h:5.2,fontSize:16,color:INK,align:"left",valign:"top",paraSpaceAfter:9});
 
 b=back("SCENARIO COVERAGE","Every de-zonation route, mapped to its signature");
 const TAX=[
   [{text:"Mechanism",options:{bold:true}},{text:"Signature",options:{bold:true}},{text:"Biopsy F0→F4 (donor-median)",options:{bold:true}},{text:"Verdict",options:{bold:true}}],
   ["Pericentral depletion","PC-anchor fraction ↓","36 / 19 / 23 / 22 / 21 %","flat → no depletion"],
   ["Periportal depletion","PP-anchor fraction ↓","20 / 21 / 22 / 24 / 24 %","flat → no depletion"],
-  ["Dimming","within-PC level ↓ (magnitude)","12.7 → 8.9 detox UMI/nuc (F1→F4)","borderline; not corroborated genome-wide → dropped"],
+  ["Dimming","within-PC level ↓ (magnitude)","11.9 → 8.8 detox UMI/nuc (F1→F4); ρ = −0.48","REAL — gene-set + within-PC confirm (CYP FDR 2e-6)"],
   ["Co-expression","dual (≥2 UMI) fraction ↑","~0.0 / 0.2 / 0.4 / 0.2 / 0.2 %","ambient soup → no"],
   ["Gradient compression","per-cell balance → middle","mild, non-monotone (peak F3)","gradient present"],
   ["Turn-off","null (double-neg) fraction ↑","34 / 44 / 36 / 39 / 39 %","flat → no turn-off"],
@@ -463,7 +521,7 @@ b.addTable(TAX,{x:0.7,y:1.65,w:12.0,colW:[2.5,2.95,3.95,2.6],fontSize:12.5,color
   border:{pt:0.5,color:"C9BFAE"}, fill:{color:"FFFFFF"},
   rowH:0.4, valign:"middle", align:"left",
   margin:[3,5,3,5]});
-b.addText("Each row is a distinct way zonation could fail, mapped to its signature on depth-normalized counts. Seven are count-based (cells crossing boxes); dimming is the one magnitude axis the counts can’t see. Only the null (all stable) survives biopsy F1–F4 — the lone positive hint, dimming, did not hold up genome-wide.",
+b.addText("Each row is a distinct way zonation could fail, mapped to its signature on depth-normalized counts. The structure-redistribution routes (cells crossing boxes) are all flat — cells keep their identity. The one magnitude route, dimming, is REAL: the pericentral detox program quiets, confirmed by gene-set + within-PC testing.",
   {x:0.7,y:6.45,w:12.0,h:0.7,fontSize:12.5,italic:true,color:MUTE,align:"left"});
 
 // BACKUP — the detailed three-way partition (moved off the in-place conclusion)
