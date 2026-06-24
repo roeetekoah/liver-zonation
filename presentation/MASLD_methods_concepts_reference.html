@@ -109,7 +109,55 @@
     </div>
 
   </div>
-  <footer>Re-analysis of Gribben et&nbsp;al., Nature 2024 (GSE202379) &middot; Roee Tekoah &amp; Shira Gelbstein</footer>
+  <footer>Re-analysis of Gribben et&nbsp;al., Nature 2024 (GSE202379) &middot; Roee Tekoah &amp; Shira Gelbstein &middot; page 1 of 2</footer>
+</div>
+
+<div class="wrap" style="break-before:page; margin-top:22px">
+  <header>
+    <h1>Reading the donor figures &mdash; display &amp; honest claims</h1>
+    <div class="sub">why dots + mean &plusmn; SEM &middot; and what we can (and can&rsquo;t) say</div>
+  </header>
+  <div class="grid">
+
+    <div class="card c-teal">
+      <h2>What the figure must show</h2>
+      <div class="row"><span class="t">Dots = every donor</span> <span class="d">&mdash; the spread and the outliers, shown. Nothing hidden behind a summary.</span></div>
+      <div class="row"><span class="t">Bar = precision of the center</span> <span class="d">&mdash; how well the <i>mean</i> is pinned &mdash; <b>not</b> the spread again (the dots already show that).</span></div>
+    </div>
+
+    <div class="card c-purple">
+      <h2>The error-bar menu</h2>
+      <div class="row"><span class="t">SD / IQR / whiskers</span> <span class="d">&mdash; spread of donors (descriptive). Redundant with the dots &mdash; and median + IQR is literally the box plot&rsquo;s box.</span></div>
+      <div class="row"><span class="t">SEM = SD/&radic;n</span> <span class="d">&mdash; precision of the mean; <b>tight</b> because of the &divide;&radic;n. <b>&larr; what we use:</b> a big donor spread still gives a well-pinned mean.</span></div>
+      <div class="row"><span class="t">95% CI = SEM &times; t</span> <span class="d">&mdash; also precision, but t &asymp; 3.2 at n = 4 blows it up &rarr; reads &ldquo;uncertain&rdquo; and fights the message.</span></div>
+    </div>
+
+    <div class="card c-amber">
+      <h2>Mean vs median</h2>
+      <div class="row"><span class="t">Use the mean</span> <span class="d">&mdash; the inference (TOST, SE &asymp; 4 pp) is mean-based; a median center would describe a different quantity than the test.</span></div>
+      <div class="row"><span class="t">Not median + IQR</span> <span class="d">&mdash; robust, but it&rsquo;s the descriptive box again: it shows spread (the dots already do), not confidence.</span></div>
+    </div>
+
+    <div class="card c-blue">
+      <h2>Why it&rsquo;s honest, not stat-picking</h2>
+      <div class="row"><span class="t">Raw data shown</span> <span class="d">&mdash; every donor is a dot; the outlier (PP:PC &asymp; 4.0) is visible, not smoothed away.</span></div>
+      <div class="row"><span class="t">Equivalence, both sides</span> <span class="d">&mdash; TOST states what <i>is</i> excluded AND what isn&rsquo;t &mdash; a falsifiable claim, not &ldquo;we looked and found nothing.&rdquo;</span></div>
+      <div class="row"><span class="t">A real change was found</span> <span class="d">&mdash; the same method/data detected detox dimming (&rho; = &minus;0.48) &rarr; the de-zonation null is genuine, not a power failure.</span></div>
+      <div class="row"><span class="t">Owned soft spot</span> <span class="d">&mdash; F4 has 4 donors; we lead with the F1&rarr;F4 trend, not the endpoint.</span></div>
+    </div>
+
+    <div class="card c-red span">
+      <h2>The claim ladder &mdash; what we can and can&rsquo;t say</h2>
+      <div class="confgrid">
+        <div class="row"><span class="t" style="color:var(--red)">&#10007; &ldquo;zonation is intact / preserved&rdquo;</span> <span class="d">&mdash; can&rsquo;t prove a negative; underpowered (F4 n = 4). <b>Never say this.</b></span></div>
+        <div class="row"><span class="t" style="color:var(--teal)">&#10003; &ldquo;no detectable de-zonation signal&rdquo;</span> <span class="d">&mdash; in matched biopsies, across every count route.</span></div>
+        <div class="row"><span class="t" style="color:var(--teal)">&#10003; &ldquo;a large shift is excluded&rdquo;</span> <span class="d">&mdash; a &gt; &plusmn;19 pp F4&ndash;F1 change is rejected by equivalence testing (TOST).</span></div>
+        <div class="row"><span class="t" style="color:var(--teal)">&#10003; &ldquo;a subtle drift is not excluded&rdquo;</span> <span class="d">&mdash; &le; 10 pp, limited by F4 n = 4. Stated, not hidden.</span></div>
+      </div>
+    </div>
+
+  </div>
+  <footer>The honest line: <b>no detectable de-zonation signal</b> &mdash; a large shift excluded, a subtle one not &middot; never &ldquo;intact&rdquo; &middot; page 2 of 2</footer>
 </div>
 </body>
 </html>

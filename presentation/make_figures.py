@@ -133,26 +133,23 @@ SR=["F1","F2","F3","F4"]
 
 def boxpanel(ax,col,color,title,ylab,scale=100,explant_line=None,dec=0,
              legend=False,box_legend=False,top_pad=1.20):
-    """Box plot of the per-donor distribution per stage, with donor points overlaid and
-    the donor-median annotated. scale=100 -> percent; scale=1 -> raw ratio."""
+    """Per-donor dots with the stage MEAN and its standard error
+    (SEM = SD/sqrt(n); donor = the replicate). scale=100 -> percent; scale=1 -> raw ratio."""
     data=[bio[bio.Fs==st][col].values*scale for st in SR]
     top=max((v.max() if len(v) else 0) for v in data)
-    light=to_rgba(color,0.12)
-    bp=ax.boxplot(data, positions=range(len(SR)), widths=0.52, patch_artist=True,
-                  showfliers=False, whis=(0,100), zorder=2,
-                  medianprops=dict(color=color,lw=3,solid_capstyle="round"),
-                  boxprops=dict(facecolor=light,edgecolor=color,lw=1.4),
-                  whiskerprops=dict(color=color,lw=1.2),
-                  capprops=dict(color=color,lw=1.2))
     for i,v in enumerate(data):
         n=len(v)
-        ax.scatter(np.full(n,i)+jitter(n,0.10), v, s=40, color=color, alpha=0.55,
-                   edgecolor="white", linewidth=0.6, zorder=4)
+        ax.scatter(np.full(n,i)+jitter(n,0.11), v, s=40, color=color, alpha=0.45,
+                   edgecolor="white", linewidth=0.6, zorder=3)
         if n:
-            med=np.median(v)
-            ax.annotate(f"{med:.{dec}f}%" if scale==100 else f"{med:.{dec}f}",
-                        (i,med),xytext=(0.32,0),textcoords="offset fontsize",
-                        ha="left",va="center",fontsize=11.5,fontweight="bold",color=color,zorder=6)
+            m=float(np.mean(v))
+            sem=float(np.std(v,ddof=1)/np.sqrt(n)) if n>1 else 0.0
+            ax.errorbar(i, m, yerr=sem, fmt="none", ecolor=color, elinewidth=2.2,
+                        capsize=7, capthick=2.2, zorder=5)
+            ax.plot([i-0.19,i+0.19],[m,m], color=color, lw=3.2, solid_capstyle="round", zorder=6)
+            ax.annotate(f"{m:.{dec}f}%" if scale==100 else f"{m:.{dec}f}",
+                        (i,m),xytext=(0.46,0),textcoords="offset fontsize",
+                        ha="left",va="center",fontsize=11.5,fontweight="bold",color=color,zorder=7)
         ax.annotate(f"n={n}",(i,0),xytext=(0,-20),textcoords="offset points",
                     ha="center",va="top",fontsize=10,color=MUTE,zorder=6)
     ax.set_xticks(range(len(SR))); ax.set_xticklabels(SR)
@@ -166,15 +163,15 @@ def boxpanel(ax,col,color,title,ylab,scale=100,explant_line=None,dec=0,
     if legend:
         ax.legend(handles=[Line2D([0],[0],marker="o",ls="",mfc=color,mec="white",ms=8,
                                   alpha=0.7,label="donor"),
-                           Line2D([0],[0],color=color,lw=3,label="median"),
-                           Patch(facecolor=light,edgecolor=color,lw=1.4,label="IQR (box) · range (whisker)")],
+                           Line2D([0],[0],color=color,lw=3.2,label="stage mean"),
+                           Line2D([0],[0],color=color,lw=2.2,label="± SEM")],
                   loc="upper left", fontsize=11)
 
 fig,axs=plt.subplots(1,3,figsize=(12.4,5.9))
 boxpanel(axs[0],"PC_f",PC,"Pericentral anchor","PC-anchor %", legend=True)
 boxpanel(axs[1],"PP_f",PP,"Periportal anchor","PP-anchor %")
 boxpanel(axs[2],"dual2_f",DUAL,"Dual co-expression","Dual (≥2 UMI) %",explant_line=2.9,dec=1)
-fig.suptitle("Matched biopsy fibrosis F1–F4   ·   box = per-donor distribution, each point = one donor   (F0 n=2 omitted; full F0–F4 in backup)",
+fig.suptitle("Matched biopsy fibrosis F1–F4   ·   each point = one donor; bar = stage mean ± SEM   (F0 n=2 omitted; full F0–F4 in backup)",
              fontsize=12.5, color=MUTE, x=0.5, y=1.005, ha="center")
 fig.tight_layout(rect=(0,0,1,0.97)); fig.savefig(f"{OUT}/fig_result3.png", bbox_inches="tight", pad_inches=0.15); plt.close(fig)
 
@@ -184,7 +181,7 @@ boxpanel(s1,"null_f",NULL,"Null (double-negative)","Null (double-negative) %", l
 boxpanel(s2,"pppc",DUAL,"PP : PC balance","PP : PC anchor ratio", scale=1, dec=2, top_pad=1.22)
 s2.axhline(1.0, color=MUTE, ls=(0,(4,3)), lw=1.2, zorder=1)
 s2.text(len(SR)-0.55, 1.0, "  balanced (1:1)", color=MUTE, fontsize=10.5, va="bottom", ha="right")
-fig.suptitle("Secondary endpoints across biopsy F1–F4   ·   box = per-donor distribution, each point = one donor",
+fig.suptitle("Secondary endpoints across biopsy F1–F4   ·   each point = one donor; bar = stage mean ± SEM",
              fontsize=12.5, color=MUTE, x=0.5, y=1.005, ha="center")
 fig.tight_layout(rect=(0,0,1,0.97)); fig.savefig(f"{OUT}/fig_secondary.png", bbox_inches="tight", pad_inches=0.15); plt.close(fig)
 
