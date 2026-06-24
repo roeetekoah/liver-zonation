@@ -2,6 +2,11 @@
 // Generates extra_slides.pptx (2 slides) styled to match the main deck.
 // Copy the slides you want into the canonical .pptx. Run: node extra_slides.js
 const pptxgen = require("pptxgenjs");
+const fs = require("fs");
+const A = __dirname + "/assets/";
+function pngSize(file){ const b=fs.readFileSync(file); return {w:b.readUInt32BE(16), h:b.readUInt32BE(20)}; }
+function img(s,file,box){ const d=pngSize(A+file), ar=d.w/d.h; let w=box.w,h=w/ar; if(box.h&&h>box.h){h=box.h;w=h*ar;} const x=box.x+(box.w-w)/2; s.addImage({path:A+file,x,y:box.y,w,h}); }
+function figcap(s,x,y,w,txt){ s.addText(txt,{x,y,w,h:0.4,fontSize:12,italic:true,color:MUTE,align:"center",margin:0}); }
 
 // --- palette + fonts copied verbatim from build_deck.js ---
 const PC="1D4ED8", PP="EA580C", DUAL="7C3AED", NULL="9CA3AF",
@@ -91,6 +96,31 @@ for(let i=0;i<4;i++){ const col=i%2,row=Math.floor(i/2); const x=0.7+col*6.05, y
   }
 }
 fcite(s,"Stack: R (edgeR, limma, decontX/celda, Seurat) · Python (numpy, scipy, pandas, gseapy).   Refs: edgeR / TMM — Robinson, McCarthy & Smyth 2010; Robinson & Oshlack 2010 · CAMERA — Wu & Smyth 2012 · ROAST — Wu et al. 2010 · decontX — Yang et al. 2020 · pseudobulk — Squair et al. 2021 · GSEA — Subramanian et al. 2005.");
+footC(s);
+
+// ============================================================ ADD-ON 3 — SOURCE (biliary, corrected)  [RESULTS]
+s=p.addSlide(); s.background={color:BG}; bleed(s);
+head(s,"SOURCE","The biliary signal: most likely compositional — a lead","RESULTS");
+s.addText([{text:"What we see:  ",options:{bold:true,color:INK}},
+  {text:"biliary / ductular genes (EPCAM, SOX9, GRHL2, B3GNT3, SPINT2) rise at F4 — exactly where cirrhosis’s ductular reaction floods the tissue with cholangiocytes.",options:{color:INK}}],
+  {x:0.7,y:1.46,w:12.3,h:0.45,fontSize:14.5,align:"left"});
+img(s,"fig_compositional.png",{x:0.4,y:1.95,w:12.55,h:2.0});
+figcap(s,0.4,4.0,12.55,"Figure.  Source attribution — cross-lineage abundance, decontX ambient-RNA removal, and the F4 ductular reaction.");
+// refined evidence ladder: the compositional mechanism, the class-imbalance caveat, and the residual that survives
+const lad=[
+ ["COMPOSITIONAL  (the lead)","065F46","E7F2ED","These are cholangiocyte genes. At F4 there are more cholangiocytes → more of their RNA in the ambient “soup” (plus the odd doublet) enters hepatocyte droplets → hepatocytes look biliary without transdifferentiating."],
+ ["RARE PER CELL  (read it carefully)","B45309","FBF0E2","Only ~0.4% of hepatocyte nuclei co-detect biliary markers at ≥2 UMI — not population-wide. But that is prevalence over ALL hepatocytes: it argues against MASS transdifferentiation, not against a rare sub-population (class imbalance)."],
+ ["OPEN  (a residual survives)","BE123C","FBEEE9","decontX removes about half the hits (64 → 34), but EPCAM / SPINT2 / B3GNT3 survive decontamination — ambient can’t explain all of it, so a rare intrinsic state is not excluded."]];
+let ly=4.42;
+for(const row of lad){
+  s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:0.6,y:ly,w:12.25,h:0.66,fill:{color:row[2]},rectRadius:0.05});
+  s.addText(row[0],{x:0.78,y:ly,w:2.95,h:0.66,fontSize:11,bold:true,color:row[1],charSpacing:0.5,valign:"middle",margin:0});
+  s.addText(row[3],{x:3.8,y:ly,w:8.9,h:0.66,fontSize:11,color:INK,valign:"middle",margin:0});
+  ly+=0.72;
+}
+s.addText([{text:"Verdict:  ",options:{bold:true,color:TEALD}},
+  {text:"most consistent with composition / ambient (the ductular reaction) — a lead, not a closed verdict.",options:{italic:true,color:INK}}],
+  {x:0.6,y:6.66,w:12.3,h:0.35,fontSize:13,align:"left"});
 footC(s);
 
 p.writeFile({fileName:__dirname+"/extra_slides.pptx"}).then(f=>console.log("WROTE",f));

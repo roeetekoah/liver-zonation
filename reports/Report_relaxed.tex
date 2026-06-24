@@ -28,7 +28,7 @@ de-zonation survive matched sampling?}\par
 \noindent\textcolor{black!40}{\rule{\textwidth}{0.7pt}}\par
 \vspace{0.6em}
 
-{\small\noindent\textbf{Abstract.~}Gribben et al.\ report that during human chronic liver disease (MASLD) hepatocytes progressively lose their spatial zonation and acquire cholangiocyte-like (biliary) features. We re-examined the single-nucleus RNA-seq evidence for the \emph{progressive de-zonation} part of that claim. The complication we found is structural: \textbf{disease stage is collinear with how the tissue was obtained.} Healthy and end-stage samples are deceased-donor organ tissue (a $\sim$1\,cm$^3$ cube / explant); the F0--F4 disease spectrum is 16-gauge needle biopsy. So ``healthy $\to$ MASLD $\to$ end-stage'' is also ``organ cube $\to$ needle $\to$ explant,'' and a single pooled correlation cannot tell disease from acquisition. After setting aside the source-confounded endpoints and re-testing on the matched needle-biopsy axis --- using raw UMI counts, depth-normalized per nucleus, with the \textbf{donor} ($\sim$47) as the unit of inference --- pericentral/periportal structure is \textbf{preserved across fibrosis F1$\to$cirrhotic F4}. A donor-level pseudobulk differential-expression scan finds no zonation-marker loss; its one signal is a small \textbf{biliary/ductular-marker burden} at F4, more consistent with cholangiocyte ambient RNA plus rare mixed/doublet nuclei (the ductular reaction) than with broad hepatocyte transdifferentiation. We do not claim to overturn the paper; biliary source attribution is \textbf{a lead, not closed.}}\par\vspace{0.5em}
+{\small\noindent\textbf{Abstract.~}Gribben et al.\ report that during human chronic liver disease (MASLD) hepatocytes progressively lose their spatial zonation and acquire cholangiocyte-like (biliary) features. We re-examined the single-nucleus RNA-seq evidence for the \emph{progressive de-zonation} part of that claim. The complication we found is structural: \textbf{disease stage is collinear with how the tissue was obtained.} Healthy and end-stage samples are deceased-donor organ tissue (a $\sim$1\,cm$^3$ cube / explant); the F0--F4 disease spectrum is 16-gauge needle biopsy. So ``healthy $\to$ MASLD $\to$ end-stage'' is also ``organ cube $\to$ needle $\to$ explant,'' and a single pooled correlation cannot tell disease from acquisition. After setting aside the source-confounded endpoints and re-testing on the matched needle-biopsy axis --- using raw UMI counts, depth-normalized per nucleus, with the \textbf{donor} ($\sim$47) as the unit of inference --- we find \textbf{no transcriptional de-zonation signal across fibrosis F1$\to$cirrhotic F4}: cells keep their pericentral/periportal identity, and a large coordinated shift is affirmatively excluded. A per-gene pseudobulk differential-expression scan finds no zonation gene moving (GLUL F4-vs-F1 FDR 0.80); its one per-gene signal is a small \textbf{biliary/ductular-marker rise} at F4, more consistent with cholangiocyte ambient RNA plus rare mixed/doublet nuclei (the ductular reaction) than with broad hepatocyte transdifferentiation. Pre-specified gene-set tests (CAMERA/ROAST/GSEA) plus a per-cell measure then reveal the one real biopsy-internal change: the \textbf{pericentral detox program dims} --- detox transcripts within pericentral nuclei decline across fibrosis (donor-level Spearman $\rho=-0.48$, $p=0.003$), a \emph{relative} decline in level while the cells keep their identity, i.e.\ functional dimming, not de-zonation. We do not claim to overturn the paper; biliary source attribution is \textbf{a lead, not closed.}}\par\vspace{0.5em}
 
 \setcounter{tocdepth}{2}
 \begingroup\renewcommand{\contentsname}{\normalsize Contents}{\small\tableofcontents}\endgroup
@@ -88,8 +88,8 @@ A curated stress module (immediate-early + heat-shock genes), depth-normalized, 
 \label{fig:stress}
 \end{figure}
 
-\subsection{R2 --- On the matched biopsy axis, zonation is preserved}
-Across F0--F4 needle biopsies the structure holds by every failure mode:
+\subsection{R2 --- On the matched biopsy axis, there is no de-zonation signal}
+Across F0--F4 needle biopsies every cell-redistribution failure mode comes up flat:
 \begin{itemize}[noitemsep]
 \item \textbf{Depletion:} PC-anchor fraction 36/19/23/22/21\% (F0--F4) --- flat/non-monotone.
 \item \textbf{Co-expression:} the dual fraction looks inflated ($\sim$7--10\%) only at a 1-UMI threshold; at the ambient-robust $\ge 2$-UMI cut it collapses to \textbf{$\sim$0.2--0.6\%} with no trend --- the 1-UMI signal was ambient soup.
@@ -97,13 +97,20 @@ Across F0--F4 needle biopsies the structure holds by every failure mode:
 \item \textbf{Composition:} PP:PC ratio 0.62/1.16/1.01/1.10/1.18 --- flat/non-monotone.
 \end{itemize}
 
-The poles stay dominant; at most a mild non-monotone middle-ward drift. The null is robust across the full sensitivity grid and a marker-set ladder from 2 to 1{,}637 genes (including Paper 2's own 40 landmark genes).
+The poles stay dominant; at most a mild non-monotone middle-ward drift. This is no de-zonation \emph{signal} --- not a positive proof that zonation is ``preserved,'' only that no de-zonation is detectable above the donor-level scatter. The null is robust across the full sensitivity grid and a marker-set ladder from 2 to 1{,}637 genes (including Paper 2's own 40 landmark genes). A per-cell view of the same data (the pericentral$\leftrightarrow$periportal balance of each nucleus) tells the same story: across biopsy F1$\to$F4 the cells stay spread along the gradient, with only the confounded explant collapsing to a single pole.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.8\linewidth]{fig_result2}
-\caption{Pericentral-anchor fraction across fibrosis (flat) and the dual co-expression fraction collapsing to $\sim$0 at the $\ge 2$-UMI cut. (See also \texttt{fig\_anchor2x2.png}.)}
-\label{fig:result2}
+\includegraphics[width=0.86\linewidth]{fig_result3}
+\caption{Matched-biopsy anchors (3-panel): pericentral and periportal anchor fractions flat across fibrosis F1--F4, and the dual co-expression fraction near-zero ($\sim$0.4\%, vs $\sim$2.9\% in explants) at the $\ge 2$-UMI cut --- the apparent 1-UMI co-expression was ambient soup. Box = per-donor spread; each point = one donor.}
+\label{fig:result3}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.86\linewidth]{fig_gradient}
+\caption{Per-cell zonal balance by stage (down-thinned to 1{,}500 UMIs). The x-axis is each nucleus's pericentral share PC/(PC$+$PP): spread $=$ gradient present, one pile $=$ collapse. The dashed outline repeats the F1 distribution on every panel: biopsy F1--F4 barely move; only the explant collapses to the periportal pole. (Null and PP:PC ratio: \texttt{fig\_secondary.png}.)}
+\label{fig:gradient}
 \end{figure}
 
 \subsection{R3 --- Robustness and an honest bound}
@@ -116,10 +123,10 @@ The result is stable across the sensitivity grid (depth budgets 1{,}000/1{,}500/
 \label{fig:tost}
 \end{figure}
 
-\subsection{R4 --- The only DGE signal is a biliary burden, likely compositional}
-Genome-wide, of $\sim$21{,}000 genes only \textbf{64} reach FDR $< 0.05$ at F4-vs-F1, and they are a biliary/ductular set --- \emph{EPCAM, GRHL2, SPINT2, SOX4, SOX9, B3GNT3} --- plus \emph{CXCL10}. Zonation genes are flat at the expression level (\textbf{GLUL FDR 0.80 --- not significant}; all detox genes FDR $> 0.79$), an independent count-based check agreeing with the anchor classification. So the discovery scan finds \textbf{a biliary-marker burden inside hepatocyte-labeled pseudobulk, not zonation loss.}
+\subsection{R4 --- The only per-gene DGE signal is a biliary rise, likely compositional}
+Genome-wide, of $\sim$21{,}000 genes only \textbf{64} reach FDR $< 0.05$ at F4-vs-F1, and they are a biliary/ductular set --- \emph{EPCAM, GRHL2, SPINT2, SOX4, SOX9, B3GNT3} --- plus \emph{CXCL10}. Zonation genes are flat at the expression level (\textbf{GLUL F4-vs-F1 FDR 0.80 --- well above the 0.05 cutoff, so not significant}; all detox genes FDR $> 0.79$), an independent count-based check agreeing with the anchor classification. So the per-gene discovery scan finds \textbf{a biliary-marker rise inside hepatocyte-labeled pseudobulk, not zonation loss.}
 
-Source attribution (a side lead): the headline genes are 5--78$\times$ more abundant in cholangiocytes than hepatocytes; the cholangiocyte fraction rises to $\sim$8\% at F4 (the ductular reaction); only $\sim$0.4\% of hepatocyte nuclei robustly co-express $\ge 2$ biliary markers; ambient correction (decontX) cuts hits 64$\to$34 and drops \emph{SOX4/SOX9} below significance. But \emph{EPCAM/B3GNT3/SPINT2} survive (decontX is a consistency check, not a verdict), and \emph{CXCL10} is separate --- its hepatocyte expression does not track the cholangiocyte fraction (corr $-0.09$), so it is a candidate real inflammatory signal, not ambient. Careful conclusion: the burden is \textbf{real as a signal in hepatocyte-labeled pseudobulk, source not resolved}, and the weight of evidence favors \textbf{ambient RNA + rare mixed/doublet nuclei} over broad transdifferentiation.
+Source attribution (a side lead): the headline genes are 5--78$\times$ more abundant in cholangiocytes than hepatocytes; the cholangiocyte fraction rises to $\sim$8\% at F4 (the ductular reaction); only $\sim$0.4\% of hepatocyte nuclei robustly co-express $\ge 2$ biliary markers (a prevalence over \emph{all} hepatocytes --- it argues against \emph{mass} transdifferentiation but does not exclude a rare sub-population); ambient correction (decontX) halves the hits 64$\to$34 and drops \emph{SOX4/SOX9} below significance. But \emph{EPCAM/B3GNT3/SPINT2} survive (decontX is a consistency check, not a verdict, so a rare intrinsic biliary state is not excluded), and \emph{CXCL10} is separate --- its hepatocyte expression does not track the cholangiocyte fraction (corr $-0.09$), so it is a candidate real inflammatory signal, not ambient. Careful conclusion: the biliary signal is \textbf{real in hepatocyte-labeled pseudobulk, source not resolved}, and the weight of evidence favors \textbf{ambient RNA + rare mixed/doublet nuclei} over broad transdifferentiation --- a lead, not a closed verdict.
 
 \begin{figure}[H]
 \centering
@@ -128,21 +135,36 @@ Source attribution (a side lead): the headline genes are 5--78$\times$ more abun
 \label{fig:volcano}
 \end{figure}
 
+\subsection{R5 --- The one real change: the pericentral detox program dims}
+A per-gene scan is blind to a weak \emph{coordinated} program --- many genes each drifting a little in the same direction, none crossing FDR alone. Pre-specified gene-set tests are built for exactly that. Over ten sets fixed in advance (pericentral identity and detox, periportal identity and urea cycle, bile-acid/lipid, cholangiocyte, plus interferon / fibrogenesis / ER-stress \emph{controls} whose answers biology already dictates), three independent methods agree: \texttt{camera} (competitive), \texttt{mroast} (self-contained), and GSEA. The \textbf{pericentral detox programs go down} with fibrosis --- phase-I CYP detox (camera FDR $2\times10^{-6}$), pericentral identity (Paper 2 landmarks, FDR $1.5\times10^{-4}$), phase-II conjugation (FDR $7\times10^{-3}$) --- while the controls behave exactly as they must (fibrogenesis and inflammation up, ER-stress flat), which is what tells us the test is reading real biology, not noise.
+
+Because a competitive test on relative data could be fooled by other genes inflating (a ``pie-slice'' artifact), we checked adversarially: the result survives composition-robust TMM normalization, survives the self-contained \texttt{mroast} test (the CYP detox core clears alone), survives dropping the up-going genes --- and, decisively, a \textbf{per-cell measure} that composition cannot touch confirms it. Counting detox transcripts per pericentral nucleus after equalizing read depth (down-thinning every nucleus to 1{,}500 UMIs), the level falls steadily across fibrosis: $\sim$11.9 (F1) to $\sim$8.8 (F4) transcripts per nucleus, a donor-level Spearman $\rho=-0.48$ ($p=0.003$).
+
+This is \textbf{dimming}, not de-zonation. Like a radio: the station did not change genre (the cells keep their pericentral identity --- the anchor fractions in R2 stay flat), but the volume dropped (the detox program's level falls). It works precisely because the identity anchors (GLUL, CYP3A4 --- a yes/no detection call) are \emph{different genes} from the detox-module genes measured for dimming (CYP2E1, CYP1A2, ADH4\ldots), so the anchor fraction can stay flat while the module quiets. Three honest caveats: this is a \textbf{relative} decline (detox transcripts within a fixed sequencing budget, not proven absolute molecule loss); it is a donor-level trend; and it could partly reflect a shift among pericentral subzones rather than pure within-cell downregulation. It does \emph{not} rescue the paper's identity-loss claim.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\linewidth]{fig_dimming}
+\caption{The pericentral detox module dims. \emph{Left:} detox transcripts per pericentral nucleus (depth-matched to 1{,}500 UMIs) fall from $\sim$11.9 (F1) to $\sim$8.8 (F4); donor-level Spearman $\rho=-0.48$, $p=0.003$. \emph{Right:} pre-specified gene-set programs --- pericentral detox and identity down, biliary and fibrogenesis/inflammation controls up, ER-stress flat. Measured on detox genes disjoint from the GLUL/CYP3A4 identity anchors, so the anchor fraction stays flat while the module dims.}
+\label{fig:dimming}
+\end{figure}
+
 \FloatBarrier
 
 \section{Interpretation}
 
 \begin{enumerate}[noitemsep]
 \item \textbf{The full trajectory is source-confounded} --- do not read healthy $\to$ end-stage as a clean continuation of the disease axis. The endpoints are organ tissue carrying organ-wide procurement stress.
-\item \textbf{In matched biopsies, transcriptional zonation is preserved} --- every failure mode (depletion, co-expression, turn-off, composition shift) is flat across F1$\to$cirrhotic F4, and a large coordinated shift is affirmatively excluded.
-\item \textbf{The remaining F4 signal is biliary/ductular but source-uncertain} --- most consistent with cholangiocyte ambient RNA plus rare mixed/doublet nuclei, with \emph{CXCL10} a possible real hepatocyte inflammatory exception. This source-attribution leg is a promising lead, not a closed finding.
+\item \textbf{In matched biopsies, there is no transcriptional de-zonation signal} --- every cell-redistribution failure mode (depletion, co-expression, turn-off, composition shift) is flat across F1$\to$cirrhotic F4, and a large coordinated shift is affirmatively excluded. The cells keep their zonal identity.
+\item \textbf{The one real biopsy-internal change is dimming, not de-zonation} --- the pericentral detox program declines in \emph{level} (gene-set down-regulation plus a per-cell depth-matched trend, $\rho=-0.48$, $p=0.003$) while the cells retain their pericentral identity. This is a relative decline in a zonated program's output, not a loss of identity or a transdifferentiation.
+\item \textbf{The F4 biliary/ductular signal is real but source-uncertain} --- most consistent with cholangiocyte ambient RNA plus rare mixed/doublet nuclei, with \emph{CXCL10} a possible real hepatocyte inflammatory exception. This source-attribution leg is a promising lead, not a closed finding.
 \end{enumerate}
 
 \section{Limitations and next steps}
 
-Stated plainly, not apologetically. This is a hackathon-scale re-analysis: no wet-lab, no imaging or spatial re-analysis, single cohort. The F4 biopsy stratum is thin (n=4), so subtle effects there are underpowered. Gene-level DGE can miss a \emph{weak coordinated} program in which many genes each shift modestly without any one crossing FDR --- so ``nothing else moves'' carries a gene-level-only caveat. decontX is a sensitivity check using the paper's own labels (mild circularity), not proof of ambient origin. And anchor markers simplify what is really a continuous gradient; snRNA measures per-cell transcriptional balance, not lobule geometry --- we do not claim spatial/architectural preservation.
+Stated plainly, not apologetically. This is a hackathon-scale re-analysis: no wet-lab, no imaging or spatial re-analysis, single cohort. The F4 biopsy stratum is thin (n=4), so subtle effects there are underpowered --- which is why we lead the dimming result with the fibrosis-wide trend, not the F1-vs-F4 endpoint. The detox-dimming finding itself is a \emph{relative} decline within a fixed sequencing budget (not proven absolute molecule loss), a donor-level trend, and could partly reflect a shift among pericentral subzones; in the strictly self-contained gene-set test only the CYP detox core clears alone. decontX is a sensitivity check using the paper's own labels (mild circularity), not proof of ambient origin. And anchor markers simplify what is really a continuous gradient; snRNA measures per-cell transcriptional balance, not lobule geometry --- we report the absence of a transcriptional de-zonation \emph{signal}, not spatial/architectural preservation.
 
-Next steps: gene-set/pathway tests (CAMERA + ROAST over standard hepatocyte programs) to close the weak-coordinated-program gap; leave-one-F4-donor-out DGE on the biliary hits; a quantitative contamination model asking whether the ambient/doublet burden numerically explains the counts; spatial validation; and an independent MASLD biopsy cohort.
+Next steps: validate the detox-dimming gradient in spatial / independent-biopsy tissue and with a functional readout of pericentral detox capacity (and settle within-cell downregulation vs pericentral-subzone shift); leave-one-F4-donor-out DGE on the biliary hits; a quantitative contamination model asking whether the ambient/doublet load numerically explains the counts; and an independent MASLD biopsy cohort. (The gene-set/pathway tests --- CAMERA, ROAST, GSEA --- that close the weak-coordinated-program gap are reported in R5.)
 
 \section*{Appendix / backup}
 \addcontentsline{toc}{section}{Appendix / backup}

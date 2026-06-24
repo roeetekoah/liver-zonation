@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MASLD re-analysis — methods &amp; concepts reference</title>
+<style>
+  :root{
+    --bg:#F7F5F1; --ink:#1B2B31; --mute:#5C6E73; --line:#E2DCCF; --card:#FFFFFF;
+    --teal:#0D9488; --purple:#7C3AED; --amber:#C0561B; --red:#BE123C; --blue:#1D4ED8;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:12px;line-height:1.32;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .wrap{max-width:1180px;margin:0 auto;padding:20px 20px 28px}
+  header{border-bottom:3px solid var(--amber);padding-bottom:8px;margin-bottom:14px}
+  header h1{font-family:Georgia,"Times New Roman",serif;font-size:21px;margin:0 0 2px;color:var(--ink)}
+  header .sub{color:var(--mute);font-size:11px;letter-spacing:.04em;text-transform:uppercase}
+  .grid{column-count:2;column-gap:16px}
+  @media (max-width:760px){.grid{column-count:1}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:7px;
+    padding:9px 11px 6px;margin:0 0 14px;break-inside:avoid;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+  .card.span{column-span:all}
+  .card h2{font-size:11px;letter-spacing:.13em;text-transform:uppercase;margin:0 0 7px;
+    padding-left:8px;border-left:4px solid var(--accent,var(--ink));color:var(--accent,var(--ink))}
+  .c-teal{--accent:var(--teal)} .c-purple{--accent:var(--purple)}
+  .c-amber{--accent:var(--amber)} .c-red{--accent:var(--red)} .c-blue{--accent:var(--blue)}
+  .row{padding:3px 0;border-top:1px solid #F1ECE3}
+  .row:first-of-type{border-top:0}
+  .t{font-weight:700;color:var(--accent,var(--ink))}
+  .d{color:#2c3a40}
+  .confgrid{column-count:2;column-gap:16px}
+  @media (max-width:760px){.confgrid{column-count:1}}
+  footer{margin-top:6px;color:var(--mute);font-size:10.5px;text-align:center}
+  @media print{ body{font-size:10.5px} .wrap{max-width:none;padding:10px} .card{box-shadow:none} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>MASLD snRNA-seq re-analysis &mdash; methods &amp; concepts reference</h1>
+    <div class="sub">Computational Genomics 76553 &middot; HUJI &middot; one line per term</div>
+  </header>
+
+  <div class="grid">
+
+    <div class="card c-teal">
+      <h2>Counts, normalization &amp; DGE</h2>
+      <div class="row"><span class="t">Pseudobulk</span> <span class="d">&mdash; sum all of one donor&rsquo;s hepatocyte UMIs into a single profile, so the donor (not the cell) is the statistical unit.</span></div>
+      <div class="row"><span class="t">CPM</span> <span class="d">&mdash; each gene as a share of the donor&rsquo;s total counts; simple but <i>compositional</i> &mdash; if a few genes surge, everyone else&rsquo;s share shrinks.</span></div>
+      <div class="row"><span class="t">TMM</span> <span class="d">&mdash; pick a reference sample, take each library&rsquo;s gene-wise log-ratios to it, trim the extreme movers, average the rest &rarr; the scaling factor, so surging genes can&rsquo;t distort it (composition-robust).</span></div>
+      <div class="row"><span class="t">edgeR</span> <span class="d">&mdash; the R/Bioconductor package that runs our per-gene differential-expression test on the pseudobulk counts.</span></div>
+      <div class="row"><span class="t">GLM</span> <span class="d">&mdash; a regression linking a predictor (fibrosis stage) to a non-normal response &mdash; for counts, via a negative-binomial noise model.</span></div>
+      <div class="row"><span class="t">NB quasi-likelihood GLM</span> <span class="d">&mdash; edgeR&rsquo;s engine: model counts as negative-binomial (mean + overdispersion), fit a quasi-likelihood GLM that estimates the extra variability robustly &rarr; calibrated p-values with few replicates.</span></div>
+      <div class="row"><span class="t">filterByExpr</span> <span class="d">&mdash; keep a gene only if it has enough reads in enough samples of the smallest group (&asymp;21k kept); low-count genes have no power and only inflate multiple testing.</span></div>
+      <div class="row"><span class="t">Binomial down-sampling</span> <span class="d">&mdash; randomly thin every nucleus to a common 1,500 UMIs so sequencing depth can&rsquo;t drive detection.</span></div>
+    </div>
+
+    <div class="card c-purple">
+      <h2>Gene-set tests &amp; statistics</h2>
+      <div class="row"><span class="t">GSEA (pre-rank)</span> <span class="d">&mdash; rank every gene by its fibrosis-trend statistic, then test whether a set clusters near one end instead of being scattered.</span></div>
+      <div class="row"><span class="t">CAMERA</span> <span class="d">&mdash; a <i>competitive</i> set test: is this set shifted more than the rest of the genome? (corrects for gene&ndash;gene correlation).</span></div>
+      <div class="row"><span class="t">ROAST / mroast</span> <span class="d">&mdash; a <i>self-contained</i> set test: does the set move away from zero on its own (rotation p-value)? &mdash; ignores the rest of the genome, more conservative.</span></div>
+      <div class="row"><span class="t">competitive vs self-contained</span> <span class="d">&mdash; &ldquo;more shifted than other genes?&rdquo; vs &ldquo;different from no change at all?&rdquo; &mdash; a set can pass one and fail the other.</span></div>
+      <div class="row"><span class="t">TOST</span> <span class="d">&mdash; an <i>equivalence</i> test: not &ldquo;is there a difference?&rdquo; but &ldquo;is it small enough to rule out anything bigger than a bound?&rdquo; &mdash; lets us say &ldquo;no large change.&rdquo;</span></div>
+      <div class="row"><span class="t">Cram&eacute;r&rsquo;s V</span> <span class="d">&mdash; a 0&ndash;1 score of association between two categorical variables (e.g. run vs source): 0 = independent, 1 = perfectly confounded.</span></div>
+      <div class="row"><span class="t">Spearman</span> <span class="d">&mdash; correlation of ranks: any monotonic trend, robust to outliers and non-linear scaling.</span></div>
+      <div class="row"><span class="t">Partial correlation</span> <span class="d">&mdash; correlation between two variables after removing a third&rsquo;s effect (e.g. detox vs fibrosis, controlling for age).</span></div>
+    </div>
+
+    <div class="card c-amber">
+      <h2>Tools &amp; data terms</h2>
+      <div class="row"><span class="t">decontX</span> <span class="d">&mdash; models each droplet as native RNA + a shared ambient &ldquo;soup,&rdquo; estimates each cell&rsquo;s ambient fraction, and subtracts it &rarr; a decontaminated matrix.</span></div>
+      <div class="row"><span class="t">SCT &mdash; why we dropped it</span> <span class="d">&mdash; Seurat normalization that swaps raw UMIs for smoothed values. Our questions are defined on integer molecules: a &ldquo;&ge;2 UMI&rdquo; call is meaningless on residuals, and ambient detection must separate 0/1/2 true molecules &mdash; SCT pools/imputes across cells and would manufacture co-expression. So we use raw counts.</span></div>
+      <div class="row"><span class="t">Ambient RNA (&ldquo;soup&rdquo;)</span> <span class="d">&mdash; cell-free RNA from lysed cells in the droplet suspension; every droplet absorbs some, so genes from abundant cell types leak into others.</span></div>
+      <div class="row"><span class="t">Ductular reaction</span> <span class="d">&mdash; expansion of bile-duct/cholangiocyte cells in cirrhosis &mdash; it makes the soup richer in biliary RNA exactly at F4.</span></div>
+      <div class="row"><span class="t">Doublets</span> <span class="d">&mdash; two nuclei in one droplet read as a single &ldquo;cell&rdquo; &mdash; a hepatocyte+cholangiocyte doublet fakes co-expression.</span></div>
+      <div class="row"><span class="t">BCV / dispersion</span> <span class="d">&mdash; biological coefficient of variation: how much a gene varies beyond Poisson noise; edgeR estimates it to avoid false positives.</span></div>
+      <div class="row"><span class="t">Anchor classification</span> <span class="d">&mdash; a yes/no detection call: a nucleus is &ldquo;PC&rdquo; if it detects GLUL/CYP3A4 at &ge;2 UMI &mdash; robust to a level drop, which is why the fraction can stay flat while the program dims.</span></div>
+    </div>
+
+    <div class="card c-blue">
+      <h2>Distinctions we kept confusing</h2>
+      <div class="row"><span class="t">Dimming vs de-zonation</span> <span class="d">&mdash; de-zonation = cells change identity (refuted); dimming = cells keep identity, the program&rsquo;s level drops. Radio: genre change vs volume down.</span></div>
+      <div class="row"><span class="t">Anchor vs detox genes</span> <span class="d">&mdash; identity is a detection call on GLUL+CYP3A4; dimming is measured on separate genes (CYP2E1, CYP1A2&hellip;), so identity stays flat while the module&rsquo;s level falls.</span></div>
+      <div class="row"><span class="t">Depletion vs turn-off</span> <span class="d">&mdash; depletion = an anchor (pole) box shrinks; turn-off = the null (double-negative) box grows &mdash; different boxes, opposite directions.</span></div>
+      <div class="row"><span class="t">Compression vs dimming</span> <span class="d">&mdash; compression = the gradient&rsquo;s shape flattens (cells drift to the middle); dimming = the level drops with the shape kept.</span></div>
+      <div class="row"><span class="t">Relative vs absolute</span> <span class="d">&mdash; a z-score/correlation reads the gradient&rsquo;s shape (scale-free); only counting molecules reads how many cells sit where.</span></div>
+      <div class="row"><span class="t">Donor as replicate</span> <span class="d">&mdash; the ~47 donors are the independent units; cells within a donor are pseudoreplicates &rarr; summarize per donor (SE &asymp; SD/&radic;n).</span></div>
+      <div class="row"><span class="t">Equivalence vs proof</span> <span class="d">&mdash; TOST excludes shifts &gt; &plusmn;19 pp; a &le;10-pp drift stays possible &mdash; &ldquo;no large change,&rdquo; not &ldquo;exactly zero.&rdquo;</span></div>
+    </div>
+
+    <div class="card c-red span">
+      <h2>The confounder battery, decoded &mdash; what it is &middot; what we did / the numbers &middot; the verdict</h2>
+      <div class="confgrid">
+        <div class="row"><span class="t">Tissue source</span> <span class="d">&mdash; stage is tangled with how tissue was obtained (healthy/end-stage = deceased-donor cubes &amp; explants; F0&ndash;F4 = needle biopsies); the ends aren&rsquo;t acquisition-matched &rarr; <b>analyze biopsy-only F1&ndash;F4.</b></span></div>
+        <div class="row"><span class="t">Procurement stress</span> <span class="d">&mdash; handling switches on stress genes that could mimic disease; immediate-early + heat-shock spike ~18&times; in hepatocytes <i>and</i> in endothelium (no zonation program) &rarr; <b>organ-wide handling, not zonation.</b></span></div>
+        <div class="row"><span class="t">Sequencing batch</span> <span class="d">&mdash; runs could line up with stage; run&times;source Cram&eacute;r&rsquo;s V = 0.84 (high) but run&times;fibrosis within biopsies = 0.40 &rarr; <b>ends confounded, biopsy axis estimable.</b></span></div>
+        <div class="row"><span class="t">Lobe (R/C/L)</span> <span class="d">&mdash; explants span several lobes; marker detection matches across right/caudate/left &rarr; <b>lobe-invariant.</b></span></div>
+        <div class="row"><span class="t">Sequencing depth</span> <span class="d">&mdash; deeper nuclei detect more, faking &ldquo;more zonation&rdquo;; down-thin to 1,000/1,500/3,000 UMIs &mdash; PC-share flat at every budget (SD 0.006&ndash;0.010) &rarr; <b>not depth.</b></span></div>
+        <div class="row"><span class="t">Ambient RNA</span> <span class="d">&mdash; abundant-gene soup (e.g. ALB) could fake co-expression; corr(ALB share, dual fraction) over 38 donors = +0.04 &rarr; <b>does not drive co-expression.</b></span></div>
+        <div class="row"><span class="t">Cholangiocyte mis-annotation</span> <span class="d">&mdash; mislabeled cholangiocytes would fake biliary signal; KRT19&#8314; &le; 0.1%, EPCAM&#8314; &le; 0.3% in every anchor class &rarr; <b>not contaminating cholangiocytes.</b></span></div>
+        <div class="row"><span class="t">Ploidy / complexity</span> <span class="d">&mdash; cell complexity could track stage and bias detection; mean nFeatures by stage 2218/3063/3169/2641/1984 is non-monotone &rarr; <b>does not track stage.</b></span></div>
+        <div class="row"><span class="t">Depth-match discard</span> <span class="d">&mdash; thinning drops cells below budget; if PC-biased it would skew &mdash; the 3.5&ndash;7.8% dropped are uniformly lower-detection &rarr; <b>depth-driven, not PC-biased.</b></span></div>
+        <div class="row"><span class="t">Clinical covariates</span> <span class="d">&mdash; demographics could explain trends; partial corr(detox, fibrosis | age) = &minus;0.32 (age&ndash;fibrosis = +0.43) &rarr; <b>demographics don&rsquo;t explain it.</b></span></div>
+      </div>
+    </div>
+
+  </div>
+  <footer>Re-analysis of Gribben et&nbsp;al., Nature 2024 (GSE202379) &middot; Roee Tekoah &amp; Shira Gelbstein</footer>
+</div>
+</body>
+</html>
