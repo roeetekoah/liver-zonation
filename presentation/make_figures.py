@@ -402,5 +402,47 @@ try:
 except Exception as e:
     print("SKIPPED fig_gradient.png (blocked):", e)
 
+# ===================== FIG DIMMING — within-PC detox output + gene-set result =====================
+try:
+    UP="#C0561B"   # up-with-fibrosis colour
+    wd=pd.read_csv(f"{T}/geneset_verify_within_pc_detox.csv")
+    st=wd[wd["stage"].isin(["F0","F1","F2","F3","F4"])].copy()
+    st["x"]=st["stage"].map({"F0":0,"F1":1,"F2":2,"F3":3,"F4":4})
+    cam=pd.read_csv(f"{T}/geneset_camera.csv").set_index("gene_set")
+    fig,(a1,a2)=plt.subplots(1,2,figsize=(12.4,4.6),gridspec_kw={"width_ratios":[1.0,1.18]})
+    # LEFT — within-PC detox output by stage (mean +/- sd; F0 faded, n=2)
+    for _,r in st.iterrows():
+        fz=(r["stage"]=="F0")
+        a1.errorbar(r["x"],r["mean"],yerr=r["sd"],fmt="o",ms=10,color=(MUTE if fz else BIOPSY),
+                    ecolor=(GRID if fz else to_rgba(BIOPSY,0.45)),elinewidth=2.2,capsize=4,zorder=4,alpha=(0.45 if fz else 1))
+    bio=st[st["stage"]!="F0"]; m,b=np.polyfit(bio["x"],bio["mean"],1); xx=np.array([1,4])
+    a1.plot(xx,m*xx+b,color=CONFOUND,lw=2,ls=(0,(4,3)),zorder=3)
+    a1.set_xticks([0,1,2,3,4]); a1.set_xticklabels(["F0","F1","F2","F3","F4"]); a1.set_xlim(-0.4,4.4)
+    a1.set_ylabel("detox transcripts per PC nucleus\n(depth-matched to 1,500 UMIs)")
+    a1.set_title("Within-PC detox output falls with fibrosis",loc="left",fontsize=14)
+    a1.annotate("ρ = −0.48,  p = 0.003\n(donor-level trend)",xy=(0.96,0.95),xycoords="axes fraction",
+                ha="right",va="top",fontsize=12.5,color=CONFOUND,fontweight="bold")
+    a1.annotate("F0 faded (n=2)",xy=(0.03,0.05),xycoords="axes fraction",fontsize=10,color=MUTE)
+    clean(a1)
+    # RIGHT — gene-set programs, signed significance
+    order=["xenobiotic_CYP","pericentral_anchors","detox_phase2","cholangiocyte_ductular","CTRL_EMT","CTRL_interferon","CTRL_ER_stress"]
+    lab={"xenobiotic_CYP":"PC detox (CYP)","pericentral_anchors":"PC identity","detox_phase2":"PC detox (phase-II)",
+         "cholangiocyte_ductular":"biliary / ductular","CTRL_EMT":"fibrogenesis  ctrl","CTRL_interferon":"inflammation  ctrl","CTRL_ER_stress":"ER-stress  ctrl"}
+    ys=np.arange(len(order))[::-1]
+    for y,gs in zip(ys,order):
+        row=cam.loc[gs]; sl=(-1 if row["Direction"]=="Down" else 1)*(-np.log10(max(row["FDR"],1e-30)))
+        col=BIOPSY if row["Direction"]=="Down" else UP
+        if row["FDR"]>0.05: col=MUTE
+        a2.barh(y,sl,color=col,height=0.62,zorder=3)
+    a2.axvline(0,color=INK,lw=1)
+    a2.set_yticks(ys); a2.set_yticklabels([lab[g] for g in order],fontsize=11.5)
+    a2.set_xlabel("signed  −log₁₀(FDR)      ←  down with fibrosis      up  →")
+    a2.set_title("Gene-set: detox down, controls behave",loc="left",fontsize=14)
+    clean(a2); a2.grid(axis="x",visible=True,color=GRID); a2.grid(axis="y",visible=False)
+    fig.tight_layout(); fig.savefig(f"{OUT}/fig_dimming.png",bbox_inches="tight",pad_inches=0.12); plt.close(fig)
+    print("wrote fig_dimming.png")
+except Exception as e:
+    print("SKIPPED fig_dimming.png:",e)
+
 print("wrote figures to", OUT)
 for f in sorted(os.listdir(OUT)): print("  ", f)

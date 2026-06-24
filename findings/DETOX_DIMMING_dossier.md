@@ -4,6 +4,18 @@ One-line: **In matched MASLD biopsies, hepatocytes keep their zonal identity (no
 the pericentral detox program dims in level. This is real (survives composition control), invisible
 to single-gene DGE, and surfaces only with gene-set + per-cell tests.**
 
+> **Naming note.** Earlier files called the per-cell metric "within-PC detox *burden*" — misleading
+> ("burden" connotes a load). It is the **within-PC detox output**: detox transcripts per pericentral
+> nucleus, depth-matched. Renamed throughout the deck.
+>
+> **Framing note (adopted canonical wording).** This is a **relative** decline — detox transcripts
+> within a fixed 1,500-UMI budget — **not proven absolute molecule loss**. It is a **donor-level**
+> trend (not pseudoreplicated). It **could partly reflect a shift among PC subzones** (fewer
+> deep-zone-3 high-detox cells) rather than pure within-cell downregulation. It is **functional
+> dimming of a zonated program, NOT de-zonation or transdifferentiation**, and does not rescue the
+> paper's identity claim. Lead with the fibrosis-wide trend (ρ=−0.48, p=0.003), not the F1-vs-F4
+> endpoint (F4 n=4). Sets were **pre-specified** from CYP/detox biology + Paper 2 markers.
+
 ---
 
 ## 0. Two things that are NOT the same
