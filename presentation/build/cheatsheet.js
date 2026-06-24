@@ -29,7 +29,7 @@ function page(kicker,headline,accent,rows){
 }
 
 // ---------- PAGE 1 ----------
-page("REFERENCE · 1 / 6","Counts, normalization & differential expression",BIOPSY,[
+page("REFERENCE · 1 / 7","Counts, normalization & differential expression",BIOPSY,[
  ["Pseudobulk","Sum all of one donor's hepatocyte UMIs into a single profile, so the donor — not the cell — is the statistical unit (cells in a donor are not independent)."],
  ["CPM (counts per million)","Each gene as a share of the donor's total counts; simple but compositional — if a few genes surge, everyone else's share mechanically shrinks."],
  ["TMM (trimmed mean of M-values)","Pick one sample as reference, take each other sample's gene-wise log-ratios to it, trim the extreme movers, average the rest → the library's scaling factor, so surging genes can't distort it (composition-robust)."],
@@ -41,7 +41,7 @@ page("REFERENCE · 1 / 6","Counts, normalization & differential expression",BIOP
 ]);
 
 // ---------- PAGE 2 ----------
-page("REFERENCE · 2 / 6","Gene-set tests & statistics",DUAL,[
+page("REFERENCE · 2 / 7","Gene-set tests & statistics",DUAL,[
  ["GSEA (pre-rank)","Rank every gene by its fibrosis-trend statistic, then test whether a gene set clusters near one end of that ranking instead of being scattered."],
  ["CAMERA","A competitive set test: is this set shifted more than the rest of the genome? — and it corrects for correlation between the set's genes."],
  ["ROAST / mroast","A self-contained set test: does the set move away from zero on its own (p-value from rotations)? — ignores the rest of the genome, more conservative."],
@@ -53,7 +53,7 @@ page("REFERENCE · 2 / 6","Gene-set tests & statistics",DUAL,[
 ]);
 
 // ---------- PAGE 3 ----------
-page("REFERENCE · 3 / 6","Tools & data terms",AMBER,[
+page("REFERENCE · 3 / 7","Tools & data terms",AMBER,[
  ["decontX","Models each droplet as native RNA + a shared ambient “soup,” estimates each cell's ambient fraction, and subtracts it → a decontaminated count matrix."],
  ["SCT (SCTransform) — why we dropped it","Seurat normalization that swaps raw UMIs for model-smoothed values. Our two core questions are defined on integer molecules, which SCT destroys: (a) marker co-detection asks “does this nucleus carry ≥ 2 real molecules of marker X?” — a “≥ 2 UMI” call is meaningless on smoothed residuals; (b) ambient sensitivity must tell 0 vs 1 vs 2 true molecules apart, but SCT pools / imputes across cells and would manufacture apparent co-expression. So we work on raw counts."],
  ["Ambient RNA (“soup”)","Cell-free RNA from lysed cells floating in the droplet suspension; every droplet absorbs some, so genes from abundant cell types leak into other cells."],
@@ -65,7 +65,7 @@ page("REFERENCE · 3 / 6","Tools & data terms",AMBER,[
 
 // ---------- PAGE 4 — CONFOUNDER BATTERY (1/2) ----------
 // each sentence decodes all three columns of the audit table: what the confounder is (why it could fool us) · what we did + what the numbers mean · the verdict
-page("REFERENCE · 4 / 6","The confounder battery, explained (1 / 2)",CONFOUND,[
+page("REFERENCE · 4 / 7","The confounder battery, explained (1 / 2)",CONFOUND,[
  ["Tissue source","Could fool us because disease stage is tangled with how the tissue was obtained — healthy & end-stage are deceased-donor organ cubes / explants while F0–F4 are needle biopsies; since the ends aren't acquisition-matched, the verdict is to exclude them and analyze biopsy-only F1–F4."],
  ["Procurement stress","Tissue handling switches on stress genes that could masquerade as disease; we measured immediate-early + heat-shock genes across 6 cell lineages — hepatocytes spike ~18× but endothelium (which has no zonation program) spikes the same ~18×, so the verdict is organ-wide handling stress, not a zonation change."],
  ["Sequencing batch","If sequencing runs line up with stage, batch effects could mimic disease; the run↔source association is high (Cramér's V = 0.84) but run↔fibrosis within biopsies is only 0.40 — so batch is fully confounded at the ends, yet the biopsy axis stays estimable."],
@@ -74,7 +74,7 @@ page("REFERENCE · 4 / 6","The confounder battery, explained (1 / 2)",CONFOUND,[
 ]);
 
 // ---------- PAGE 5 — CONFOUNDER BATTERY (2/2) ----------
-page("REFERENCE · 5 / 6","The confounder battery, explained (2 / 2)",CONFOUND,[
+page("REFERENCE · 5 / 7","The confounder battery, explained (2 / 2)",CONFOUND,[
  ["Ambient RNA (“soup”)","Ambient RNA from abundant genes (e.g. albumin / ALB) could create fake co-expression; across 38 donors the correlation between a donor's ALB ambient share and their dual (co-expression) fraction is +0.04 — essentially zero — so ambient does not drive co-expression."],
  ["Cholangiocyte mis-annotation","If some “hepatocytes” are actually mislabeled cholangiocytes they would fake a biliary signal; within every anchor class the cholangiocyte markers are near-absent (KRT19⁺ ≤ 0.1%, EPCAM⁺ ≤ 0.3%), so the anchor cells are not contaminating cholangiocytes."],
  ["Ploidy / complexity","Cells of different complexity (number of genes detected, nFeatures) could track stage and bias detection; mean nFeatures by stage is non-monotone (2218 / 3063 / 3169 / 2641 / 1984), so complexity does not track stage."],
@@ -83,7 +83,7 @@ page("REFERENCE · 5 / 6","The confounder battery, explained (2 / 2)",CONFOUND,[
 ]);
 
 // ---------- PAGE 6 ----------
-page("REFERENCE · 6 / 6","Distinctions we kept confusing",PC,[
+page("REFERENCE · 6 / 7","Distinctions we kept confusing",PC,[
  ["Dimming vs de-zonation","De-zonation = cells change identity (refuted); dimming = cells keep identity but the program's level drops (the one real change). Radio: genre change vs volume down."],
  ["Anchor genes vs detox genes","Identity is a detection call on GLUL + CYP3A4; the detox dimming is measured on separate genes (CYP2E1, CYP1A2 …), so identity stays flat while the module's level falls."],
  ["Depletion vs turn-off","Depletion = an anchor (pole) box shrinks; turn-off = the null (double-negative) box grows — different boxes, opposite directions, neither implies the other."],
@@ -92,6 +92,18 @@ page("REFERENCE · 6 / 6","Distinctions we kept confusing",PC,[
  ["Donor as the replicate","The ~47 donors are the independent units; cells within a donor are pseudoreplicates → summarize per donor, or you fake significance (SE ≈ SD/√n)."],
  ["Biliary = compositional confounder","At F4 a ductular reaction adds cholangiocytes whose ambient RNA enriches hepatocyte droplets — so a “hepatocyte biliary” signal can rise from tissue composition, not transdifferentiation. decontX removes most hits; EPCAM/SPINT2/B3GNT3 survive → a rare real state not excluded."],
  ["Equivalence bound vs proof","TOST excludes shifts > ±19 pp; a ≤ 10-pp drift stays possible — “no large change,” not “exactly zero.”"],
+]);
+
+// ---------- PAGE 7 — DONOR FIGURES: DISPLAY & HONEST CLAIMS ----------
+page("REFERENCE · 7 / 7","Donor figures: display & honest claims",TEAL,[
+ ["What the bar shows","Dots = every donor (the spread + outliers — nothing hidden). The error bar shows the precision of the center — NOT the spread again (the dots already show that)."],
+ ["SD / IQR / whiskers","Spread of donors (descriptive); redundant with the dots — and median + IQR is literally the box plot's box."],
+ ["SEM = SD/√n","Precision of the mean; tight because of the ÷√n. ← what we use: a big donor spread still gives a well-pinned mean."],
+ ["95% CI = SEM × t","Also precision, but t ≈ 3.2 at n = 4 blows it up → reads “uncertain” and fights the “confident” message."],
+ ["Mean, not median","The inference (TOST, SE ≈ 4 pp) is mean-based; a median center would describe a different quantity than the test. Median + IQR is the box again."],
+ ["Honest, not stat-picking","Raw dots shown; equivalence stated both ways; and a real change WAS found (detox dimming, ρ = −0.48) → a genuine null, not a power failure. Soft spot: F4 n = 4."],
+ ["✗ Don't claim","“zonation is intact / preserved” — can't prove a negative; underpowered (F4 n = 4)."],
+ ["✓ Do claim","No detectable de-zonation signal; a large shift (> ±19 pp) is excluded (TOST); a subtle ≤ 10 pp drift is not (F4 n = 4)."],
 ]);
 
 p.writeFile({fileName:__dirname+"/cheatsheet.pptx"}).then(f=>console.log("WROTE",f));
