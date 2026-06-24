@@ -2,7 +2,7 @@
 // the project's Zonation_Reanalysis.pptx. Run from here: node build_deck.js
 const pptxgen = require("pptxgenjs");
 const fs = require("fs");
-const A = __dirname + "/assets/";
+const A = __dirname + "/../assets/";  // assets live in presentation/ (this script now sits in presentation/build/)
 // read a PNG's pixel dimensions (IHDR) so figures embed at their EXACT native aspect (no stretch)
 function pngSize(file){ const b=fs.readFileSync(file); return {w:b.readUInt32BE(16), h:b.readUInt32BE(20)}; }
 

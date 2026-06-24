@@ -145,7 +145,7 @@ We **do not** claim to overturn the paper. We re-test **only** the snRNA-seq tra
 | [`src/`](src/README.md) | All current analysis code, grouped by analysis leg: `prep/` (raw→processed extraction + sanity), `confound/` (provenance/source/lobe/stress/batch/power/equivalence), `census/` (count-based PC/PP/dual/null anchor classification + scenario taxonomy), `dge/` (genome-wide + compositional + gene-set differential expression), `legacy/`, `plotting/`. Paths centralized in `config.py`. |
 | [`findings/`](findings/README.md) | The findings store — one folder per finding, each with its data file(s) and a README of numbers / method / caveats, ordered by the story. Includes the `DETOX_DIMMING_dossier.md` and `geneset_tests/`. |
 | [`results/`](results/) | Generated outputs: `figures/`, donor-level / per-gene `tables/`, `reports/`, and provenance (`object_schema.txt`). |
-| [`presentation/`](presentation/) | The talk: `build_deck.js` (the authoritative narrative, pptxgenjs), `make_figures.py`, `assets/` (figures), and the rendered `MASLD_zonation.pptx`. |
+| [`presentation/`](presentation/) | The talk: the final deck `MASLD_stages_computational_analysis_roee_shira.pptx` (+ PDF), the methods/concepts reference (PDF/HTML), `make_figures.py`, and `assets/` (figures). The pptxgenjs build scripts and earlier rendered deck live in [`presentation/build/`](presentation/build/). |
 | [`reports/`](reports/) | Written outputs: `FULL_STORY.txt`, `SYNTHESIS.md`, `finding_stories.md`, `DGE.md`, and LaTeX/PDF reports. |
 | [`data/`](data/) | Local raw + processed data and gene-set `signatures/` (large files gitignored — each machine downloads its own; see `scripts/`). |
 | [`papers/`](papers/) | Source papers (gitignored — copyrighted). |
@@ -205,7 +205,7 @@ Rscript src/dge/decontX_replan_a.R           # ambient-RNA removal, re-test (bil
 
 # 5 · rebuild the deck figures + slides
 python  presentation/make_figures.py
-node    presentation/build_deck.js
+node    presentation/build/build_deck.js
 ```
 
 See [`src/README.md`](src/README.md) for the full **script → finding** map.
