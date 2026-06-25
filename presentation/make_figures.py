@@ -433,7 +433,7 @@ try:
         a2.barh(y,sl,color=col,height=0.62,zorder=3)
     a2.axvline(0,color=INK,lw=1)
     a2.set_yticks(ys); a2.set_yticklabels([lab[g] for g in order],fontsize=11.5)
-    a2.set_xlabel("signed  −log₁₀(FDR)      ←  down with fibrosis      up  →")
+    a2.set_xlabel(r"signed  $-\log_{10}$(FDR)      ←  down with fibrosis      up  →")
     a2.set_title("Gene-set: detox down, controls behave",loc="left",fontsize=14)
     clean(a2); a2.grid(axis="x",visible=True,color=GRID); a2.grid(axis="y",visible=False)
     fig.tight_layout(); fig.savefig(f"{OUT}/fig_dimming.png",bbox_inches="tight",pad_inches=0.12); plt.close(fig)
