@@ -34,7 +34,16 @@
   .confgrid{column-count:2;column-gap:16px}
   @media (max-width:760px){.confgrid{column-count:1}}
   footer{margin-top:6px;color:var(--mute);font-size:10.5px;text-align:center}
-  @media print{ body{font-size:10.5px} .wrap{max-width:none;padding:10px} .card{box-shadow:none} }
+  @page{ size:Letter; margin:0.4in }
+  @media print{
+    body{font-size:10px;line-height:1.28}
+    .wrap{max-width:none;padding:0;margin:0}
+    .card{box-shadow:none;margin:0 0 9px;padding:7px 9px 5px}
+    .row{padding:2px 0}
+    header{margin-bottom:9px;padding-bottom:6px}
+    header h1{font-size:18px}
+    .grid,.confgrid{column-gap:14px}
+  }
 </style>
 </head>
 <body>
@@ -92,6 +101,17 @@
       <div class="row"><span class="t">Equivalence vs proof</span> <span class="d">&mdash; TOST excludes shifts &gt; &plusmn;19 pp; a &le;10-pp drift stays possible &mdash; &ldquo;no large change,&rdquo; not &ldquo;exactly zero.&rdquo;</span></div>
     </div>
 
+  </div>
+  <footer>Re-analysis of Gribben et&nbsp;al., Nature 2024 (GSE202379) &middot; Roee Tekoah &amp; Shira Gelbstein &middot; page 1 of 2</footer>
+</div>
+
+<div class="wrap" style="break-before:page; margin-top:22px">
+  <header>
+    <h1>Rigor &amp; honest reading &mdash; the audit, the figures &amp; the claims</h1>
+    <div class="sub">what we checked &middot; how we display it &middot; what we can (and can&rsquo;t) say</div>
+  </header>
+  <div class="grid">
+
     <div class="card c-red span">
       <h2>The confounder battery, decoded &mdash; what it is &middot; what we did / the numbers &middot; the verdict</h2>
       <div class="confgrid">
@@ -107,17 +127,6 @@
         <div class="row"><span class="t">Clinical covariates</span> <span class="d">&mdash; demographics could explain trends; partial corr(detox, fibrosis | age) = &minus;0.32 (age&ndash;fibrosis = +0.43) &rarr; <b>demographics don&rsquo;t explain it.</b></span></div>
       </div>
     </div>
-
-  </div>
-  <footer>Re-analysis of Gribben et&nbsp;al., Nature 2024 (GSE202379) &middot; Roee Tekoah &amp; Shira Gelbstein &middot; page 1 of 2</footer>
-</div>
-
-<div class="wrap" style="break-before:page; margin-top:22px">
-  <header>
-    <h1>Reading the donor figures &mdash; display &amp; honest claims</h1>
-    <div class="sub">why dots + mean &plusmn; SEM &middot; and what we can (and can&rsquo;t) say</div>
-  </header>
-  <div class="grid">
 
     <div class="card c-teal">
       <h2>What the figure must show</h2>
