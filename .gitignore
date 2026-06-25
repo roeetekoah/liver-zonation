@@ -63,3 +63,6 @@ reports/deck/qa/
 ~$*
 *.html.tmp
 reports/*.html
+
+# internal document — kept local only, never tracked
+pass.docx
