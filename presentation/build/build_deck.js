@@ -227,7 +227,7 @@ s.addText([{text:"Mild, non-monotone → ",options:{color:"14532D"}},{text:"grad
 s.addShape(p.shapes.ROUNDED_RECTANGLE,{x:8.25,y:4.15,w:4.65,h:1.9,fill:{color:"FFFFFF"},line:{color:"E2DCCF",width:1},rectRadius:0.06,shadow:sh()});
 s.addText([{text:"Dimming  ",options:{bold:true,fontSize:17,color:AMBER,fontFace:SERIF}},{text:"— level",options:{italic:true,fontSize:13,color:MUTE}}],
   {x:8.45,y:4.29,w:4.25,h:0.35,align:"left",margin:0});
-s.addText("The pericentral detox program declines in level — same balance, lower volume.",
+s.addText("The pericentral program declines in level — same balance, lower volume.",
   {x:8.45,y:4.71,w:4.25,h:0.6,fontSize:13,color:INK,align:"left",valign:"top"});
 s.addText([{text:"Real coordinated decline → ",options:{color:"7C2D12"}},{text:"a finding (Results).",options:{bold:true,color:"7C2D12"}}],
   {x:8.45,y:5.5,w:4.25,h:0.4,fontSize:12,italic:true,align:"left",valign:"top"});
@@ -310,15 +310,15 @@ s.addNotes("Per-gene pseudobulk: nothing usable moves (64/21,000 significant, mo
 
 // ============================================================ SLIDE 13b — THE ONE REAL CHANGE (dimming)
 s=p.addSlide(); s.background={color:BG};
-head(s,"THE ONE REAL CHANGE","Pericentral detox dims — identity stays","RESULTS");
-s.addText([{text:"Cells keep their class — ",options:{bold:true}},{text:"but within pericentral nuclei the detox program’s level falls with fibrosis (the one hint our counts gave, now confirmed).",options:{}}],
+head(s,"THE ONE REAL CHANGE","The pericentral program dims — cells keep their class","RESULTS");
+s.addText([{text:"Cells keep their class — ",options:{bold:true}},{text:"but within pericentral nuclei the program’s output level falls with fibrosis: detox enzymes and the broader landmark set alike (the one hint our counts gave, now confirmed).",options:{}}],
   {x:0.7,y:1.5,w:12.3,h:0.5,fontSize:15.5,color:INK,align:"left"});
 img(s,"fig_dimming.png",{x:0.45,y:2.0,w:12.45,h:3.5});
-figcap(s,0.45,5.55,12.45,"Figure 5.  Left — within-PC detox output¹ (depth-matched transcripts per PC nucleus) across fibrosis. Right — gene-set programs²: PC detox / identity down, biliary + fibrogenesis up, validating controls behaved.");
-s.addText([{text:"Like a radio: ",options:{bold:true,color:TEAL}},{text:"the genre held (cells keep identity); the volume dropped (the program dims).   ",options:{italic:true}},
-  {text:"A relative decline (transcripts within a fixed budget), not proven absolute molecule loss; a donor-level trend; could partly reflect a shift among PC subzones. No single gene clears per-gene FDR — only the coordinated set + the per-cell trend.",options:{color:MUTE}}],
+figcap(s,0.45,5.55,12.45,"Figure 5.  Left — within-PC detox output¹ (depth-matched transcripts per PC nucleus) across fibrosis. Right — gene-set programs²: PC detox and the pericentral landmark set down, biliary + fibrogenesis up, validating controls behaved; the gating anchors GLUL/CYP3A4 stay individually flat.");
+s.addText([{text:"Like a radio: ",options:{bold:true,color:TEAL}},{text:"the genre holds (cells keep their class); the volume drops across the whole station (the pericentral program dims — detox and landmark genes alike), not one track.   ",options:{italic:true}},
+  {text:"A relative decline (transcripts within a fixed budget), not proven absolute molecule loss; a donor-level trend; could partly reflect a shift among PC subzones. No single gene clears per-gene FDR — only the coordinated sets + the per-cell trend.",options:{color:MUTE}}],
   {x:0.7,y:6.0,w:12.3,h:0.85,fontSize:12.5,color:"334155",align:"left",valign:"top"});
-fcite(s,"¹ Within-PC detox output: depth-matched to 1,500 UMIs, donor-level Spearman (ρ=−0.48, p=0.003); measured on detox genes (CYP2E1, CYP1A2, ADH4…) disjoint from the GLUL/CYP3A4 identity anchors — so the anchor fraction stays flat while the module dims.   ² Gene-set: camera — Wu & Smyth 2012; ROAST — Wu et al. 2010; GSEA — gseapy.");
+fcite(s,"¹ Within-PC detox output: depth-matched to 1,500 UMIs, donor-level Spearman (ρ=−0.48, p=0.003), measured on detox genes (CYP2E1, CYP1A2, ADH4…). The broader pericentral landmark set dims too; it is the gating anchors GLUL/CYP3A4 — individually flat (FDR 0.80, 0.85) — that hold the classification, so the anchor fraction stays flat while the program’s level falls.   ² Gene-set: camera — Wu & Smyth 2012; ROAST — Wu et al. 2010; GSEA — gseapy.");
 foot(s);
 s.addNotes("The one real biopsy-internal change. LEFT: within-PC detox output (detox transcripts per PC nucleus, depth-matched to 1,500 UMIs) falls from ~11.9 at F1 to ~8.8 at F4; donor-level Spearman rho -0.48, p=0.003. F0 (n=2) faded. RIGHT: gene-set test (camera) — PC detox (CYP) FDR 2e-6, PC identity 1.5e-4, phase-II 7e-3, all DOWN; biliary/ductular + fibrogenesis/inflammation controls UP; ER-stress flat (validating controls). CAREFUL FRAMING: this is a RELATIVE transcript decline within a fixed 1,500-UMI budget, not proven absolute molecule loss; it is a donor-level trend (not pseudoreplicated); it could partly reflect a shift among PC subzones rather than pure within-cell downregulation; no single detox gene clears per-gene FDR. Cells retain their pericentral/periportal identities — functional dimming of a zonated program, NOT de-zonation or transdifferentiation. This was our original within-PC metric (the one count hint), conservatively shelved as borderline, now confirmed by the coordinated set test + the full-trajectory trend, after ruling out a composition artifact (TMM, contaminant removal, the per-cell measure).");
 
@@ -356,8 +356,8 @@ const cols=[
   {h:"Next",c:"9CC6CC",items:["Spatial / independent-biopsy validation of the detox-dimming gradient.","Leave-one-F4-donor-out DGE.","Quantitative contamination model for the biliary lead.","Functional readout of pericentral detox capacity."]}
 ];
 const takes=[
-  {n:"01",t:"Cells keep their zonal identity — no de-zonation signal"},
-  {n:"02",t:"The one real change: the pericentral detox program dims"},
+  {n:"01",t:"Cells keep their zonal class — no de-zonation signal"},
+  {n:"02",t:"The one real change: the pericentral program dims (class preserved)"},
   {n:"03",t:"The dramatic trajectory tracks acquisition, not disease"}];
 let ty=2.1; for(const k of takes){
   s.addText(k.n,{x:0.92,y:ty-0.06,w:1.25,h:0.8,fontSize:37,bold:true,color:AMBER,fontFace:SERIF,align:"left",valign:"top",margin:0});

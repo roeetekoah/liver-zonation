@@ -30,7 +30,7 @@
 - [The catch](#-2--the-catch)
 - [The method](#-3--the-method)
 - [Results](#-4--results)
-- [The one real change: detox dimming](#-5--the-one-real-change-detox-dimming)
+- [The one real change: the pericentral program dims](#-5--the-one-real-change-the-pericentral-program-dims)
 - [Where the biliary signal comes from](#-6--where-the-biliary-signal-comes-from)
 - [Conclusion](#-7--conclusion)
 - [Repository structure](#-repository-structure)
@@ -98,15 +98,15 @@ Across matched biopsy **F1–F4**:
 
 ---
 
-## 💡 5 · The one real change: detox dimming
+## 💡 5 · The one real change: the pericentral program dims
 
-There is **one** real biopsy-internal change. Within pericentral nuclei, the **detox program's level falls** with fibrosis:
+There is **one** real biopsy-internal change. Within pericentral nuclei, the **pericentral program's output falls** in level with fibrosis:
 
 - Within-PC detox output (depth-matched transcripts per PC nucleus) declines from ~11.9 at F1 to ~8.8 at F4; donor-level Spearman **ρ = −0.48, p = 0.003**.
-- Gene-set tests (CAMERA / ROAST) agree: PC detox (CYP) FDR 2×10⁻⁶, PC identity 1.5×10⁻⁴, both **down**; biliary + fibrogenesis + inflammation controls **up**; ER-stress flat (validating controls behaved).
-- Measured on detox genes (`CYP2E1`, `CYP1A2`, `ADH4`…) **disjoint** from the `GLUL` / `CYP3A4` identity anchors — so the anchor fraction stays flat while the module dims.
+- Gene-set tests (CAMERA / ROAST) agree: PC detox (CYP) FDR 2×10⁻⁶, the PC landmark set 1.5×10⁻⁴, both **down**; biliary + fibrogenesis + inflammation controls **up**; ER-stress flat (validating controls behaved).
+- The **gating anchors** `GLUL` / `CYP3A4` are individually flat (FDR 0.80, 0.85) — which is what keeps the anchor fraction flat. The program dims more broadly around them: the detox genes (`CYP2E1`, `CYP1A2`, `ADH4`…) **and** the pericentral landmark set.
 
-> Like a radio: **the genre held** (cells keep their zonal identity); **the volume dropped** (the program dims). This is **functional dimming, NOT de-zonation or transdifferentiation.**
+> Like a radio: **the genre holds** (cells keep their zonal *class*); **the volume drops across the whole station** (the pericentral program dims — detox and landmark genes alike), not just one track. This is **functional dimming of the program, NOT de-zonation or transdifferentiation.**
 
 **Careful framing (load-bearing):** the dimming is a *relative* decline (transcripts within a fixed 1,500-UMI budget), **not proven absolute molecule loss**; it is a **donor-level trend**; it could partly reflect a shift among pericentral subzones; and no single detox gene clears per-gene FDR — only the coordinated gene set plus the per-cell trend.
 
@@ -128,10 +128,10 @@ The dominant evidence points to composition / ambient RNA most likely tracking t
 
 ## 🎯 7 · Conclusion
 
-**Zonal identity holds — and the pericentral detox program dims.**
+**Zonal class holds — and the pericentral program dims.**
 
-1. **Cells keep their zonal identity** across matched biopsies — *no transcriptional de-zonation signal* (a large shift is excluded).
-2. **The one real change** is that the pericentral detox program *dims* — relative, donor-level, functional; not de-zonation.
+1. **Cells keep their zonal class** across matched biopsies — *no transcriptional de-zonation signal* (a large shift is excluded).
+2. **The one real change** is that the pericentral program *dims* in level (detox **and** landmark genes; the gating anchors hold the class) — relative, donor-level, functional; not de-zonation.
 3. **The dramatic published trajectory tracks acquisition, not disease** — the full healthy→end-stage arc is source-confounded.
 
 We **do not** claim to overturn the paper. We re-test **only** the snRNA-seq transcriptional evidence — we correct **one evidence leg** (the marker-correlation reading). The paper's **imaging, protein staining, and organoid** evidence are untouched, and we agree the strong end-stage phenomenon is real *at end stage*. The biliary signal is a separate compositional lead.

@@ -1,0 +1,53 @@
+<!doctype html><html lang="he"><head><meta charset="utf-8">
+<style>
+@page{size:A4;margin:14mm 16mm;}
+*{box-sizing:border-box;}
+body{font-family:Arial,"Segoe UI","David",sans-serif;color:#1B2B31;margin:0;}
+h1{font-size:19px;color:#123F47;margin:0 0 2px;}
+.sub{color:#5C6E73;font-size:12px;margin:0 0 14px;}
+.slide{border:1px solid #DAD4CA;border-right:5px solid #1B6E78;border-radius:7px;padding:9px 13px;margin:0 0 9px;page-break-inside:avoid;background:#fff;}
+.shead{display:flex;align-items:center;gap:9px;margin-bottom:5px;direction:ltr;}
+.snum{font-weight:bold;color:#C0561B;font-size:15px;}
+.sname{font-weight:bold;color:#123F47;font-size:14px;}
+.badge{margin-inline-start:auto;background:#E7F0EE;color:#123F47;font-size:11px;font-weight:bold;border-radius:10px;padding:2px 9px;direction:ltr;}
+.he{direction:rtl;text-align:right;font-size:13.5px;line-height:1.62;}
+.he b{color:#0d3d44;}
+.cue{color:#1B6E78;font-style:italic;font-size:12.5px;}
+.en{direction:ltr;color:#7C2D12;font-weight:bold;font-style:normal;}
+.note{background:#FBEEE9;border:1px solid #BE123C;border-radius:6px;padding:7px 11px;direction:rtl;text-align:right;font-size:12px;color:#1B2B31;margin-top:10px;}
+</style></head><body>
+<h1>תסריט — החלק של רועי (גרסה ממוזגת, עברית)</h1>
+<p class="sub">From the four classes to the conclusion · ~4:40 total · the dimming section is now two slides (finding → how-we-know)</p>
+
+<div class="slide"><div class="shead"><span class="snum">1</span><span class="sname">Four classes</span><span class="badge">~35s</span></div>
+<div class="he">אחד התיקונים ששירה הציגה היה להפסיק להסתכל על מספר בודד ולהסתכל <b>עדין יותר</b>. במקום ה"פער", אנחנו ממיינים כל הפטוציט לאחת מארבע מחלקות: <span class="en">PC</span> מובהק, <span class="en">PP</span> מובהק, <b>דואלי</b> — שניהם יחד — או <span class="en">NULL</span>, אף אחד מהם. ואז "איבוד הזונציה" הוא לא אירוע בודד על סרגל חד-מימדי, אלא <b>ארבעה מעברים מובחנים</b> בין הקופסות: התרוקנות של קוטב, עלייה בדואלי, עלייה ב-<span class="en">NULL</span>, או שינוי ביחס. הנקודה: ציון <span class="en">z-score</span> בודד מקריס את כל הארבעה למספר אחד ומסתיר את המנגנון — רק <b>ספירת התאים</b> בכל קופסה מפרידה ביניהם.<br><span class="cue">(מעבר →) ומעבר לקופסות — יש גם תמונה רציפה.</span></div></div>
+
+<div class="slide"><div class="shead"><span class="snum">2</span><span class="sname">The gradient axis</span><span class="badge">~25s</span></div>
+<div class="he">כי זונציה היא לא באמת ארבעה בינים — היא <b>גרדיאנט רציף</b> בין שני קטבים. גרדיאנט יכול להיחלש בשתי דרכים <b>בלי ששום תא מחליף מחלקה</b>: <span class="en">compression</span> — הקטבים נמשכים לאמצע ומאבדים ניגודיות; או <span class="en">dimming</span> — כל קטגוריה נשארת במקומה אבל מבוטאת חלש יותר, כמו שתי תחנות רדיו שמנגנות באותו ז'אנר אבל בווליום נמוך. <b>תחזיקו את שתי המילים</b> — <span class="en">compression</span> ו-<span class="en">dimming</span> — כי התוצאות בדיוק מפרידות ביניהן.</div></div>
+
+<div class="slide"><div class="shead"><span class="snum">3</span><span class="sname">Methods &amp; software (buffer)</span><span class="badge">~15s</span></div>
+<div class="he">רק איסוף קצר: מכאן והלאה הכל — קלסיפיקציה, <span class="en">DGE</span>, וכו' — נגזר מ<b>ספירות גולמיות, ברמת התורם</b>. השתמשנו בכלים סטנדרטיים ומוכרים — <span class="en">edgeR</span> לפסודובאלק, מבחני <span class="en">gene-set</span> כמו <span class="en">CAMERA</span> ו-<span class="en">ROAST</span>, ניקוי <span class="en">ambient-RNA</span> — שום דבר אקזוטי; פרטים ב-<span class="en">BACKUP</span>.<br><span class="cue">(מעבר →) אז מה הספירות באמת אומרות?</span></div></div>
+
+<div class="slide"><div class="shead"><span class="snum">4</span><span class="sname">THE RESULT</span><span class="badge">~45s</span></div>
+<div class="he">תזכרו את החשש מ-<span class="en">Catch&nbsp;1</span> — ה"פער" יכול לרדת לאפס <b>מהסיבות הלא נכונות</b>. אז לא מדדנו את הפער; ספרנו מי נמצא בכל קופסה, לאורך הביופסיות התואמות <span class="en">F1</span> עד <span class="en">F4</span> (את הקצוות ניתחנו בנפרד). כל נקודה היא תורם, כל בר הוא ממוצע שלב — וכל המדדים <b>שטוחים</b>: העוגנים לא מתרוקנים, <span class="en">co-expression</span> נשאר מתחת לחצי אחוז ולא עולה, וגם ה-<span class="en">NULL</span> ויחס ה-<span class="en">PP:PC</span> לא זזים. אז <b>אף אחד מארבעת המעברים לא קורה</b>. וזה יותר מ"לא מצאנו" — מבחן שקילות שולל ברמת ביטחון גבוהה תזוזה גדולה מ-19 נקודות; רק דריפט עדין יכול להתחבא, וגם זה מוגבל כי ל-<span class="en">F4</span> יש רק 4 תורמים.</div></div>
+
+<div class="slide"><div class="shead"><span class="snum">5</span><span class="sname">The gradient, in data</span><span class="badge">~20s</span></div>
+<div class="he">כאן נבחן את ה-<span class="en">compression</span> — את ה-<span class="en">dimming</span> נשאיר להמשך. נצייר את האנטי-אלכסון על הספירות ונסתכל על צורתו: לאורך <span class="en">F1–F4</span> הענן נשאר <b>פרוש</b>, לא נערם לאמצע. רק ה-<span class="en">explant</span> — הקצה שמבולבל בשיטת הדגימה — קורס לקוטב אחד. כלומר: גם סיגנל <span class="en">compression</span> <b>לא מופיע</b> בשלבי הפיברוזיס.</div></div>
+
+<div class="slide"><div class="shead"><span class="snum">6</span><span class="sname">Genome-wide</span><span class="badge">~25s</span></div>
+<div class="he">סיגנל יכול להתחבא גם <b>בתוך</b> קופסה. לכן עברנו ל-<span class="en">DGE</span> פר-גן ולמבחני <span class="en">gene-set</span>. ב-<span class="en">DGE</span> כמעט שום דבר לא זז — הגנים המזהים של <span class="en">PC</span> ו-<span class="en">PP</span> <b>שטוחים לחלוטין</b> (<span class="en">GLUL</span> ב-<span class="en">FDR 0.80</span>); הגנים היחידים שכן עולים הם של תאי מרה — שזו בדיוק הטענה השנייה של המאמר, אז היינו חייבים לבדוק אותה.</div></div>
+
+<div class="slide"><div class="shead"><span class="snum">7</span><span class="sname">Source (biliary)</span><span class="badge">~30s</span></div>
+<div class="he">נעשה זום-אין על התוצאה הכמעט-מובהקת הזו ונשאל בחשדנות: האם זו באמת טרנס-דיפרנציאציה? קשה לטעון לתזוזה של כל מסת ההפטוציטים לעבר זהות תאי-מרה — כי רק כ-<b>0.4%</b> מהם בכלל מראים <span class="en">co-expression</span>. וכשהפעלנו כלי סטנדרטי לניקוי זיהומי-סביבה, הסיגנל <b>נחתך בחצי</b>, ורק חלק מהגנים נשארו מובהקים (שלושה שורדים). אז ההסבר המוביל הוא <b>הרכב/ambient, לא טרנס-דיפרנציאציה</b> — אבל זה <b>כיוון מבטיח, לא מסקנה סגורה</b>.</div></div>
+
+<div class="slide"><div class="shead"><span class="snum">8</span><span class="sname">DIMMING — the landscape</span><span class="badge">~30s</span></div>
+<div class="he">עד כה בעיקר <b>שללנו</b>: אין <span class="en">depletion</span>, אין <span class="en">compression</span>, אין <span class="en">dezonation</span>. אבל <span class="en">DGE</span> פר-גן מפספס תוכניות שבהן אף גן בודד לא מובהק, אבל כולם יחד זזים לאותו כיוון — בדיוק לשם כך קיימים מבחני <span class="en">gene-set</span>. בדקנו כ-10 תוכניות מוגדרות-מראש, וזו התמונה המלאה: כל נקודה היא תוכנית, ימינה = זזה יותר מהגנום (תחרותי), ולמטה/למעלה = זזה בפני עצמה (עצמאי). <b>רק תוכנית אחת יושבת בפינה החזקה — ניקוי-הרעלים הפריצנטרלי</b>, שעוברת את שני המבחנים. המבחן העצמאי שואל: האם <b>הסט כולו</b> זז מספיק חזק? רק גרעין ה-<span class="en">detox</span> (CYP) עובר אותו — הגנים שלו יורדים יחד ובעוצמה מספקת. סט-הזהות ו-<span class="en">phase-II</span> גם נוטים מטה, אבל <b>חלש מאוד — אף גן בודד לא זז</b>, אז בפני עצמם הם borderline או null. <b>תזוזה כל-כך חלשה בכלל לא יכולה להיחשב כ"כיבוי" אמיתי של התוכנית</b> — ולכן הזהות בפועל נשמרת. הסיגנל התחרותי שלהם חלקית "מושאל" מעליית גני תאי-המרה, והם בעצם רובם אותם גני <span class="en">detox</span> — לא עדות עצמאית. וזהירות חשובה: גם הגנים-המגדירים (<span class="en">GLUL</span>, <span class="en">CYP3A4</span>) נוטים מטה קלות — אז לא אומרים "הזהות לא זזה", אלא ש<b>אף גן-זהות בודד לא נאבד</b>. (ומרגיע: <span class="en">urea</span> ו-<span class="en">ER-stress</span> באמת שטוחות — אין ארטיפקט גלובלי.) הבקרות התנהגו כצפוי, מה שמאמת שהמבחן עובד.</div></div>
+
+<div class="slide"><div class="shead"><span class="snum">9</span><span class="sname">DIMMING — the one real change (zoom)</span><span class="badge">~25s</span></div>
+<div class="he">אז נתמקד בתוכנית האחת שכן השתנתה. בתוך תאי ה-<span class="en">PC</span>, תפוקת ניקוי-הרעלים <b>יורדת בהתמדה</b> עם הפיברוזיס — וזה מדד <b>פר-תא</b>, מותאם-עומק, שהרכב בכלל לא יכול לזייף; קורלציה מינוס 0.48. וחשוב: התאים <b>שומרים על המחלקה שלהם</b> — שברי-העוגן (הקלסיפיקציה) נשארים שטוחים: אין דה-זונציה, ו<b>אף גן-זהות בודד לא נאבד</b> (כולם לא-מובהקים). אז זה לא שכל ה-<span class="en">PC</span> נכבה — אלא <b>התעמעמות מתואמת וחלשה של תוכנית ספציפית</b>. זה <span class="en">dimming</span>, לא <span class="en">de-zonation</span>. כמו רדיו: אותו ז'אנר (התאים נשארים פריצנטרליים), ווליום נמוך יותר (ערוץ ה-<span class="en">detox</span> מתעמעם).</div></div>
+
+<div class="slide"><div class="shead"><span class="snum">10</span><span class="sname">Conclusion</span><span class="badge">~30s</span></div>
+<div class="he">אז נחזור לשאלה שאיתה שירה פתחה: האם יש דגרדציה של החלוקה המרחבית עם המחלה, והאם היא קשורה לפלסטיות? <b>שלוש מסקנות.</b> אחת: בביופסיות תואמות, <b>אין סיגנל של dezonation</b> — התאים שומרים על המחלקה שלהם, ושינויים חדים נשללו. שתיים: <b>ייתכן</b> שחלק גדול מהשינוי הדרמטי בין <span class="en">healthy</span> ל-<span class="en">end-stage</span> הוא <span class="en">confounded</span> על ידי שיטת הדגימה, ולא נובע מהמחלה. שלוש: השינוי הפוזיטיבי היחיד הוא פנימי — <b>עמעום תוכנית ניקוי-הרעלים</b> בתוך ה-<span class="en">PC</span>, כשהזהות עצמה נשמרת. ולחידוד: קשה לומר שקורלציית ה-<span class="en">markers</span> תומכת ב-<span class="en">dezonation</span>; טענת החלבונים עומדת בעינה ולא דנו בה; והשאלות על טרנס-דיפרנציאציה נשארות <b>פתוחות</b> — לא קביעות, לחיוב או לשלילה. אז זה אנחנו — תודה רבה, נשמח לשאלות, ויש שקופיות <span class="en">BACKUP</span> לזום-אין.</div></div>
+
+<div class="note"><b>הערת תזמון:</b> סה"כ ≈ 4:40. שקופית ה-<span class="en">DIMMING</span> היא שתי שקופיות — <b>הנוף</b> (כל התוכניות, רק ה-<span class="en">detox</span> חזק; 30 שניות) ואז <b>זום</b> (השינוי האחד פר-תא; 25 שניות), ממש לפני המסקנות. אם חורגים מהזמן, "כלים ותוכנה" ושקופית 5 הן הראשונות לקצר.</div>
+</body></html>

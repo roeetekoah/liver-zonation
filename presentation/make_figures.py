@@ -423,7 +423,7 @@ try:
     clean(a1)
     # RIGHT — gene-set programs, signed significance
     order=["xenobiotic_CYP","pericentral_anchors","detox_phase2","cholangiocyte_ductular","CTRL_EMT","CTRL_interferon","CTRL_ER_stress"]
-    lab={"xenobiotic_CYP":"PC detox (CYP)","pericentral_anchors":"PC identity","detox_phase2":"PC detox (phase-II)",
+    lab={"xenobiotic_CYP":"PC detox (CYP)","pericentral_anchors":"PC landmark set","detox_phase2":"PC detox (phase-II)",
          "cholangiocyte_ductular":"biliary / ductular","CTRL_EMT":"fibrogenesis  ctrl","CTRL_interferon":"inflammation  ctrl","CTRL_ER_stress":"ER-stress  ctrl"}
     ys=np.arange(len(order))[::-1]
     for y,gs in zip(ys,order):
@@ -434,12 +434,119 @@ try:
     a2.axvline(0,color=INK,lw=1)
     a2.set_yticks(ys); a2.set_yticklabels([lab[g] for g in order],fontsize=11.5)
     a2.set_xlabel(r"signed  $-\log_{10}$(FDR)      ←  down with fibrosis      up  →")
-    a2.set_title("Gene-set: detox down, controls behave",loc="left",fontsize=14)
+    a2.set_title("Gene-set: detox dims hardest; identity gates held",loc="left",fontsize=14)
+    a2.text(0.025,0.32,"Gating genes GLUL/CYP3A4\nflat → identity held",
+            transform=a2.transAxes,fontsize=9.5,color=MUTE,va="center",ha="left",style="italic")
     clean(a2); a2.grid(axis="x",visible=True,color=GRID); a2.grid(axis="y",visible=False)
     fig.tight_layout(); fig.savefig(f"{OUT}/fig_dimming.png",bbox_inches="tight",pad_inches=0.12); plt.close(fig)
     print("wrote fig_dimming.png")
 except Exception as e:
     print("SKIPPED fig_dimming.png:",e)
+
+# single clean panel — within-PC detox decline (the per-cell, composition-immune evidence for the dimming slide)
+try:
+    wd=pd.read_csv(f"{T}/geneset_verify_within_pc_detox.csv")
+    st=wd[wd["stage"].isin(["F0","F1","F2","F3","F4"])].copy()
+    st["x"]=st["stage"].map({"F0":0,"F1":1,"F2":2,"F3":3,"F4":4})
+    fig,a1=plt.subplots(figsize=(7.6,4.7))
+    for _,r in st.iterrows():
+        fz=(r["stage"]=="F0")
+        a1.errorbar(r["x"],r["mean"],yerr=r["sd"],fmt="o",ms=12,color=(MUTE if fz else BIOPSY),
+                    ecolor=(GRID if fz else to_rgba(BIOPSY,0.45)),elinewidth=2.6,capsize=5,zorder=4,alpha=(0.45 if fz else 1))
+    bio=st[st["stage"]!="F0"]; m,b=np.polyfit(bio["x"],bio["mean"],1); xx=np.array([1,4])
+    a1.plot(xx,m*xx+b,color=CONFOUND,lw=2.6,ls=(0,(4,3)),zorder=3)
+    a1.set_xticks([0,1,2,3,4]); a1.set_xticklabels(["F0","F1","F2","F3","F4"],fontsize=12); a1.set_xlim(-0.4,4.4)
+    a1.set_ylabel("detox transcripts per PC nucleus\n(depth-matched to 1,500 UMIs)")
+    a1.set_title("Within pericentral cells, detox output falls with fibrosis",loc="left",fontsize=14)
+    a1.annotate("ρ = −0.48,  p = 0.003\n(donor-level trend)",xy=(0.96,0.95),xycoords="axes fraction",
+                ha="right",va="top",fontsize=13.5,color=CONFOUND,fontweight="bold")
+    a1.annotate("measured on detox genes separate from the GLUL/CYP3A4 gates",xy=(0.03,0.06),xycoords="axes fraction",fontsize=10.5,color=MUTE,style="italic")
+    clean(a1)
+    fig.tight_layout(); fig.savefig(f"{OUT}/fig_within_pc_detox.png",bbox_inches="tight",pad_inches=0.12); plt.close(fig)
+    print("wrote fig_within_pc_detox.png")
+except Exception as e:
+    print("SKIPPED fig_within_pc_detox:",e)
+
+# gene-set robustness landscape — competitive (camera, x) vs self-contained (roast, y); one point per program
+try:
+    cam=pd.read_csv(f"{T}/geneset_camera.csv").set_index("gene_set")
+    ro=pd.read_csv(f"{T}/geneset_verify_roast.csv").set_index("gene_set")
+    META={"xenobiotic_CYP":("PC detox (CYP)",PC,1),"pericentral_anchors":("PC identity",PC,0),
+          "detox_phase2":("phase-II detox",PC,0),"urea_cycle":("urea cycle",PP,0),
+          "periportal_anchors":("PP identity",PP,0),"cholangiocyte_ductular":("biliary",BILIARY,0),
+          "CTRL_EMT":("fibrogenesis",MUTE,0),"CTRL_interferon":("inflammation",MUTE,0),
+          "CTRL_ER_stress":("ER-stress",MUTE,0),"bile_acid_lipid":("bile/lipid",MUTE,0)}
+    def sxy(gs):
+        cd=cam.loc[gs]; rd=ro.loc[gs]
+        x=(-1 if cd["Direction"]=="Down" else 1)*(-np.log10(max(cd["FDR"],1e-30)))
+        y=(-1 if rd["Direction"]=="Down" else 1)*(-np.log10(max(rd["FDR"],1e-30)))
+        return x,y
+    thr=-np.log10(0.05); xlim=(-6.9,6.3); ylim=(-2.7,2.7)
+    fig,ax=plt.subplots(figsize=(8.9,5.4)); ax.grid(False)
+    ax.add_patch(plt.Rectangle((xlim[0],-thr),-thr-xlim[0],2*thr,facecolor=to_rgba(CONFOUND,0.14),edgecolor=CONFOUND,lw=1.4,ls=(0,(5,3)),zorder=0))   # competitive-only band (red)
+    ax.add_patch(plt.Rectangle((xlim[0],ylim[0]),-thr-xlim[0],-thr-ylim[0],facecolor=to_rgba("#15803D",0.20),edgecolor="#15803D",lw=2.0,zorder=1))     # ROBUST corner (green)
+    ax.add_patch(plt.Rectangle((thr,thr),xlim[1]-thr,ylim[1]-thr,facecolor=to_rgba(MUTE,0.10),edgecolor="none",lw=0,zorder=0))                         # controls-up corner (faint)
+    ax.axvline(0,color="#9AA6A4",lw=1,zorder=1); ax.axhline(0,color="#9AA6A4",lw=1,zorder=1)
+    for v in (thr,-thr):
+        ax.axvline(v,color="#C7CFCE",ls=(0,(3,3)),lw=1,zorder=1); ax.axhline(v,color="#C7CFCE",ls=(0,(3,3)),lw=1,zorder=1)
+    for gs,(lab,col,hi) in META.items():
+        if gs not in cam.index or gs not in ro.index: continue
+        x,y=sxy(gs); x=min(max(x,xlim[0]+0.2),xlim[1]-0.2); y=min(max(y,ylim[0]+0.2),ylim[1]-0.2)
+        ax.scatter(x,y,s=(300 if hi else 150),color=col,edgecolor=("#16242B" if hi else "white"),linewidth=(1.6 if hi else 1.1),zorder=6,alpha=0.96)
+    for gs,(dx,dy,ha) in {"xenobiotic_CYP":(13,6,"left"),"pericentral_anchors":(0,12,"center"),"detox_phase2":(8,-12,"left")}.items():
+        x,y=sxy(gs); ax.annotate(META[gs][0],(x,y),xytext=(dx,dy),textcoords="offset points",fontsize=11,fontweight="bold",color=PC,ha=ha,zorder=7)
+    ax.text(xlim[0]+0.22,ylim[0]+0.18,"ROBUST ↓",fontsize=12.5,fontweight="bold",color="#15803D",va="bottom",ha="left",zorder=8)
+    ax.text(xlim[0]+0.22,0.12,"competitive only — weak lean:\nPC identity · phase-II",fontsize=10.5,fontweight="bold",color=CONFOUND,va="bottom",ha="left",style="italic",zorder=8)
+    ax.text(4.65,1.46,"biliary + fibrogenesis ↑",fontsize=10,color=MUTE,va="top",ha="center",style="italic",zorder=8)
+    ax.text(2.85,0.42,"inflammation ↑",fontsize=10,color=MUTE,va="top",ha="center",style="italic",zorder=8)
+    ax.text(0.2,-0.16,"flat: urea · bile/lipid · ER-stress",fontsize=9.5,color=MUTE,va="top",ha="left",style="italic",zorder=5)
+    from matplotlib.lines import Line2D as _L2D
+    _leg=[_L2D([0],[0],marker='o',color='w',markerfacecolor=PC,markersize=8,label='pericentral'),
+          _L2D([0],[0],marker='o',color='w',markerfacecolor=PP,markersize=8,label='periportal'),
+          _L2D([0],[0],marker='o',color='w',markerfacecolor=MUTE,markersize=8,label='control'),
+          _L2D([0],[0],marker='o',color='w',markerfacecolor=BILIARY,markersize=8,label='biliary')]
+    ax.legend(handles=_leg,loc='upper left',frameon=False,fontsize=9.5,handletextpad=0.15,labelspacing=0.2,borderpad=0.2)
+    ax.set_xlim(*xlim); ax.set_ylim(*ylim)
+    ax.set_xlabel("Competitive test (camera) — signed −log10 FDR        ← down   ·   up →")
+    ax.set_ylabel("Self-contained test (roast)\n← down   ·   up →")
+    ax.set_title("Of every program tested, only pericentral detox is robust in both tests")
+    for sp in ("top","right"): ax.spines[sp].set_visible(False)
+    fig.tight_layout(); fig.savefig(f"{OUT}/fig_geneset_landscape.png",bbox_inches="tight",pad_inches=0.14); plt.close(fig)
+    print("wrote fig_geneset_landscape.png")
+except Exception as e:
+    print("SKIPPED fig_geneset_landscape:",e)
+
+# landmark-set decomposition: the "identity" set is >half detox by construction; its dip is the detox members
+try:
+    import glob as _g
+    _ff=_g.glob("data/signatures/**/pericentral_paper2_landmark.txt",recursive=True)+_g.glob("data/signatures/pericentral_paper2_landmark.txt")
+    land=[x.strip() for x in open(_ff[0]) if x.strip() and not x.startswith("#")]
+    DETOX={"CYP2E1","CYP1A2","CYP3A4","CYP3A5","CYP3A43","CYP2C8","CYP2C9","CYP2C19","CYP2B6","CYP1A1","CYP2A6","CYP2D6","CYP4F12",
+           "UGT1A1","UGT2B4","UGT2B7","GSTA1","GSTA2","SULT2A1","SULT1A1","AKR1D1","AKR1C1","ADH1A","ADH1B","ADH4","ALDH1L1","FMO3","AOX1","AMACR"}
+    dge=pd.read_csv(f"{T}/dge_planA_F4vsF1.csv"); gc=dge.columns[0]
+    lcc=[c for c in dge.columns if c.lower()=="logfc"][0]; dd=dge.set_index(gc)[lcc]
+    rows=sorted([(g,dd.get(g,np.nan),(g in DETOX)) for g in land if g in dd.index],key=lambda r:r[1])
+    fig,ax=plt.subplots(figsize=(8.6,5.7)); ax.grid(axis="x",color=GRID); ax.grid(axis="y",visible=False)
+    ys=np.arange(len(rows))
+    for y,(g,lf,isd) in zip(ys,rows):
+        ax.barh(y,lf,color=(AMBER if isd else PC),height=0.72,zorder=3,alpha=0.92)
+    ax.axvline(0,color=INK,lw=1.1,zorder=4)
+    ax.set_yticks(ys); ax.set_yticklabels([g for g,_,_ in rows],fontsize=10.5)
+    for y,(g,lf,isd) in zip(ys,rows):
+        t=ax.get_yticklabels()[y]; t.set_color(AMBER if isd else PC); t.set_fontweight("bold")
+    nd=[lf for _,lf,isd in rows if isd]; npos=[lf for _,lf,isd in rows if not isd]
+    from matplotlib.patches import Patch
+    ax.legend(handles=[Patch(color=AMBER,label=f"detox enzyme ({len(nd)} of 20) — mean {np.mean(nd):+.2f}"),
+                       Patch(color=PC,label=f"positional marker ({len(npos)} of 20) — mean {np.mean(npos):+.2f}")],
+              loc="upper left",frameon=False,fontsize=11.5)
+    ax.set_xlabel("log2 fold-change   (cirrhotic F4 vs early F1)        ← down")
+    ax.set_title("The “identity” landmark set’s dip is its detox genes — the positional markers hold")
+    ax.set_ylim(-0.7,len(rows)-0.3)
+    for sp in ("top","right"): ax.spines[sp].set_visible(False)
+    fig.tight_layout(); fig.savefig(f"{OUT}/fig_landmark_decomp.png",bbox_inches="tight",pad_inches=0.14); plt.close(fig)
+    print("wrote fig_landmark_decomp.png")
+except Exception as e:
+    print("SKIPPED fig_landmark_decomp:",e)
 
 print("wrote figures to", OUT)
 for f in sorted(os.listdir(OUT)): print("  ", f)

@@ -36,10 +36,10 @@
   footer{margin-top:6px;color:var(--mute);font-size:10.5px;text-align:center}
   @page{ size:Letter; margin:0.4in }
   @media print{
-    body{font-size:10px;line-height:1.28}
+    body{font-size:10px;line-height:1.22}
     .wrap{max-width:none;padding:0;margin:0}
-    .card{box-shadow:none;margin:0 0 9px;padding:7px 9px 5px}
-    .row{padding:2px 0}
+    .card{box-shadow:none;margin:0 0 6px;padding:6px 9px 4px}
+    .row{padding:1px 0}
     header{margin-bottom:9px;padding-bottom:6px}
     header h1{font-size:18px}
     .grid,.confgrid{column-gap:14px}
@@ -61,7 +61,6 @@
       <div class="row"><span class="t">CPM</span> <span class="d">&mdash; each gene as a share of the donor&rsquo;s total counts; simple but <i>compositional</i> &mdash; if a few genes surge, everyone else&rsquo;s share shrinks.</span></div>
       <div class="row"><span class="t">TMM</span> <span class="d">&mdash; pick a reference sample, take each library&rsquo;s gene-wise log-ratios to it, trim the extreme movers, average the rest &rarr; the scaling factor, so surging genes can&rsquo;t distort it (composition-robust).</span></div>
       <div class="row"><span class="t">edgeR</span> <span class="d">&mdash; the R/Bioconductor package that runs our per-gene differential-expression test on the pseudobulk counts.</span></div>
-      <div class="row"><span class="t">GLM</span> <span class="d">&mdash; a regression linking a predictor (fibrosis stage) to a non-normal response &mdash; for counts, via a negative-binomial noise model.</span></div>
       <div class="row"><span class="t">NB quasi-likelihood GLM</span> <span class="d">&mdash; edgeR&rsquo;s engine: model counts as negative-binomial (mean + overdispersion), fit a quasi-likelihood GLM that estimates the extra variability robustly &rarr; calibrated p-values with few replicates.</span></div>
       <div class="row"><span class="t">filterByExpr</span> <span class="d">&mdash; keep a gene only if it has enough reads in enough samples of the smallest group (&asymp;21k kept); low-count genes have no power and only inflate multiple testing.</span></div>
       <div class="row"><span class="t">Binomial down-sampling</span> <span class="d">&mdash; randomly thin every nucleus to a common 1,500 UMIs so sequencing depth can&rsquo;t drive detection.</span></div>
@@ -70,12 +69,15 @@
     <div class="card c-purple">
       <h2>Gene-set tests &amp; statistics</h2>
       <div class="row"><span class="t">GSEA (pre-rank)</span> <span class="d">&mdash; rank every gene by its fibrosis-trend statistic, then test whether a set clusters near one end instead of being scattered.</span></div>
+      <div class="row"><span class="t">NES (GSEA)</span> <span class="d">&mdash; GSEA&rsquo;s effect size: how strongly a set piles up at the up/down end of the ranking vs random; more negative = a stronger coordinated down-shift of the whole set.</span></div>
       <div class="row"><span class="t">CAMERA</span> <span class="d">&mdash; a <i>competitive</i> set test: is this set shifted more than the rest of the genome? (corrects for gene&ndash;gene correlation).</span></div>
       <div class="row"><span class="t">ROAST / mroast</span> <span class="d">&mdash; a <i>self-contained</i> set test: does the set move away from zero on its own (rotation p-value)? &mdash; ignores the rest of the genome, more conservative.</span></div>
       <div class="row"><span class="t">competitive vs self-contained</span> <span class="d">&mdash; &ldquo;more shifted than other genes?&rdquo; vs &ldquo;different from no change at all?&rdquo; &mdash; a set can pass one and fail the other.</span></div>
       <div class="row"><span class="t">TOST</span> <span class="d">&mdash; an <i>equivalence</i> test: not &ldquo;is there a difference?&rdquo; but &ldquo;is it small enough to rule out anything bigger than a bound?&rdquo; &mdash; lets us say &ldquo;no large change.&rdquo;</span></div>
       <div class="row"><span class="t">Cram&eacute;r&rsquo;s V</span> <span class="d">&mdash; a 0&ndash;1 score of association between two categorical variables (e.g. run vs source): 0 = independent, 1 = perfectly confounded.</span></div>
-      <div class="row"><span class="t">Spearman</span> <span class="d">&mdash; correlation of ranks: any monotonic trend, robust to outliers and non-linear scaling.</span></div>
+      <div class="row"><span class="t">Spearman &rho;</span> <span class="d">&mdash; correlation of <i>ranks</i> (any monotonic trend, robust to outliers), from &minus;1 to +1; &rho; = &minus;0.48 = a moderate downward trend (detox falls as fibrosis rises).</span></div>
+      <div class="row"><span class="t">p-value</span> <span class="d">&mdash; the chance of a trend this strong if nothing were really there (pure noise); p = 0.003 &rarr; ~3 in 1,000, very unlikely a fluke. Usual bar: p &lt; 0.05.</span></div>
+      <div class="row"><span class="t">FDR (q-value)</span> <span class="d">&mdash; a p-value corrected for testing thousands of genes at once; FDR = 0.05 &rarr; ~5% of the called &ldquo;hits&rdquo; are expected to be false. Why a gene must clear FDR, not raw p.</span></div>
       <div class="row"><span class="t">Partial correlation</span> <span class="d">&mdash; correlation between two variables after removing a third&rsquo;s effect (e.g. detox vs fibrosis, controlling for age).</span></div>
     </div>
 
@@ -92,8 +94,8 @@
 
     <div class="card c-blue">
       <h2>Distinctions we kept confusing</h2>
-      <div class="row"><span class="t">Dimming vs de-zonation</span> <span class="d">&mdash; de-zonation = cells change identity (refuted); dimming = cells keep identity, the program&rsquo;s level drops. Radio: genre change vs volume down.</span></div>
-      <div class="row"><span class="t">Anchor vs detox genes</span> <span class="d">&mdash; identity is a detection call on GLUL+CYP3A4; dimming is measured on separate genes (CYP2E1, CYP1A2&hellip;), so identity stays flat while the module&rsquo;s level falls.</span></div>
+      <div class="row"><span class="t">Dimming vs de-zonation</span> <span class="d">&mdash; de-zonation = cells change class (no signal in matched biopsies); dimming = cells keep their class, the pericentral program&rsquo;s level drops. Radio: genre change vs volume down.</span></div>
+      <div class="row"><span class="t">Class gates vs the program</span> <span class="d">&mdash; classification is a detection call on the gating anchors GLUL+CYP3A4 (individually flat); the program dims more broadly (detox genes CYP2E1, CYP1A2&hellip; and the pericentral landmark set), so the class stays put while the program&rsquo;s level falls.</span></div>
       <div class="row"><span class="t">Depletion vs turn-off</span> <span class="d">&mdash; depletion = an anchor (pole) box shrinks; turn-off = the null (double-negative) box grows &mdash; different boxes, opposite directions.</span></div>
       <div class="row"><span class="t">Compression vs dimming</span> <span class="d">&mdash; compression = the gradient&rsquo;s shape flattens (cells drift to the middle); dimming = the level drops with the shape kept.</span></div>
       <div class="row"><span class="t">Relative vs absolute</span> <span class="d">&mdash; a z-score/correlation reads the gradient&rsquo;s shape (scale-free); only counting molecules reads how many cells sit where.</span></div>

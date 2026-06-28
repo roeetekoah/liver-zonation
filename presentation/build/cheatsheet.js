@@ -84,8 +84,8 @@ page("REFERENCE · 5 / 7","The confounder battery, explained (2 / 2)",CONFOUND,[
 
 // ---------- PAGE 6 ----------
 page("REFERENCE · 6 / 7","Distinctions we kept confusing",PC,[
- ["Dimming vs de-zonation","De-zonation = cells change identity (refuted); dimming = cells keep identity but the program's level drops (the one real change). Radio: genre change vs volume down."],
- ["Anchor genes vs detox genes","Identity is a detection call on GLUL + CYP3A4; the detox dimming is measured on separate genes (CYP2E1, CYP1A2 …), so identity stays flat while the module's level falls."],
+ ["Dimming vs de-zonation","De-zonation = cells change class (no signal in matched biopsies); dimming = cells keep their class but the pericentral program's level drops (the one real change). Radio: genre change vs volume down."],
+ ["Class gates vs the program","Classification is a detection call on the gating anchors GLUL + CYP3A4 — individually flat (FDR 0.8); the program dims more broadly around them (the detox genes CYP2E1, CYP1A2 … and the pericentral landmark set), so the class stays put while the program's level falls."],
  ["Depletion vs turn-off","Depletion = an anchor (pole) box shrinks; turn-off = the null (double-negative) box grows — different boxes, opposite directions, neither implies the other."],
  ["Compression vs dimming","Compression = the gradient's shape flattens (cells drift to the middle); dimming = the level drops with the shape kept."],
  ["Relative vs absolute metric","A z-score / correlation reads the gradient's shape (scale-free); only counting molecules reads how many cells sit where."],
