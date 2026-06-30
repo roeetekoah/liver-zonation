@@ -1,234 +1,154 @@
 <div align="center">
 
-# 🧬 Liver Zonation Re-Analysis in MASLD
+# Liver zonation re-analysis in MASLD
 
-### A rigorous, honest re-test of the single-nucleus RNA-seq evidence for hepatocyte de-zonation in fatty-liver disease
+**A donor-level, raw-count re-test of the single-nucleus RNA-seq evidence for hepatocyte de-zonation and transdifferentiation in metabolic-dysfunction–associated steatotic liver disease (MASLD).**
 
-*Re-examining Gribben et al., **Nature** 2024 — "Acquisition of epithelial plasticity in human chronic liver disease" (GEO: GSE202379)*
+Re-examining Gribben et al., *Nature* 2024 — "Acquisition of epithelial plasticity in human chronic liver disease" (GEO: GSE202379).
 
-<br>
-
-[![Language: R](https://img.shields.io/badge/R-Seurat%20%7C%20edgeR%20%7C%20limma-276DC3?logo=r&logoColor=white)](https://www.r-project.org/)
-[![Language: Python](https://img.shields.io/badge/Python-numpy%20%7C%20scipy%20%7C%20statsmodels-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![R](https://img.shields.io/badge/R-Seurat%20%7C%20edgeR%20%7C%20limma-276DC3?logo=r&logoColor=white)](https://www.r-project.org/)
+[![Python](https://img.shields.io/badge/Python-numpy%20%7C%20scipy%20%7C%20statsmodels-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![Data: GSE202379](https://img.shields.io/badge/data-GSE202379-8A2BE2?logo=databricks&logoColor=white)](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE202379)
-[![Course: 76553](https://img.shields.io/badge/Computational%20Genomics-76553%20·%20HUJI-0D9488)](https://www.cs.huji.ac.il/)
-[![Nuclei](https://img.shields.io/badge/nuclei-~99,809-EA580C)]()
-[![Donors](https://img.shields.io/badge/donors-47-1D4ED8)]()
 [![License: CC BY 4.0](https://img.shields.io/badge/license-CC%20BY%204.0-green.svg)](LICENSE)
-
-<br>
-
-**One-line result:** *In acquisition-matched MASLD biopsies we find **no transcriptional de-zonation signal** — but the pericentral **detox** program **dims** (relative, donor-level). The dramatic published trajectory tracks how the tissue was acquired, not the disease.*
 
 </div>
 
 ---
 
-## 📑 Table of contents
+## Abstract
 
-- [The question](#-1--the-question)
-- [The catch](#-2--the-catch)
-- [The method](#-3--the-method)
-- [Results](#-4--results)
-- [The one real change: the pericentral program dims](#-5--the-one-real-change-the-pericentral-program-dims)
-- [Where the biliary signal comes from](#-6--where-the-biliary-signal-comes-from)
-- [Conclusion](#-7--conclusion)
-- [Repository structure](#-repository-structure)
-- [Data](#-data)
-- [Reproduce](#-reproduce)
-- [Scope & honesty](#-scope--honesty)
-- [Authors](#-authors)
+This repository re-examines the single-nucleus RNA-seq (snRNA-seq) evidence in Gribben et al. (*Nature* 2024; GSE202379) for **progressive hepatocyte de-zonation** and hepatocyte→cholangiocyte **transdifferentiation** in human MASLD. Two features of the original analysis motivate a re-test: the zonation signal was summarised with a *relative*, scale-free statistic (a z-scored zonation coordinate and marker–marker correlations, pooled across samples), and disease stage is collinear with how each sample was procured — the healthy and end-stage groups are deceased-donor organ tissue, whereas the F0–F4 fibrosis spectrum are 16-gauge needle biopsies.
+
+Restricting the disease axis to the acquisition-matched needle biopsies (F1 → cirrhotic F4) and working on raw UMI counts with the **donor** as the unit of inference, we find **no transcriptional de-zonation signal**: the pericentral and periportal classification fractions, dual co-expression, and the double-negative fraction are flat across fibrosis, and an equivalence test (TOST) excludes a large coordinated shift (> ±19 percentage points) while leaving a subtle (≤ 10 pp) drift unexcluded. A genome-wide per-gene pseudobulk scan finds no zonation gene moving (`GLUL` FDR 0.80).
+
+The one robust biopsy-internal change is a **coordinated decline of the pericentral cytochrome-P450 detoxification program**. It is the only gene set significant in *both* a competitive and a self-contained test (camera FDR 2×10⁻⁶; roast FDR 0.015), survives composition-robust (TMM) normalization and ambient-RNA removal (decontX), and is reproduced by a per-cell, depth-matched measure (within-pericentral detox output 11.9 → 8.8 UMIs/nucleus, F1 → F4; Spearman ρ = −0.48, p = 0.003). No single gene clears per-gene FDR, and the cells retain their pericentral **class**, so this is **functional dimming of a program, not de-zonation**. The only per-gene genome-wide signal is a small biliary/ductular-marker rise at cirrhosis, most consistent with compositional contamination (ambient cholangiocyte RNA and the ductular reaction) rather than widespread transdifferentiation — a lead, not a closed result.
+
+We re-examine **only** the snRNA-seq transcriptional evidence; the paper's imaging, protein, and organoid findings are not addressed.
 
 ---
 
-## ❓ 1 · The question
+## Background
 
-Hepatocytes are **transcriptionally zonated**: cells near the central vein run a *pericentral* program (e.g. `GLUL`, `CYP3A4`, the CYP/detox genes, Wnt-driven), while cells near the portal tract run a *periportal* program (e.g. `ASS1`, `CPS1`, `PCK1`, the urea cycle).
+Hepatocytes are transcriptionally **zonated** along the porto-central axis: cells near the central vein run a *pericentral* program (e.g. `GLUL`, `CYP3A4`, the cytochrome-P450 / xenobiotic-detox genes), while cells near the portal tract run a *periportal* program (e.g. `ASS1`, `CPS1`, `PCK1`, the urea cycle). Gribben et al. (2024) reported that across MASLD hepatocytes progressively lose this zonation and acquire a cholangiocyte-like identity through transdifferentiation, "prominent in end-stage."
 
-Gribben et al. (2024) reported that across MASLD (metabolic dysfunction–associated steatotic liver disease, i.e. fatty-liver disease) hepatocytes **progressively lose this zonation** and acquire cholangiocyte-like identity through a hepatocyte→cholangiocyte **transdifferentiation**, "prominent in end-stage."
-
-> **Our question:** Does hepatocyte zonation degrade across MASLD — and is that degradation linked to the hepatocyte→cholangiocyte transdifferentiation the paper describes?
+This project asks two questions of the deposited snRNA-seq data: **(i)** does hepatocyte zonation degrade across MASLD fibrosis once the analysis is made robust to the metric and to sample procurement, and **(ii)** is any change linked to the reported hepatocyte→cholangiocyte transdifferentiation?
 
 ---
 
-## ⚠️ 2 · The catch
-
-Two problems sit underneath the original reading.
-
-**(a) The metric is relative.** The signal was first read with a *relative* ruler — a z-scored zonation coordinate plus marker–marker correlations, pooled across all samples. A relative summary is scale-free: it divides out the overall level and reads only the *shape* of the gradient. So it **hides who moved** — which cells, how many, from where — and it is tilted by sequencing depth, cell number, and tissue source. "Losing zonation" is not one event but four distinct, dissociable moves (depletion, co-expression, turn-off, composition shift), each with its own count signature — a single z-score or correlation collapses all four into one number.
-
-**(b) Disease stage is entangled with how the tissue was taken.** Healthy and end-stage samples are **deceased-donor organ cubes / explants**; the F0–F4 fibrosis-stage samples are **16-gauge needle biopsies** (n = 2 / 8 / 12 / 12 / 4). The ends are *not* acquisition-matched to the biopsies, so a "progressive" trajectory can be manufactured by procurement, ischemia, dissociation, and batch — not disease. The explant ends also carry organ-wide handling stress: immediate-early / heat-shock genes spike ~18× in the ends, but **endothelium — which has no zonation program — spikes ~18× too**, while hypoxia (HIF) stays flat. That is acute handling, not a zonation change.
-
-> **Our response:** count molecules instead of reading a relative summary, and analyze **biopsy-only F1–F4** so disease stage is not confounded with acquisition.
-
----
-
-## 🔬 3 · The method — raw-count anchor classification
-
-We re-test the claim in **absolute molecule counts**, with the **donor** (~47) as the unit of inference — never the cell.
-
-```text
-  raw UMI counts  →  down-thin to 1,500  →  marker ON if ≥ 2 UMI  →  classify nucleus (PC/PP/dual/null)  →  fraction per donor
-```
-
-| Step | Why |
-|---|---|
-| **Raw UMIs, not SCT** | A single molecule may be ambient — absolute detection is what matters; SCT residuals are the wrong object. |
-| **Binomial down-thin to 1,500 UMIs** | Depth-match every nucleus so sequencing depth can't drive detection (stable at 1k / 1.5k / 3k). |
-| **Call a marker at ≥ 2 UMI (not ≥ 1)** | Kills ambient "soup" — apparent co-expression drops ~7–10% → ~0.2–0.5%. |
-| **Classify each hepatocyte** | PC-anchor (pericentral only), PP-anchor (periportal only), Dual (both — co-expression), Null (neither). |
-| **Infer at the donor level (~47)** | No pseudoreplication; robust across 6 marker sets (2–1,637 genes, including the original paper's own landmarks). |
-
-Raw-extraction integrity: **9/9 sanity checks pass** (integer UMIs; 69,426 hepatocytes match the paper).
-
----
-
-## 📊 4 · Results
-
-Across matched biopsy **F1–F4**:
-
-- **No depletion.** Pericentral and periportal anchor fractions are flat / non-monotone.
-- **No co-expression.** Dual (≥ 2 UMI) stays ~0.4% (vs ~2.9% in confounded explants) and does not trend.
-- **Null & PP : PC flat too.** Null ≈ 44 / 36 / 39 / 39%; PP : PC ratio ≈ 1.1.
-- **The per-cell gradient holds its shape.** The mass stays spread across the pericentral↔periportal axis; only the confounded explant collapses to a single pole. The middle drifts only 22 → 24 → 28 → 26% (peak F3, then reverts) — mild and non-monotone.
-- **Genome-wide, nothing usable moves.** Pseudobulk edgeR, cirrhotic F4 vs F1: 64 of ~21,000 genes pass FDR (mostly biliary/ductular); zonation genes are flat (**`GLUL` FDR 0.80**).
-- **A 10-confounder audit clears it.** Tissue source, procurement stress, sequencing batch, lobe, depth, ambient RNA, cholangiocyte mis-annotation, ploidy/complexity, depth-match discard, and clinical covariates — none manufactures the result.
-
-> ➡️ **No transcriptional de-zonation signal across matched biopsies.** A large collapse (> ±19 pp shift, TOST) is excluded; a subtle ≤ 10 pp drift is not (F4 has only 4 donors).
-
----
-
-## 💡 5 · The one real change: the pericentral program dims
-
-There is **one** real biopsy-internal change. Within pericentral nuclei, the **pericentral program's output falls** in level with fibrosis:
-
-- Within-PC detox output (depth-matched transcripts per PC nucleus) declines from ~11.9 at F1 to ~8.8 at F4; donor-level Spearman **ρ = −0.48, p = 0.003**.
-- Gene-set tests (CAMERA / ROAST) agree: PC detox (CYP) FDR 2×10⁻⁶, the PC landmark set 1.5×10⁻⁴, both **down**; biliary + fibrogenesis + inflammation controls **up**; ER-stress flat (validating controls behaved).
-- The **gating anchors** `GLUL` / `CYP3A4` are individually flat (FDR 0.80, 0.85) — which is what keeps the anchor fraction flat. The program dims more broadly around them: the detox genes (`CYP2E1`, `CYP1A2`, `ADH4`…) **and** the pericentral landmark set.
-
-> Like a radio: **the genre holds** (cells keep their zonal *class*); **the volume drops across the whole station** (the pericentral program dims — detox and landmark genes alike), not just one track. This is **functional dimming of the program, NOT de-zonation or transdifferentiation.**
-
-**Careful framing (load-bearing):** the dimming is a *relative* decline (transcripts within a fixed 1,500-UMI budget), **not proven absolute molecule loss**; it is a **donor-level trend**; it could partly reflect a shift among pericentral subzones; and no single detox gene clears per-gene FDR — only the coordinated gene set plus the per-cell trend.
-
----
-
-## 🧪 6 · Where the biliary signal comes from
-
-The biliary / cholangiocyte-marker signal is **most likely compositional** — a **lead, not a closed verdict**.
-
-| Evidence | Reading |
-|---|---|
-| 🟢 **Strong** | Biliary genes are cholangiocyte genes (5–78× more abundant there); per-cell hepatocyte co-expression is only ~0.4%. |
-| 🟠 **Suggestive** | `decontX` ambient-RNA removal halves the hits — an ambient contribution, not proof. |
-| 🔴 **Open** | `EPCAM` / `SPINT2` / `B3GNT3` survive — a rare intrinsic state is **not** excluded; `CXCL10` is a separate inflammatory lead. |
-
-The dominant evidence points to composition / ambient RNA most likely tracking the **F4 ductular reaction** — but we do not overstate it.
-
----
-
-## 🎯 7 · Conclusion
-
-**Zonal class holds — and the pericentral program dims.**
-
-1. **Cells keep their zonal class** across matched biopsies — *no transcriptional de-zonation signal* (a large shift is excluded).
-2. **The one real change** is that the pericentral program *dims* in level (detox **and** landmark genes; the gating anchors hold the class) — relative, donor-level, functional; not de-zonation.
-3. **The dramatic published trajectory tracks acquisition, not disease** — the full healthy→end-stage arc is source-confounded.
-
-We **do not** claim to overturn the paper. We re-test **only** the snRNA-seq transcriptional evidence — we correct **one evidence leg** (the marker-correlation reading). The paper's **imaging, protein staining, and organoid** evidence are untouched, and we agree the strong end-stage phenomenon is real *at end stage*. The biliary signal is a separate compositional lead.
-
----
-
-## 🗂️ Repository structure
-
-| Path | What's inside |
-|---|---|
-| [`src/`](src/README.md) | All current analysis code, grouped by analysis leg: `prep/` (raw→processed extraction + sanity), `confound/` (provenance/source/lobe/stress/batch/power/equivalence), `census/` (count-based PC/PP/dual/null anchor classification + scenario taxonomy), `dge/` (genome-wide + compositional + gene-set differential expression), `legacy/`, `plotting/`. Paths centralized in `config.py`. |
-| [`findings/`](findings/README.md) | The findings store — one folder per finding, each with its data file(s) and a README of numbers / method / caveats, ordered by the story. Includes the `DETOX_DIMMING_dossier.md` and `geneset_tests/`. |
-| [`results/`](results/) | Generated outputs: `figures/`, donor-level / per-gene `tables/`, `reports/`, and provenance (`object_schema.txt`). |
-| [`presentation/`](presentation/) | The talk: the final deck `MASLD_stages_computational_analysis_roee_shira.pptx` (+ PDF), the methods/concepts reference (PDF/HTML), `make_figures.py`, and `assets/` (figures). The pptxgenjs build scripts and earlier rendered deck live in [`presentation/build/`](presentation/build/). |
-| [`reports/`](reports/) | Written outputs: `FULL_STORY.txt`, `SYNTHESIS.md`, `finding_stories.md`, `DGE.md`, and LaTeX/PDF reports. |
-| [`data/`](data/) | Local raw + processed data and gene-set `signatures/` (large files gitignored — each machine downloads its own; see `scripts/`). |
-| [`papers/`](papers/) | Source papers (gitignored — copyrighted). |
-| [`scripts/`](scripts/) | `download_data.sh` — fetch the raw data locally. |
-| [`archive/`](archive/) | Stale / legacy material: the pre-reanalysis pipeline, old figures, prior code backups. Not part of the current story. |
-| `FINDINGS.md` · `CLAIMS_LEDGER.md` | Story-ordered finding summary, and the audited claim-by-claim trail with decisions + future-work queue. |
-
----
-
-## 🧫 Data
+## Data
 
 | | |
 |---|---|
-| **Source** | Gribben et al., *Nature* 2024 — GEO accession **[GSE202379](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE202379)** |
-| **Scale** | ~**99,809** nuclei · **69,426** hepatocytes · **47** donors |
-| **Cohort used** | Biopsy-only **F1–F4** (16-gauge needle biopsies); deceased-donor / explant ends excluded as acquisition-confounded |
-| **Unit of inference** | The **donor** (~47), never the cell |
+| **Source** | Gribben et al., *Nature* **630**:166–173 (2024) — GEO accession [GSE202379](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE202379) |
+| **Scale** | ~99,809 QC-passing nuclei · 69,426 hepatocytes · 47 donors |
+| **Disease cohort analysed** | Acquisition-matched needle biopsies, fibrosis F1 → cirrhotic F4 (38 donors; F0/F1/F2/F3/F4 = 2/8/12/12/4). Healthy and end-stage groups are deceased-donor organ cubes / explants and are excluded from the disease axis as acquisition-confounded. |
+| **Unit of inference** | The **donor**, never the cell |
 
-Raw and processed data are **gitignored** — fetch them locally (see [`scripts/download_data.sh`](scripts/download_data.sh) and [`data/data_urls.md`](data/data_urls.md)).
+Raw and processed data are gitignored (large, and the source is copyrighted); fetch them locally with [`scripts/download_data.sh`](scripts/download_data.sh) (see [`data/data_urls.md`](data/data_urls.md)).
 
 ---
 
-## ⚙️ Reproduce
+## Methods
 
-**Dependencies**
+**Count-based classification.** Rather than a relative zonation coordinate, each hepatocyte nucleus is classified from absolute molecule counts. Raw RNA-assay UMIs are binomially down-thinned to a common 1,500-UMI budget (depth-matched; stable at 1,000 / 1,500 / 3,000), a marker is called present at ≥ 2 UMI (ambient-robust), and each nucleus is assigned to one of four classes — **PC-anchor** (pericentral only), **PP-anchor** (periportal only), **dual** (both; co-expression), **null** (neither). Donor-level class proportions are the inference target, robust across six marker sets (including the original paper's own landmark genes). Raw-extraction integrity is checked (9/9 sanity checks; 69,426 hepatocytes reproduce the published count).
+
+**Differential expression and gene-set tests.** Donor-level pseudobulk with edgeR (TMM normalization, negative-binomial quasi-likelihood) for the genome-wide F4-vs-F1 contrast; pre-specified gene-set tests with `camera` (competitive: is the set shifted more than the rest of the genome?) and `mroast` (self-contained: does the set move on its own, against zero?), plus GSEA pre-rank; ambient-RNA removal with `decontX`.
+
+**Per-cell detox measure.** Detox transcripts per pericentral nucleus on depth-matched counts (composition-independent), summarised per donor.
+
+**Equivalence testing.** Two one-sided tests (TOST) on the donor-level anchor fractions provide an affirmative bound on the largest coordinated shift compatible with the data.
+
+**Confound audit.** Tissue source, procurement stress, sequencing batch, lobe, depth, ambient RNA, cholangiocyte mis-annotation, ploidy/complexity, depth-match discard, and clinical covariates are each tested against the result.
+
+---
+
+## Results
+
+### 1. No transcriptional de-zonation signal in matched biopsies
+
+Across acquisition-matched fibrosis F1 → F4, the count-based classification is flat: pericentral and periportal anchor fractions are non-monotone, dual co-expression stays ~0.4 % (vs ~2.9 % in the confounded explants) and does not trend, and the null fraction (~44/36/39/39 %) and PP:PC ratio (~1.1) are stable. The per-cell pericentral↔periportal gradient retains its shape (only the confounded explant collapses to one pole). Genome-wide pseudobulk DGE finds no zonation gene moving (`GLUL` FDR 0.80); 64 of ~21,000 genes pass FDR, almost all biliary/ductular. An equivalence test excludes a coordinated shift larger than ±19 percentage points, while a ≤ 10-pp drift is **not** excluded (F4 has only 4 donors). The 10-confounder audit does not reproduce the result from any single nuisance variable.
+
+### 2. The published healthy→end-stage trajectory is collinear with tissue acquisition
+
+The dramatic signal is concentrated in the deceased-donor organ tissue (healthy and end-stage), which is procured differently from the needle biopsies that constitute the disease spectrum. The endpoint groups carry an organ-wide handling signature: immediate-early / heat-shock transcripts are elevated ~18× at end-stage in hepatocytes **and** ~18× in endothelium (which has no zonation program), while the hypoxia (HIF) program is comparatively flat — consistent with acute procurement/dissociation, not a zonation change. This is documented as a confound on the endpoint axis; the disease conclusions are drawn only from the matched biopsies.
+
+### 3. One robust biopsy-internal change: the pericentral CYP-detox program dims
+
+A weak coordinated program can evade per-gene FDR but be detected by set-level and per-cell tests. The **pericentral cytochrome-P450 detox set** is the one program that is robust by every standard: competitive camera FDR 2×10⁻⁶, self-contained roast FDR 0.015, GSEA NES −2.04, unchanged under TMM and after decontX, and reproduced by the composition-independent per-cell measure (within-PC detox output 11.9 → 8.8 UMIs/nucleus F1 → F4; Spearman ρ = −0.48, p = 0.003).
+
+The broader pericentral *landmark* set and the phase-II detox set lean down **only faintly** — they reach significance in the competitive test but **fail the self-contained test** (roast FDR 0.081 and 0.220), with no single gene reaching individual significance; a shift this weak cannot be called a turn-off, and the landmark set largely overlaps the detox genes (not independent evidence). The classification gates (`GLUL`, `CYP3A4`) do not move at the per-gene level (FDR 0.80, 0.85), so the cells keep their **class**: this is functional dimming, not de-zonation or transdifferentiation. Load-bearing caveats: the decline is *relative* (transcripts within a fixed budget), a donor-level trend, and could partly reflect a shift among pericentral subzones.
+
+### 4. The biliary/transdifferentiation signal is most consistent with composition
+
+The only per-gene genome-wide change is a small biliary/ductular-marker rise at cirrhotic F4 inside hepatocyte-labelled nuclei. Biliary genes are 5–78× more abundant in cholangiocytes; per-cell hepatocyte co-expression is only ~0.4 %; `decontX` ambient-RNA removal roughly halves the hits. A few genes (`EPCAM`, `SPINT2`, `B3GNT3`) survive, so a rare intrinsic state is not excluded. The leading explanation is compositional (ambient cholangiocyte RNA tracking the F4 ductular reaction) rather than widespread transdifferentiation — **a lead, not a closed result**.
+
+---
+
+## What we claim, and what we do not
+
+- We re-test **only** the snRNA-seq transcriptional evidence. Imaging, protein staining, organoid, and 3D-architecture evidence are not re-analysed, and the strong end-stage phenomenon is not disputed *at end stage*.
+- "**No transcriptional de-zonation signal**" in matched biopsies — stated as the absence of a detectable signal with an affirmative equivalence bound, not as a claim that zonation is "preserved" or "intact." A large collapse is excluded; a subtle drift is not.
+- The detox **dimming** is a coordinated, *relative*, donor-level decline of the pericentral CYP program — **not** de-zonation or transdifferentiation. No single gene clears per-gene FDR.
+- The **biliary** signal is a compositional lead, not a closed verdict.
+- Counts measure a **"PC-like program," not lobular position** — they cannot see spatial location.
+
+---
+
+## Repository structure
+
+| Path | Contents |
+|---|---|
+| [`src/`](src/README.md) | Analysis code by leg: `prep/` (raw→processed extraction + sanity), `confound/` (provenance / source / lobe / stress / batch / power / equivalence), `census/` (count-based PC/PP/dual/null classification + scenario taxonomy), `dge/` (genome-wide + compositional + gene-set DE), `plotting/`. Paths centralised in `config.py`. |
+| [`findings/`](findings/README.md) | One folder per finding, each with its data file(s) and a README of numbers / method / caveats — including `DETOX_DIMMING_dossier.md`, `geneset_detox_verification.md`, and `geneset_tests/`. |
+| [`results/`](results/) | Generated outputs: `figures/`, donor-level / per-gene `tables/`, provenance schema. |
+| [`presentation/`](presentation/) | Slides, figure-generation (`make_figures.py`), the methods/concepts reference (HTML/PDF), and the gene-set-test explainer. Build scripts in [`presentation/build/`](presentation/build/). |
+| [`reports/`](reports/) | Written reports (`SYNTHESIS.md`, `finding_stories.md`, LaTeX/PDF). |
+| [`data/`](data/) | Raw + processed data and gene-set `signatures/` (large files gitignored). |
+| [`scripts/`](scripts/) | `download_data.sh` — fetch the raw data locally. |
+| `FINDINGS.md` · `CLAIMS_LEDGER.md` | Story-ordered finding summary, and the audited claim-by-claim trail. |
+
+---
+
+## Reproducing the analysis
 
 ```bash
-# Python
-pip install numpy scipy pandas scikit-learn statsmodels matplotlib h5py openpyxl
+# Python:  numpy scipy pandas scikit-learn statsmodels matplotlib h5py openpyxl
+# R:       Seurat · Matrix · edgeR · limma · celda (decontX)
 
-# R
-#   Seurat · Matrix · edgeR · limma · celda (decontX)
+bash    scripts/download_data.sh                 # 0 · fetch data locally
+
+Rscript src/prep/05_extract_raw_panel.R          # 1 · raw RNA-assay UMIs for the marker panel
+python  src/prep/06_sanity_raw.py                #     9/9 raw-extraction sanity checks
+
+python  src/census/census_v2.py                  # 2 · count-based PC/PP/dual/null classification
+python  src/census/load_bearing.py               #     integrated donor-level table
+
+python  src/confound/raw_counts.py               # 3 · provenance / source / stress / batch / lobe
+python  src/confound/equivalence_bound.py        #     affirmative TOST bound
+
+Rscript src/dge/plan_a_genomewide.R              # 4 · edgeR pseudobulk, F4 vs F1
+Rscript src/dge/geneset_camera.R                 #     camera / roast gene-set tests (detox dimming)
+Rscript src/dge/decontX_replan_a.R               #     ambient-RNA removal, re-test (biliary lead)
+
+python  presentation/make_figures.py             # 5 · regenerate figures
 ```
 
-**Pipeline entry points** (every count/DGE script is standalone — it reads the raw panel / pseudobulk via `config.py`):
-
-```bash
-# 0 · fetch data locally
-bash scripts/download_data.sh
-
-# 1 · extract raw RNA-assay UMIs for the marker panel  (raw, not SCT)
-Rscript src/prep/05_extract_raw_panel.R
-python  src/prep/06_sanity_raw.py            # 9/9 sanity checks
-
-# 2 · count-based anchor classification (PC/PP/dual/null), depth-matched + sensitivity grid
-python  src/census/census_v2.py
-python  src/census/load_bearing.py           # integrated donor-level table
-
-# 3 · confound / provenance leg (source, stress, batch, lobe, equivalence bound)
-python  src/confound/raw_counts.py
-python  src/confound/equivalence_bound.py    # affirmative TOST bound
-
-# 4 · genome-wide + gene-set differential expression
-Rscript src/dge/plan_a_genomewide.R          # edgeR pseudobulk, TMM + NB-QL, F4 vs F1
-Rscript src/dge/geneset_camera.R             # CAMERA / ROAST gene-set tests (detox dimming)
-Rscript src/dge/decontX_replan_a.R           # ambient-RNA removal, re-test (biliary lead)
-
-# 5 · rebuild the deck figures + slides
-python  presentation/make_figures.py
-node    presentation/build/build_deck.js
-```
-
-See [`src/README.md`](src/README.md) for the full **script → finding** map.
+See [`src/README.md`](src/README.md) for the full script → finding map.
 
 ---
 
-## 🔒 Scope & honesty
+## References
 
-- We re-test **only** the single-nucleus RNA-seq **transcriptional** zonation/plasticity evidence. Imaging, protein staining, organoid, and 3D-architecture evidence are **not** re-analyzed.
-- **"No transcriptional de-zonation signal"** — never bare "no de-zonation," and we do **not** claim zonation is "preserved." A large collapse is excluded; a subtle drift is not.
-- The detox **dimming** is a **relative**, donor-level decline (not proven absolute molecule loss); it is **not** de-zonation or transdifferentiation.
-- The **biliary** signal is **a lead, not closed** — compositional / ambient RNA most likely, a rare real state not excluded.
-- All quantitative claims are on **raw RNA UMI counts**; the unit of inference is the **donor** (~47).
-- We measure a **"PC-like program," not lobular location** — counts cannot see spatial position.
+1. Gribben C. *et al.* Acquisition of epithelial plasticity in human chronic liver disease. *Nature* **630**, 166–173 (2024). GSE202379.
+2. Squair J. W. *et al.* Confronting false discoveries in single-cell differential expression. *Nat. Commun.* **12**, 5692 (2021).
+3. Wu D., Smyth G. K. Camera: a competitive gene set test accounting for inter-gene correlation. *Nucleic Acids Res.* **40**, e133 (2012).
+4. Wu D. *et al.* ROAST: rotation gene set tests for complex microarray experiments. *Bioinformatics* **26**, 2176–2182 (2010).
+5. Yang S. *et al.* Decontamination of ambient RNA in single-cell RNA-seq with DecontX. *Genome Biol.* **21**, 57 (2020).
 
 ---
-
-## 👥 Authors
 
 <div align="center">
 
-**Roee Tekoah** · **Shira Gelbstein**
-
-Computational Genomics (76553) · The Hebrew University of Jerusalem · Hackathon
+**Roee Tekoah** · **Shira Gelbstein** — Computational Genomics (76553), The Hebrew University of Jerusalem
 
 </div>
