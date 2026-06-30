@@ -149,6 +149,6 @@ See [`src/README.md`](src/README.md) for the full script → finding map.
 
 <div align="center">
 
-**Roee Tekoah** · **Shira Gelbstein** — Computational Genomics (76553), The Hebrew University of Jerusalem
+**Roee Tekoah** — Computational Genomics (76553), The Hebrew University of Jerusalem
 
 </div>
