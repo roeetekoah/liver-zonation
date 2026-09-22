@@ -1,0 +1,6 @@
+R 4.4.3
+SeuratObject 5.4.0
+Matrix 1.7-2
+edgeR 4.4.2
+limma 3.62.2
+celda 1.22.1

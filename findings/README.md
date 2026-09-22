@@ -1,5 +1,7 @@
 # Findings — organized store (ordered by the story)
 
+> **Historical investigation archive.** These notes preserve how the project developed and may contain superseded estimates or language. Use the root [EVIDENCE.md](../EVIDENCE.md) and the current technical report for public claims.
+
 One subfolder per finding. Each holds the **data file(s)** (the actual numbers) and a local `README.md` stating
 precisely: what the finding is, **what every number means and how it was computed** (script + metric), the honest
 caveats, the verdict/status, and the grounding.

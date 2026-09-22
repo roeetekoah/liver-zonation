@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="500" viewBox="0 0 1200 500" role="img" aria-labelledby="title desc">
+  <title id="title">Liver zonation computational reanalysis overview</title>
+  <desc id="desc">The workflow separates cohorts by acquisition, measures raw RNA counts at donor level, and reports three scoped findings.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#89a7b5"/></marker>
+    <style>
+      .label{font:600 15px 'Segoe UI',Arial,sans-serif;letter-spacing:1.6px;fill:#86c5c9}.head{font:700 27px 'Segoe UI',Arial,sans-serif;fill:#fff}.body{font:400 17px 'Segoe UI',Arial,sans-serif;fill:#d7e2e8}.small{font:400 15px 'Segoe UI',Arial,sans-serif;fill:#aec0c9}.number{font:700 30px 'Segoe UI',Arial,sans-serif;fill:#f28c4b}
+    </style>
+  </defs>
+  <rect width="1200" height="500" rx="22" fill="#10232d"/>
+  <text x="55" y="58" class="label">COMPUTATIONAL REANALYSIS</text>
+  <text x="55" y="96" class="head">Does the zonation signal survive a matched, donor-level comparison?</text>
+  <rect x="55" y="135" width="255" height="132" rx="15" fill="#193642" stroke="#2c5663"/>
+  <text x="78" y="170" class="number">47</text><text x="128" y="169" class="body">donors</text>
+  <text x="78" y="203" class="body">Separate biopsy disease series</text>
+  <text x="78" y="229" class="small">from healthy / explant endpoints</text>
+  <line x1="310" y1="201" x2="369" y2="201" stroke="#89a7b5" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="382" y="135" width="300" height="132" rx="15" fill="#193642" stroke="#2c5663"/>
+  <text x="405" y="174" class="head">Raw RNA → donor</text>
+  <text x="405" y="205" class="body">Deterministic depth matching</text>
+  <text x="405" y="231" class="small">Census · DGE · gene sets · checks</text>
+  <line x1="682" y1="201" x2="741" y2="201" stroke="#89a7b5" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="754" y="135" width="390" height="132" rx="15" fill="#193642" stroke="#2c5663"/>
+  <text x="777" y="174" class="head">Evidence with boundaries</text>
+  <text x="777" y="205" class="body">Estimates, uncertainty, provenance</text>
+  <text x="777" y="231" class="small">Claims stay tied to measured quantities</text>
+  <rect x="55" y="305" width="340" height="142" rx="15" fill="#142f39" stroke="#2c5663"/>
+  <circle cx="86" cy="341" r="8" fill="#86c5c9"/><text x="107" y="348" class="head">Matched biopsies</text>
+  <text x="78" y="383" class="body">No clear progressive collapse</text>
+  <text x="78" y="411" class="small">Modest shifts remain compatible with the data</text>
+  <rect x="430" y="305" width="340" height="142" rx="15" fill="#142f39" stroke="#2c5663"/>
+  <circle cx="461" cy="341" r="8" fill="#f28c4b"/><text x="482" y="348" class="head">CYP program</text>
+  <text x="453" y="383" class="body">Relative decline across fibrosis</text>
+  <text x="453" y="411" class="small">Gene-set and within-PC evidence</text>
+  <rect x="805" y="305" width="339" height="142" rx="15" fill="#142f39" stroke="#2c5663"/>
+  <circle cx="836" cy="341" r="8" fill="#b58ad8"/><text x="857" y="348" class="head">Endpoints</text>
+  <text x="828" y="383" class="body">Acquisition-confounded</text>
+  <text x="828" y="411" class="small">Not a clean disease-stage comparison</text>
+</svg>

@@ -23,9 +23,11 @@ data/
 
 ## Getting the data on a fresh machine (e.g. the HUJI computers)
 
-`data/` is git-ignored, so a clone has **no data**. Recreate it in two steps:
+`data/raw/` and `data/processed/` are git-ignored, so a clone has **no large inputs**. The tracked
+signature definitions remain in `data/signatures/`. The recommended route is documented in
+[`../REPRODUCING.md`](../REPRODUCING.md).
 
-**Step 1 — download into `data/raw/`** (manual; these are large / gated):
+**Step 1 — download into `data/raw/`:**
 
 | source | what to download | into |
 |---|---|---|
@@ -34,31 +36,31 @@ data/
 | **Nature paper SI** (doi 10.1038/s41586-026-10377-y) | supplementary tables zip → unzip to `2025-01-01424E-s1/` | `data/raw/` |
 | **GitHub `OranYak/Human-liver`** | `git clone https://github.com/OranYak/Human-liver data/raw/Human-liver` | `data/raw/` |
 
-> Tip: keep one machine's `data/raw/` on a USB / shared drive and copy it over — re-downloading
-> ~7 GB on each HUJI box is slow. The repo (code + signatures + docs) syncs via git; **only the
-> raw data is moved out-of-band.** See `GIT_SETUP.md`.
+`scripts/download_data.sh` downloads the public sources it can obtain automatically and extracts the
+GSE202379 `.rds.gz` into the path expected by the extraction scripts. Paper 2 supplementary inputs may
+still require manual download from the publisher.
 
-**Step 2 — regenerate `data/processed/`** (fast, scripted):
+**Step 2 — regenerate the Paper 1 inputs used by the verified route:**
 
 ```bash
-Rscript src/prep/01_extract_paper1_hepatocytes.R   # raw .rds  -> processed/paper1/
-python  src/prep/02_convert_paper2_mat.py          # raw .mat  -> processed/paper2_train.npz
-python  src/prep/03_build_expanded_signatures.py   # raw supp table -> signatures/*_expanded.txt
+Rscript src/prep/01_extract_paper1_hepatocytes.R
+Rscript src/prep/05_extract_raw_panel.R
+Rscript src/prep/09_extract_full_and_union.R
+python  src/prep/00_mtx_to_npz.py
+python  src/prep/06_sanity_raw.py
 ```
 
-Only `01` and `02` need the heavy raw files; the signatures' `core`/`revised` tiers are
-committed in `signatures/` and need no data.
+All current Paper 1 extraction scripts explicitly select the Seurat `RNA` assay. The signature files are
+committed and do not need to be regenerated for the selected route. Paper 2 conversion scripts support
+historical and optional marker-set analyses.
 
 ---
 
 ## processed/  (derived — what the pipeline actually reads)
 
-> **Why `counts.mtx` holds RAW integer counts (no Python pre-normalization):** this is
-> deliberate. We re-normalize from raw inside the pipeline (CP10k → log1p → per-gene z) so
-> Paper 1 and Paper 2 go through the *identical* preprocessing — a cross-dataset transfer is
-> only valid if both sides are normalized the same way (primer §5.2). Pre-baking a
-> normalization here would lock us out of that. So `processed/` = clean raw counts +
-> metadata; all transformation happens live in `src/pipeline.py`.
+`counts.mtx` and `raw_panel_counts.csv` contain integer RNA-assay UMIs. Normalization or thinning is
+performed inside the analysis that needs it. `src/prep/06_sanity_raw.py` explicitly checks RNA-versus-SCT
+separation, library sizes, integer counts, panel completeness and the expected hepatocyte count.
 
 ### `paper1/`  (produced by `src/prep/01_extract_paper1_hepatocytes.R`)
 

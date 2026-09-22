@@ -11,7 +11,7 @@ import os, sys
 import numpy as np, pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import config
-rng = np.random.RandomState(0)
+from thinning import thin_genes
 OUTD = str(config.ANALYSIS_TABLES)
 
 PCid=['GLUL','CYP3A4']; PPset=['ASS1','PCK1','HAL','ALDOB']; CPS=['CPS1']
@@ -38,8 +38,8 @@ def load():
 def downsample(hep):
     hep=hep[hep['E_raw']>=B].copy()
     p=(B/hep['E_raw']).values
-    for g in set(PCid+PPset+CPS+DETOX+['ALB']):
-        if g in hep.columns: hep[g+'_ds']=rng.binomial(hep[g].values.astype(int),p)
+    genes=[g for g in PCid+PPset+CPS+DETOX+['ALB'] if g in hep.columns]
+    for g,v in thin_genes(hep,genes,p).items(): hep[g+'_ds']=v
     return hep
 
 ORDER=['Healthy','F0-biopsy','F1-biopsy','F2-biopsy','F3-biopsy','F4-biopsy','Explant(end)']

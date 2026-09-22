@@ -16,7 +16,7 @@ const SERIF="Georgia";
 const COURSE="Computational Genomics 76553  ·  HUJI  ·  MASLD snRNA-seq hackathon";
 const sh=()=>({type:"outer",color:"000000",blur:7,offset:3,angle:90,opacity:0.12});
 
-const p=new pptxgen(); p.layout="LAYOUT_WIDE"; p.author="Roee Tekoah, Shira Gelbstein";
+const p=new pptxgen(); p.layout="LAYOUT_WIDE"; p.author="Roee Tekoah";
 p.title="No transcriptional de-zonation signal in matched MASLD biopsies — but the pericentral detox program dims";
 
 // --- helpers: kicker + short headline (+ optional act tag top-right); footer; caption; chips ---
@@ -73,13 +73,13 @@ s.addText("— but the pericentral detox program dims",
 s.addText("A critical re-analysis of the single-nucleus RNA-seq in Gribben et al., Nature 2024 (GSE202379)",
   {x:0.85,y:3.7,w:11.6,h:0.5,fontSize:17,italic:true,color:"C9D6D3",align:"left"});
 s.addShape(p.shapes.LINE,{x:0.85,y:4.55,w:5.0,h:0,line:{color:ORANGE,width:1.5}});
-s.addText([{text:"Roee Tekoah",options:{bold:true}},{text:"   ·   ",options:{color:"7E8F8B"}},{text:"Shira Gelbstein",options:{bold:true}}],
+s.addText([{text:"Roee Tekoah",options:{bold:true}}],
   {x:0.85,y:4.75,w:11.6,h:0.45,fontSize:20,color:"EDE7DB",align:"left"});
 s.addText("Computational Genomics (76553)  ·  Hebrew University of Jerusalem  ·  Hackathon",
   {x:0.85,y:5.3,w:11.6,h:0.4,fontSize:15,color:"9CB0AC",align:"left"});
 s.addText("47 donors  ·  ~99,809 nuclei  ·  69,426 hepatocytes  ·  raw-count, donor-level analysis",
   {x:0.85,y:6.35,w:11.6,h:0.4,fontSize:13,color:"7E8F8B",align:"left"});
-s.addNotes("Title slide. We are Roee Tekoah and Shira Gelbstein; this is our hackathon re-analysis of the single-nucleus RNA-seq in Gribben et al., Nature 2024, asking whether the evidence for progressive hepatocyte de-zonation in MASLD survives once tissue acquisition is controlled. One-line answer: in matched biopsies we find no detectable progressive de-zonation — a large collapse is excluded, subtle drift is not. We are not claiming zonation is 'preserved' in any positive sense, and we do not touch the paper's imaging/protein evidence.");
+s.addNotes("Title slide. I am Roee Tekoah; this is my hackathon re-analysis of the single-nucleus RNA-seq in Gribben et al., Nature 2024, asking whether the evidence for progressive hepatocyte de-zonation in MASLD survives once tissue acquisition is controlled. One-line answer: in matched biopsies we find no detectable progressive de-zonation — a large collapse is excluded, subtle drift is not. We are not claiming zonation is 'preserved' in any positive sense, and we do not touch the paper's imaging/protein evidence.");
 
 // ============================================================ SLIDE 2 — BACKGROUND  [BACKGROUND]
 s=p.addSlide(); s.background={color:BG};

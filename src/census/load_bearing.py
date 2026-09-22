@@ -7,10 +7,11 @@ import os, sys
 import numpy as np, pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import config
+from thinning import thin_genes
 PCanch=['GLUL','CYP3A4']; PPanch=['ASS1','PCK1','HAL','ALDOB']
 STRESS=['FOS','JUN','JUNB','JUND','ATF3','DUSP1','HSPA1A','HSPA1B']
 BILIARY=['KRT7','KRT19','KRT23','EPCAM','SOX4','NCAM1','MUC1','BCL2']
-B=1500; OUTD=str(config.ANALYSIS_TABLES)
+B=1500; M=8; OUTD=str(config.ANALYSIS_TABLES)
 
 def load():
     df=pd.read_csv(os.path.join(str(config.PAPER1),'raw_panel_counts.csv'),low_memory=False); df['donor']=df['donor'].astype(str)
@@ -28,25 +29,30 @@ def load():
     return hep
 
 def main():
-    hep=load(); rng=np.random.RandomState(0)
+    hep=load()
     h=hep[hep['E_raw']>=B].copy(); p=(B/h['E_raw'].values)
-    ds={g:rng.binomial(h[g].values.astype(int),p) for g in set(PCanch+PPanch+STRESS+BILIARY)}
-    PCh1=sum((ds[g]>0).astype(int) for g in PCanch); PPh1=sum((ds[g]>0).astype(int) for g in PPanch)
-    PCh2=sum((ds[g]>=2).astype(int) for g in PCanch); PPh2=sum((ds[g]>=2).astype(int) for g in PPanch)
-    h['PC']=(PCh1>=1)&(PPh1<2); h['PP']=(PPh1>=2)&(PCh1<1)
-    h['dual2']=(PCh2>=1)&(PPh2>=2); h['null']=(PCh1<1)&(PPh1<2)
-    h['stress']=sum(ds[g] for g in STRESS)
-    for g in BILIARY: h['b_'+g]=ds[g]>0
+    draw_frames=[]
+    for draw in range(M):
+        ds=thin_genes(h,PCanch+PPanch+STRESS+BILIARY,p,base_seed=draw)
+        PCh1=sum((ds[g]>0).astype(int) for g in PCanch); PPh1=sum((ds[g]>0).astype(int) for g in PPanch)
+        PCh2=sum((ds[g]>=2).astype(int) for g in PCanch); PPh2=sum((ds[g]>=2).astype(int) for g in PPanch)
+        d=h[['donor','source','F']].copy()
+        d['PC']=(PCh1>=1)&(PPh1<2); d['PP']=(PPh1>=2)&(PCh1<1)
+        d['dual2']=(PCh2>=1)&(PPh2>=2); d['null']=(PCh1<1)&(PPh1<2)
+        d['weak_dual']=(PCh1>=1)&(PPh1>=2)&(~d['dual2'])
+        d['stress']=sum(ds[g] for g in STRESS); d['draw']=draw
+        for g in BILIARY: d['b_'+g]=ds[g]>0
+        draw_frames.append(d)
+    drawn=pd.concat(draw_frames,ignore_index=True)
 
     # ---- (1) donor-level load-bearing table ----
-    rows=[]
-    for d,s in h.groupby('donor'):
-        N=len(s)
-        rows.append(dict(donor=d,source=s['source'].iloc[0],F=s['F'].iloc[0],NAS=s['NAS'].iloc[0],
-            lobes=s['lobes'].iloc[0],N_thin=N,
-            PC_n=int(s['PC'].sum()),PP_n=int(s['PP'].sum()),dual2_n=int(s['dual2'].sum()),null_n=int(s['null'].sum()),
-            stress_p10k=round(1e4*s['stress'].sum()/(B*N),2)))
-    T=pd.DataFrame(rows)
+    base=h.groupby('donor').agg(source=('source','first'),F=('F','first'),NAS=('NAS','first'),
+        lobes=('lobes','first'),N_thin=('donor','size')).reset_index()
+    metrics=drawn.groupby('donor').agg(PC_n=('PC','sum'),PP_n=('PP','sum'),dual2_n=('dual2','sum'),
+        weak_dual_n=('weak_dual','sum'),null_n=('null','sum'),stress_total=('stress','sum')).reset_index()
+    for c in ['PC_n','PP_n','dual2_n','weak_dual_n','null_n','stress_total']: metrics[c]/=M
+    T=base.merge(metrics,on='donor',how='left')
+    T['stress_p10k']=(1e4*T['stress_total']/(B*T['N_thin'])).round(2); T=T.drop(columns='stress_total')
     T['__o']=T['source'].map({'biopsy':0,'explant':1,'healthy':2}); T=T.sort_values(['__o','F','donor']).drop(columns='__o')
     T.to_csv(os.path.join(OUTD,'load_bearing_donor_table.csv'),index=False)
     print("=== (1) donor-level absolute-count table -> load_bearing_donor_table.csv ===")
@@ -64,16 +70,17 @@ def main():
 
     # ---- (2) full biliary panel by anchor class (contamination control) ----
     print("\n=== (2) biliary/plasticity detection by anchor class (biopsy) — full panel ===")
-    bih=h[h.source=='biopsy']; cls=np.where(bih['PC'],'PC',np.where(bih['PP'],'PP',np.where(bih['dual2'],'dual','null')))
+    bih=drawn[drawn.source=='biopsy']; cls=np.where(bih['PC'],'PC',np.where(bih['PP'],'PP',
+        np.where(bih['dual2'],'dual',np.where(bih['weak_dual'],'weak_dual','null'))))
     bih=bih.assign(cls=cls)
     hdr="    class  "+" ".join(f"{g:>6}" for g in BILIARY); print(hdr)
-    for c in ['PC','PP','dual','null']:
+    for c in ['PC','PP','dual','weak_dual','null']:
         sub=bih[bih.cls==c]
         print(f"    {c:5s}  "+" ".join(f"{sub['b_'+g].mean():6.4f}" for g in BILIARY))
 
     # ---- (3) donor-stratified within-explant dose-response (5 slopes) ----
     print("\n=== (3) within-explant dose-response, DONOR-STRATIFIED (PC-anchor low vs high stress) ===")
-    es=h[h.source=='explant']
+    es=drawn[drawn.source=='explant']
     for d,s in es.groupby('donor'):
         med=s['stress'].median(); lo=s[s.stress<=med]['PC'].mean(); hi=s[s.stress>med]['PC'].mean()
         print(f"    {d}: PC-anchor low-stress={lo:.3f}  high-stress={hi:.3f}  delta={hi-lo:+.3f}  (n={len(s)})")

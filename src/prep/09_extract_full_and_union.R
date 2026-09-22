@@ -8,9 +8,14 @@
 # NO SCT, NO normalization here.
 
 suppressMessages({library(SeuratObject); library(Matrix)})
-RDS   <- "data/raw/GSE202379_SeuratObject_AllCells.rds/GSE202379_SeuratObject_AllCells.rds"
-UNION <- "signatures/_curated_union.txt"
-OUTD  <- "data/processed/paper1"
+ROOT <- normalizePath(".")
+DATA_ROOT <- Sys.getenv("LIVER_ZONATION_DATA_ROOT", unset=file.path(ROOT, "data"))
+RDS   <- file.path(DATA_ROOT, "raw", "GSE202379_SeuratObject_AllCells.rds", "GSE202379_SeuratObject_AllCells.rds")
+UNION <- file.path(ROOT, "data", "signatures", "_curated_union.txt")
+OUTD  <- file.path(DATA_ROOT, "processed", "paper1")
+dir.create(OUTD, recursive=TRUE, showWarnings=FALSE)
+if (!file.exists(RDS)) stop("Missing Seurat input: ", RDS, "\nRun scripts/download_data.sh and extract the .rds.gz first.")
+if (!file.exists(UNION)) stop("Missing tracked signature union: ", UNION)
 
 union_genes <- trimws(readLines(UNION)); union_genes <- union_genes[nchar(union_genes)>0]
 cat("curated union genes requested:", length(union_genes), "\n")

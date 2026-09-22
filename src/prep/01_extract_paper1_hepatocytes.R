@@ -9,9 +9,10 @@ suppressMessages({ library(Seurat); library(Matrix) })
 .sf <- sub("^--file=", "", .args[grep("^--file=", .args)])
 SCRIPT_DIR <- if (length(.sf)) dirname(normalizePath(.sf)) else getwd()
 ROOT     <- normalizePath(file.path(SCRIPT_DIR, "..", ".."))
-RAW      <- file.path(ROOT, "data", "raw")
-PROC_P1  <- file.path(ROOT, "data", "processed", "paper1")
-RESULTS  <- file.path(ROOT, "results")
+DATA_ROOT <- Sys.getenv("LIVER_ZONATION_DATA_ROOT", unset=file.path(ROOT, "data"))
+RESULTS   <- Sys.getenv("LIVER_ZONATION_RESULTS_ROOT", unset=file.path(ROOT, "results"))
+RAW      <- file.path(DATA_ROOT, "raw")
+PROC_P1  <- file.path(DATA_ROOT, "processed", "paper1")
 
 # find the actual .rds FILE (the .gz may have extracted into a same-named folder)
 rdsf <- list.files(RAW, pattern = "GSE202379.*\\.rds$", recursive = TRUE, full.names = TRUE)
@@ -61,9 +62,11 @@ keep <- rownames(md)[ as.character(md[[ct_col]]) %in% hep_labels ]
 hep  <- subset(obj, cells = keep)
 cat("hepatocytes kept:", ncol(hep), "(paper reports ~69,426)\n")
 
-da <- DefaultAssay(hep)
-counts <- tryCatch(GetAssayData(hep, assay = da, slot  = "counts"),
-                   error = function(e) GetAssayData(hep, assay = da, layer = "counts"))
+if (!("RNA" %in% Assays(hep))) stop("The Seurat object has no RNA assay; raw-count extraction cannot continue.")
+if (inherits(hep[["RNA"]], "Assay5")) hep[["RNA"]] <- JoinLayers(hep[["RNA"]])
+counts <- tryCatch(LayerData(hep, assay = "RNA", layer = "counts"),
+                   error = function(e) GetAssayData(hep, assay = "RNA", slot = "counts"))
+if (!all(counts@x == round(counts@x))) stop("RNA counts are not integer-valued; expected raw UMIs.")
 Matrix::writeMM(counts, file.path(PROC_P1, "counts.mtx"))
 writeLines(rownames(counts), file.path(PROC_P1, "genes.txt"))
 writeLines(colnames(counts), file.path(PROC_P1, "barcodes.txt"))

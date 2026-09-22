@@ -4,8 +4,10 @@
 # EPCAM appearing inside a hepatocyte nucleus), and subtracts it. If EPCAM/SOX4/SOX9/GRHL2 VANISH from the
 # F4-vs-F1 result after decontamination -> ambient. If they SURVIVE -> likely real hepatocyte signal.
 suppressMessages({library(SeuratObject); library(Matrix); library(decontX); library(edgeR)})
-RDS<-"data/raw/GSE202379_SeuratObject_AllCells.rds/GSE202379_SeuratObject_AllCells.rds"
-P1<-"data/processed/paper1"; OUT<-"results/tables/analysis"
+ROOT<-normalizePath("."); DATA_ROOT<-Sys.getenv("LIVER_ZONATION_DATA_ROOT",unset=file.path(ROOT,"data")); RESULTS_ROOT<-Sys.getenv("LIVER_ZONATION_RESULTS_ROOT",unset=file.path(ROOT,"results"))
+RDS<-file.path(DATA_ROOT,"raw","GSE202379_SeuratObject_AllCells.rds","GSE202379_SeuratObject_AllCells.rds")
+P1<-file.path(DATA_ROOT,"processed","paper1"); OUT<-file.path(RESULTS_ROOT,"tables","analysis")
+dir.create(P1,recursive=TRUE,showWarnings=FALSE); dir.create(OUT,recursive=TRUE,showWarnings=FALSE)
 cat("reading RDS...\n"); flush.console()
 obj<-readRDS(RDS); if(inherits(obj[["RNA"]],"Assay5")) obj[["RNA"]]<-JoinLayers(obj[["RNA"]])
 cnt<-tryCatch(LayerData(obj,assay="RNA",layer="counts"),error=function(e) GetAssayData(obj,assay="RNA",slot="counts"))

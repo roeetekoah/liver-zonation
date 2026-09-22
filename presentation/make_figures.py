@@ -7,6 +7,7 @@ import os, numpy as np, pandas as pd
 import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
+DATA_ROOT = os.environ.get("LIVER_ZONATION_DATA_ROOT", "data")
 T   = "results/tables/analysis"
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets"); os.makedirs(OUT, exist_ok=True)
 
@@ -224,26 +225,26 @@ fig.suptitle("Two de-zonation modes in anchor-program space   ·   SCHEMATIC (il
              fontsize=12.5, color=MUTE, x=0.5, y=1.01, ha="center")
 fig.tight_layout(rect=(0,0,1,0.96)); fig.savefig(f"{OUT}/fig_gradient_schematic.png", bbox_inches="tight", pad_inches=0.12); plt.close(fig)
 
-# ===================== FIG 3 — TOST equivalence (F4 vs F1 PC-anchor) =====================
+# ===================== FIG 3 — precision + fixed-margin equivalence =====================
 eq=pd.read_csv(f"{T}/equivalence_bound.csv")
 r=eq[(eq.contrast=="F1vF4")&(eq.metric=="PC_anchor_fraction")].iloc[0]
 est,lo,hi=r["diff"],r["t_ci90_lo"],r["t_ci90_hi"]
 ri=eq[(eq.contrast=="F1vF3")&(eq.metric=="PC_anchor_fraction")].iloc[0]
 fig,ax=plt.subplots(figsize=(8.4,4.2))
-ax.axvspan(-0.5,-0.20, color=CONFOUND, alpha=0.07); ax.axvspan(0.20,0.5, color=CONFOUND, alpha=0.07)
-ax.axvspan(-0.10,0.10, color=BIOPSY, alpha=0.08)
+for margin, alpha in [(0.10, 0.9), (0.05, 0.55)]:
+    ax.axvline(-margin, color=BIOPSY, lw=1.2, ls=(0,(4,3)), alpha=alpha)
+    ax.axvline(margin, color=BIOPSY, lw=1.2, ls=(0,(4,3)), alpha=alpha)
 ax.axvline(0, color="#94A3B8", lw=1)
 ax.errorbar([est],[1], xerr=[[est-lo],[hi-est]], fmt="o", color=PC, ms=13, lw=2.5, capsize=6, zorder=5)
 ax.errorbar([ri['diff']],[0.45], xerr=[[ri['diff']-ri['t_ci90_lo']],[ri['t_ci90_hi']-ri['diff']]],
             fmt="s", color="#0EA5E9", ms=10, lw=2, capsize=5, zorder=5)
-ax.text(est,1.16,f"F4 vs F1:  +{est*100:.1f} pp", ha="center", color=PC, fontweight="bold")
-ax.text(ri['diff'],0.62,f"F1→F3 interior", ha="center", color="#0369A1", fontsize=11)
-ax.text(0.30,1.0,"large shift\n(~20 pp) excluded", color=CONFOUND, fontsize=11, va="center")
-ax.text(0,0.05,"subtle drift ≤10 pp not excluded", color=BIOPSY, ha="center", fontsize=11)
-ax.set_yticks([]); ax.set_ylim(-0.1,1.45); ax.set_xlim(-0.5,0.5)
+ax.text(est,1.17,f"F1→F4: {est*100:+.2f} pp", ha="center", color=PC, fontweight="bold")
+ax.text(ri['diff'],0.62,f"F1→F3: {ri['diff']*100:+.2f} pp", ha="center", color="#0369A1", fontsize=11)
+ax.text(0,0.05,"±5 pp and ±10 pp equivalence: not established", color=BIOPSY, ha="center", fontsize=11)
+ax.set_yticks([]); ax.set_ylim(-0.1,1.45); ax.set_xlim(-0.25,0.25)
 ax.set_xlabel("Change in pericentral-anchor fraction  (90% CI)")
-ax.set_title("We exclude a large shift, not subtle drift", fontweight="bold", loc="left")
-ax.set_xticks([-0.4,-0.2,0,0.2,0.4]); ax.set_xticklabels(["−40 pp","−20 pp","0","+20 pp","+40 pp"])
+ax.set_title("Observed differences are small; confidence intervals remain wide", fontweight="bold", loc="left")
+ax.set_xticks([-0.2,-0.1,0,0.1,0.2]); ax.set_xticklabels(["−20 pp","−10 pp","0","+10 pp","+20 pp"])
 fig.tight_layout(); fig.savefig(f"{OUT}/fig_tost.png", bbox_inches="tight"); plt.close(fig)
 
 # ===================== FIG 4 — volcano (edgeR F4 vs F1) =====================
@@ -289,16 +290,16 @@ for i,(gn,val) in enumerate(zip(g6,sub["nonhep_over_hep"])): a.text(val+2,i,f"{v
 a.set_yticks(list(y)); a.set_yticklabels(g6); a.set_xlabel("cholangiocyte / hepatocyte\nabundance fold")
 a.set_title("A · Biliary genes are\ncholangiocyte genes", fontweight="bold", loc="left", fontsize=13)
 a.invert_yaxis(); a.grid(axis="x", color=GRID); a.set_axisbelow(True)
-# B decontX funnel
+# B saved decontX sensitivity result
 b.bar([0,1],[64,34], color=[BILIARY,"#A78BFA"], width=0.55)
 for i,v in enumerate([64,34]): b.text(i,v+1,str(v),ha="center",fontweight="bold",fontsize=14)
 b.set_xticks([0,1]); b.set_xticklabels(["before\ndecontX","after\ndecontX"]); b.set_ylabel("genes FDR<0.05")
-b.set_title("B · Ambient removal\nhalves the hits", fontweight="bold", loc="left", fontsize=13)
+b.set_title("B · Saved decontX result\nreduces the hit count", fontweight="bold", loc="left", fontsize=13)
 b.text(0.5,-0.30,"SOX4/SOX9 drop below significance;\nEPCAM/B3GNT3/SPINT2/CXCL10 survive", transform=b.transAxes,
        ha="center", fontsize=10, color=MUTE)
 # C cholangiocyte fraction by stage (computed from metadata) + co-expression callout
 try:
-    md=pd.read_csv("data/processed/paper1/metadata_all_cells.csv", usecols=["Patient.ID","cell.annotation"], low_memory=False)
+    md=pd.read_csv(os.path.join(DATA_ROOT, "processed", "paper1", "metadata_all_cells.csv"), usecols=["Patient.ID","cell.annotation"], low_memory=False)
     md["donor"]=md["Patient.ID"].astype(str)
     fmap=lb.set_index(lb.donor.astype(str))["F"].to_dict(); smap=lb.set_index(lb.donor.astype(str))["source"].to_dict()
     md["F"]=md.donor.map(fmap); md["src"]=md.donor.map(smap)
@@ -352,8 +353,8 @@ try:
     Bz=1500; NDRAW=8; CAP=300
     PCprog=["GLUL","CYP3A4","CYP2E1","CYP1A2","ADH4","AKR1D1","SLCO1B3"]
     PPprog=["CPS1","ASS1","ALDOB","PCK1","HAL","ARG1"]
-    dfc=pd.read_csv("data/processed/paper1/raw_panel_counts.csv",low_memory=False); dfc["donor"]=dfc["donor"].astype(str)
-    mdc=pd.read_csv("data/processed/paper1/metadata_all_cells.csv",
+    dfc=pd.read_csv(os.path.join(DATA_ROOT, "processed", "paper1", "raw_panel_counts.csv"),low_memory=False); dfc["donor"]=dfc["donor"].astype(str)
+    mdc=pd.read_csv(os.path.join(DATA_ROOT, "processed", "paper1", "metadata_all_cells.csv"),
                     usecols=["Patient.ID","Fibrosis.score..F0.4."],low_memory=False).rename(
                     columns={"Patient.ID":"donor","Fibrosis.score..F0.4.":"F"})
     mdc["donor"]=mdc["donor"].astype(str); mdc["F"]=pd.to_numeric(mdc["F"],errors="coerce")
@@ -392,7 +393,7 @@ try:
     axes[0].set_ylabel("fraction of cells in bin")
     axes[4].legend(handles=[Line2D([0],[0],color=INK,lw=1.5,ls=(0,(3,2)),label="F1 reference")],loc="upper right",fontsize=10.5,frameon=False)
     fig.text(0.5,-0.01,"per-cell zonal balance   PC / (PC + PP)      ( 0 = periportal  ·  1 = pericentral )",ha="center",fontsize=12.5,color=MUTE)
-    fig.suptitle("Per-cell zonal balance by stage — the distribution barely moves across biopsy F1–F4 (dashed = F1 reference); only the confounded explant collapses to one pole",
+    fig.suptitle("Per-cell zonal balance by stage — descriptive biopsy shifts remain broad; the tissue-source-confounded explants are distinct",
                  fontsize=12.5, color=MUTE, x=0.5, y=1.04, ha="center")
     fig.tight_layout(rect=(0,0,1,0.96)); fig.savefig(f"{OUT}/fig_gradient.png", bbox_inches="tight", pad_inches=0.12); plt.close(fig)
     print("wrote fig_gradient.png (per-cell data found)")
@@ -417,7 +418,7 @@ try:
     a1.set_xticks([0,1,2,3,4]); a1.set_xticklabels(["F0","F1","F2","F3","F4"]); a1.set_xlim(-0.4,4.4)
     a1.set_ylabel("detox transcripts per PC nucleus\n(depth-matched to 1,500 UMIs)")
     a1.set_title("Within-PC detox output falls with fibrosis",loc="left",fontsize=14)
-    a1.annotate("ρ = −0.48,  p = 0.003\n(donor-level trend)",xy=(0.96,0.95),xycoords="axes fraction",
+    a1.annotate("ρ = −0.461,  p = 0.0041\n(donor-level trend; 8 draws)",xy=(0.96,0.95),xycoords="axes fraction",
                 ha="right",va="top",fontsize=12.5,color=CONFOUND,fontweight="bold")
     a1.annotate("F0 faded (n=2)",xy=(0.03,0.05),xycoords="axes fraction",fontsize=10,color=MUTE)
     clean(a1)
@@ -434,8 +435,8 @@ try:
     a2.axvline(0,color=INK,lw=1)
     a2.set_yticks(ys); a2.set_yticklabels([lab[g] for g in order],fontsize=11.5)
     a2.set_xlabel(r"signed  $-\log_{10}$(FDR)      ←  down with fibrosis      up  →")
-    a2.set_title("Gene-set: detox dims hardest; identity gates held",loc="left",fontsize=14)
-    a2.text(0.025,0.32,"Gating genes GLUL/CYP3A4\nflat → identity held",
+    a2.set_title("Gene-set: CYP detox has the strongest decline",loc="left",fontsize=14)
+    a2.text(0.025,0.32,"GLUL/CYP3A4 are individually flat;\ncell identity is not inferred",
             transform=a2.transAxes,fontsize=9.5,color=MUTE,va="center",ha="left",style="italic")
     clean(a2); a2.grid(axis="x",visible=True,color=GRID); a2.grid(axis="y",visible=False)
     fig.tight_layout(); fig.savefig(f"{OUT}/fig_dimming.png",bbox_inches="tight",pad_inches=0.12); plt.close(fig)
@@ -443,7 +444,7 @@ try:
 except Exception as e:
     print("SKIPPED fig_dimming.png:",e)
 
-# single clean panel — within-PC detox decline (the per-cell, composition-immune evidence for the dimming slide)
+# single clean panel — repeat-averaged within-PC detox decline
 try:
     wd=pd.read_csv(f"{T}/geneset_verify_within_pc_detox.csv")
     st=wd[wd["stage"].isin(["F0","F1","F2","F3","F4"])].copy()
@@ -458,7 +459,7 @@ try:
     a1.set_xticks([0,1,2,3,4]); a1.set_xticklabels(["F0","F1","F2","F3","F4"],fontsize=12); a1.set_xlim(-0.4,4.4)
     a1.set_ylabel("detox transcripts per PC nucleus\n(depth-matched to 1,500 UMIs)")
     a1.set_title("Within pericentral cells, detox output falls with fibrosis",loc="left",fontsize=14)
-    a1.annotate("ρ = −0.48,  p = 0.003\n(donor-level trend)",xy=(0.96,0.95),xycoords="axes fraction",
+    a1.annotate("ρ = −0.461,  p = 0.0041\n(donor-level trend; 8 draws)",xy=(0.96,0.95),xycoords="axes fraction",
                 ha="right",va="top",fontsize=13.5,color=CONFOUND,fontweight="bold")
     a1.annotate("measured on detox genes separate from the GLUL/CYP3A4 gates",xy=(0.03,0.06),xycoords="axes fraction",fontsize=10.5,color=MUTE,style="italic")
     clean(a1)
@@ -519,7 +520,7 @@ except Exception as e:
 # landmark-set decomposition: the "identity" set is >half detox by construction; its dip is the detox members
 try:
     import glob as _g
-    _ff=_g.glob("data/signatures/**/pericentral_paper2_landmark.txt",recursive=True)+_g.glob("data/signatures/pericentral_paper2_landmark.txt")
+    _ff=_g.glob(os.path.join(DATA_ROOT, "signatures", "**", "pericentral_paper2_landmark.txt"),recursive=True)+_g.glob(os.path.join(DATA_ROOT, "signatures", "pericentral_paper2_landmark.txt"))
     land=[x.strip() for x in open(_ff[0]) if x.strip() and not x.startswith("#")]
     DETOX={"CYP2E1","CYP1A2","CYP3A4","CYP3A5","CYP3A43","CYP2C8","CYP2C9","CYP2C19","CYP2B6","CYP1A1","CYP2A6","CYP2D6","CYP4F12",
            "UGT1A1","UGT2B4","UGT2B7","GSTA1","GSTA2","SULT2A1","SULT1A1","AKR1D1","AKR1C1","ADH1A","ADH1B","ADH4","ALDH1L1","FMO3","AOX1","AMACR"}

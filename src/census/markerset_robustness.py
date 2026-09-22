@@ -15,6 +15,7 @@ import os, sys
 import numpy as np, pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import config
+from thinning import thin_genes
 B=1500; P1=str(config.PAPER1)
 
 SETS = {
@@ -42,9 +43,9 @@ def load():
     return hep
 
 def per_donor(hep, pcg, ppg):
-    rng=np.random.RandomState(0); h=hep[hep['E_raw']>=B].copy(); p=(B/h['E_raw'].values)
-    genes=[g for g in set(pcg+ppg) if g in h.columns]
-    ds={g:rng.binomial(h[g].fillna(0).values.astype(int),p) for g in genes}
+    h=hep[hep['E_raw']>=B].copy(); p=(B/h['E_raw'].values)
+    genes=[g for g in sorted(set(pcg+ppg)) if g in h.columns]
+    ds=thin_genes(h,genes,p,fillna=True)
     PCp=sum(ds[g] for g in pcg if g in ds); PPp=sum(ds[g] for g in ppg if g in ds)
     tot=PCp+PPp; frac=np.where(tot>0, PCp/np.maximum(tot,1), np.nan)
     h['tot']=tot; h['frac']=frac; h['informative']=tot>=3; h['polar']=(frac<=0.25)|(frac>=0.75)

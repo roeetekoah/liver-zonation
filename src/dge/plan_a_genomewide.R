@@ -4,7 +4,11 @@
 # Primary = F4-vs-F1 contrast; secondary = omnibus across F0-F4. Controls: housekeeping (must be flat),
 # zonation genes (expected flat = preserved), MDS by run vs by fibrosis (batch pre-flight, F17).
 suppressMessages(library(edgeR))
-P1 <- "data/processed/paper1"; OUT <- "results/tables/analysis"; FIG <- "results/figures/h2"
+ROOT <- normalizePath(".")
+DATA_ROOT <- Sys.getenv("LIVER_ZONATION_DATA_ROOT", unset=file.path(ROOT, "data"))
+RESULTS_ROOT <- Sys.getenv("LIVER_ZONATION_RESULTS_ROOT", unset=file.path(ROOT, "results"))
+P1 <- file.path(DATA_ROOT,"processed","paper1"); OUT <- file.path(RESULTS_ROOT,"tables","analysis"); FIG <- file.path(RESULTS_ROOT,"figures","h2")
+dir.create(OUT, recursive=TRUE, showWarnings=FALSE); dir.create(FIG, recursive=TRUE, showWarnings=FALSE)
 pb <- as.matrix(read.csv(file.path(P1,"pseudobulk_hep_by_donor.csv"), row.names=1, check.names=FALSE))
 bq <- read.csv(file.path(OUT,"batch_qc.csv"), stringsAsFactors=FALSE); bq$donor <- as.character(bq$donor)
 dm <- read.csv(file.path(P1,"donor_meta.csv"), stringsAsFactors=FALSE); dm$donor <- as.character(dm$donor)

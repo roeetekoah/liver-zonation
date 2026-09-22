@@ -7,9 +7,10 @@ import os, sys
 import numpy as np, pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import config
+from thinning import thin_genes
 PCanch=['GLUL','CYP3A4']; PPanch=['ASS1','PCK1','HAL','ALDOB']; DETOX=['CYP2E1','CYP1A2','ADH4','AKR1D1','SLCO1B3']
 PCprog=['GLUL','CYP3A4','CYP2E1','CYP1A2','ADH4','AKR1D1','SLCO1B3']; PPprog=['CPS1','ASS1','ALDOB','PCK1','HAL','ARG1']
-B=1500; Z=1.96+0.84
+B=1500; M=8; Z=1.96+0.84
 
 def load():
     df=pd.read_csv(os.path.join(str(config.PAPER1),'raw_panel_counts.csv'),low_memory=False); df['donor']=df['donor'].astype(str)
@@ -20,23 +21,27 @@ def load():
     return hep
 
 def per_donor(hep):
-    rng=np.random.RandomState(0); h=hep[hep['E_raw']>=B].copy(); p=(B/h['E_raw'].values)
-    ds={g:rng.binomial(h[g].values.astype(int),p) for g in set(PCanch+PPanch+DETOX+PCprog+PPprog)}
-    PCh1=sum((ds[g]>0).astype(int) for g in PCanch); PPh1=sum((ds[g]>0).astype(int) for g in PPanch)
-    PCh2=sum((ds[g]>=2).astype(int) for g in PCanch); PPh2=sum((ds[g]>=2).astype(int) for g in PPanch)
-    h['PC']=(PCh1>=1)&(PPh1<2); h['PP']=(PPh1>=2)&(PCh1<1); h['dual2']=(PCh2>=1)&(PPh2>=2); h['null']=(PCh1<1)&(PPh1<2)
-    h['detoxsum']=sum(ds[g] for g in DETOX)
-    PCp=sum(ds[g] for g in PCprog); PPp=sum(ds[g] for g in PPprog); tot=PCp+PPp
-    frac=np.where(tot>0, PCp/np.maximum(tot,1), np.nan)
-    h['informative']=tot>=3; h['polar']=(frac<=0.25)|(frac>=0.75)   # gradient: zonal-extreme fraction
+    h=hep[hep['E_raw']>=B].copy(); p=(B/h['E_raw'].values)
     rows=[]
-    for d,s in h.groupby('donor'):
-        pcm=s[s['PC']]; inf=s[s['informative']]
-        rows.append(dict(donor=d,F=s['F'].iloc[0],
-            PC=s['PC'].mean(),PP=s['PP'].mean(),dual2=s['dual2'].mean(),null=s['null'].mean(),
-            detox=(pcm['detoxsum'].mean() if len(pcm)>=20 else np.nan),
-            polar=(inf['polar'].mean() if len(inf)>=20 else np.nan)))
-    return pd.DataFrame(rows)
+    for draw in range(M):
+        ds=thin_genes(h,PCanch+PPanch+DETOX+PCprog+PPprog,p,base_seed=draw)
+        PCh1=sum((ds[g]>0).astype(int) for g in PCanch); PPh1=sum((ds[g]>0).astype(int) for g in PPanch)
+        PCh2=sum((ds[g]>=2).astype(int) for g in PCanch); PPh2=sum((ds[g]>=2).astype(int) for g in PPanch)
+        hd=h.copy(); hd['PC']=(PCh1>=1)&(PPh1<2); hd['PP']=(PPh1>=2)&(PCh1<1)
+        hd['dual2']=(PCh2>=1)&(PPh2>=2); hd['null']=(PCh1<1)&(PPh1<2)
+        hd['detoxsum']=sum(ds[g] for g in DETOX)
+        PCp=sum(ds[g] for g in PCprog); PPp=sum(ds[g] for g in PPprog); tot=PCp+PPp
+        frac=np.where(tot>0, PCp/np.maximum(tot,1), np.nan)
+        hd['informative']=tot>=3; hd['polar']=(frac<=0.25)|(frac>=0.75)
+        for d,s in hd.groupby('donor'):
+            pcm=s[s['PC']]; inf=s[s['informative']]
+            rows.append(dict(donor=d,F=s['F'].iloc[0],draw=draw,
+                PC=s['PC'].mean(),PP=s['PP'].mean(),dual2=s['dual2'].mean(),null=s['null'].mean(),
+                detox=(pcm['detoxsum'].mean() if len(pcm)>=20 else np.nan),
+                polar=(inf['polar'].mean() if len(inf)>=20 else np.nan)))
+    return pd.DataFrame(rows).groupby(['donor','F'],as_index=False).agg(
+        PC=('PC','mean'),PP=('PP','mean'),dual2=('dual2','mean'),null=('null','mean'),
+        detox=('detox','mean'),polar=('polar','mean'))
 
 def mde(D,col,g1,g2):
     a=D[D.F==g1][col].dropna().values; b=D[D.F==g2][col].dropna().values

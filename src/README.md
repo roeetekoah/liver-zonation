@@ -4,10 +4,9 @@ All current analysis code. Scripts are grouped into subfolders that map onto the
 (see [`../findings/README.md`](../findings/README.md), audited in [`../CLAIMS_LEDGER.md`](../CLAIMS_LEDGER.md)).
 Paths are centralised in **`config.py`** — import it, don't hard-code.
 
-> The pre-reanalysis exploration code (the flat `analysis/` figure family, the Step 2–9 `steps/` z-ruler
-> pipeline, the signature `battery/`, the `reports/` PDF generators, and `run_everything.py`) is **legacy**
-> and has been moved to [`../archive/legacy_src/`](../archive/legacy_src/). A full point-in-time copy of the
-> earlier flat `src/` is at `../archive/src_backup_2026-06-23/`. Nothing here imports the archived code.
+> Pre-reanalysis exploration code is outside the current verified route. The release-facing documentation
+> maps only the scripts needed to inspect or reproduce the supported claims; earlier versions remain available
+> through Git history.
 
 ## The import contract
 Every script puts `src/` on `sys.path` and imports `config`:
@@ -80,9 +79,13 @@ src/
 `artefacts.py` (plotting helpers), `make_gradient_figure.py` (**F9** gradient-compression figure),
 `make_simpson_figure.py` (**F12** Simpson reveal).
 
-## Requirements
-```
-pip install numpy scipy pandas scikit-learn statsmodels matplotlib h5py openpyxl
-```
-R side: `Seurat`, `Matrix`, `edgeR`, `celda` (decontX). Each count/DGE script is standalone — run it directly;
-it reads the raw panel / pseudobulk via `config`.
+## Requirements and verified route
+
+Use the pinned Python versions in [`../requirements.txt`](../requirements.txt) and the tested R versions in
+[`../R-packages.txt`](../R-packages.txt). Large inputs can live outside the checkout via
+`LIVER_ZONATION_DATA_ROOT`; generated outputs can be redirected with `LIVER_ZONATION_RESULTS_ROOT`.
+
+For the selected public evidence route, use [`../scripts/run_verified.py`](../scripts/run_verified.py) rather
+than invoking an undocumented sequence by hand. It checks prerequisites, requires a new/empty output directory,
+runs the bounded Python/R stages, saves logs, and writes an input/output hash manifest. See
+[`../REPRODUCING.md`](../REPRODUCING.md).

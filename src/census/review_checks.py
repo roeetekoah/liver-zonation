@@ -7,6 +7,7 @@ import os, sys
 import numpy as np, pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import config
+from thinning import thin_genes
 PCanch=['GLUL','CYP3A4']; PPanch=['ASS1','PCK1','HAL','ALDOB']
 PCprog=['GLUL','CYP3A4','CYP2E1','CYP1A2','ADH4','AKR1D1','SLCO1B3']; PPprog=['CPS1','ASS1','ALDOB','PCK1','HAL','ARG1']
 STRESS=['FOS','JUN','JUNB','JUND','ATF3','DUSP1','HSPA1A','HSPA1B']
@@ -23,12 +24,10 @@ def load():
     hep['source']=np.where(hep['donor'].str.startswith('CL'),'explant',np.where(hep['stage']=='Healthy control','healthy','biopsy'))
     return hep
 
-def thin(h,rng):
+def thin(h,seed):
     p=(B/h['E_raw'].values);
-    out={}
-    for g in set(PCanch+PPanch+PCprog+PPprog+STRESS+['KRT19','EPCAM','ALB']):
-        if g in h.columns: out[g]=rng.binomial(h[g].values.astype(int),p)
-    return out
+    genes=[g for g in PCanch+PPanch+PCprog+PPprog+STRESS+['KRT19','EPCAM','ALB'] if g in h.columns]
+    return thin_genes(h,genes,p,base_seed=seed)
 
 def classify(ds):
     PCh=sum((ds[g]>0).astype(int) for g in PCanch); PPh=sum((ds[g]>0).astype(int) for g in PPanch)
@@ -37,10 +36,10 @@ def classify(ds):
     return cls,PCp,PPp
 
 def main():
-    hep=load(); rng=np.random.RandomState(0)
+    hep=load()
     # ---------- A. within-explant dose-response ----------
     es=hep[(hep.source=='explant')&(hep['E_raw']>=B)].copy()
-    ds=thin(es,rng); cls,PCp,PPp=classify(ds)
+    ds=thin(es,0); cls,PCp,PPp=classify(ds)
     stress=sum(ds[g] for g in STRESS)
     es['cls']=cls; es['stress']=stress; es['PCp']=PCp; es['PPp']=PPp
     es['ppole']=(PPp>=3)&(PCp==0)
@@ -89,7 +88,7 @@ def main():
 
     # ---------- D. confounders ----------
     print("\n"+"="*70+"\n(D) confounder tests (data already in hand)\n"+"="*70)
-    bi=hep[(hep.source=='biopsy')&(hep['E_raw']>=B)].copy(); dsb=thin(bi,np.random.RandomState(2)); clsb,PCp2,PPp2=classify(dsb)
+    bi=hep[(hep.source=='biopsy')&(hep['E_raw']>=B)].copy(); dsb=thin(bi,2); clsb,PCp2,PPp2=classify(dsb)
     bi['cls']=clsb; bi['KRT19d']=(dsb['KRT19']>0); bi['EPCAMd']=(dsb['EPCAM']>0)
     bi['ALB10k']=1e4*bi['ALB']/bi['E_raw']
     # contamination: biliary detection by anchor class

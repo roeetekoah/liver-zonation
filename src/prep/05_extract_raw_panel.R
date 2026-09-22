@@ -6,8 +6,12 @@
 
 suppressMessages({library(SeuratObject); library(Matrix)})
 
-RDS <- "data/raw/GSE202379_SeuratObject_AllCells.rds/GSE202379_SeuratObject_AllCells.rds"
-OUT <- "data/processed/paper1/raw_panel_counts.csv"
+ROOT <- normalizePath(".")
+DATA_ROOT <- Sys.getenv("LIVER_ZONATION_DATA_ROOT", unset=file.path(ROOT, "data"))
+RDS <- file.path(DATA_ROOT, "raw", "GSE202379_SeuratObject_AllCells.rds", "GSE202379_SeuratObject_AllCells.rds")
+OUT <- file.path(DATA_ROOT, "processed", "paper1", "raw_panel_counts.csv")
+dir.create(dirname(OUT), recursive=TRUE, showWarnings=FALSE)
+if (!file.exists(RDS)) stop("Missing Seurat input: ", RDS, "\nRun scripts/download_data.sh and extract the .rds.gz first.")
 
 PANEL <- c(
   # detox/redox/transport

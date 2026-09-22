@@ -10,6 +10,7 @@ import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import config
+from thinning import thin_genes
 rng = np.random.RandomState(0)
 
 PCprog=['GLUL','CYP3A4','CYP2E1','CYP1A2','ADH4','AKR1D1','SLCO1B3']   # pericentral program
@@ -33,8 +34,8 @@ def main():
     hep['grp']=[grp(d,s,F) for d,s,F in zip(hep['donor'],hep['stage'],hep['F'])]
     hep=hep[hep['grp'].notna() & (hep['E_raw']>=B)].copy()
     p=(B/hep['E_raw']).values
-    for g in set(PCprog+PPprog):
-        hep[g+'_ds']=rng.binomial(hep[g].values.astype(int),p)
+    for g,v in thin_genes(hep,PCprog+PPprog,p).items():
+        hep[g+'_ds']=v
     hep['PC']=hep[[g+'_ds' for g in PCprog]].sum(axis=1)
     hep['PP']=hep[[g+'_ds' for g in PPprog]].sum(axis=1)
     # donor-balance

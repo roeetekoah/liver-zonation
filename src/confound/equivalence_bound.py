@@ -1,11 +1,9 @@
-"""Affirmative EQUIVALENCE BOUND on hepatocyte gene-expression zonation preservation
-across acquisition-matched biopsy MASLD (queue item O12; supports Decision D3).
+"""Precision and fixed-margin equivalence checks for donor-level zonation metrics.
 
 The "zonation preserved" claim (D3) currently rests on a descriptive null ("nothing was
 significant") = absence-of-evidence. This script provides the AFFIRMATIVE form a referee
-wants: TOST / two-one-sided-tests equivalence on the existing DONOR-LEVEL anchor-
-classification (compositional) metrics, so we can state "we EXCLUDE a coordinated
-zonation shift larger than X."
+wants: report estimates and confidence intervals on the existing DONOR-LEVEL anchor-
+classification metrics, then test only the pre-specified equivalence margins.
 
 Reuses the EXISTING depth-controlled donor-level metrics in
 results/tables/analysis/load_bearing_donor_table.csv (B=1500 binomial down-thinned).
@@ -22,8 +20,8 @@ Contrasts:
 
 For each (contrast, metric):
   observed difference (mean_high - mean_low), 90% t-CI (Welch), 90% bootstrap CI,
-  and TOST equivalence against pre-specified margins. A margin is EXCLUDED when the
-  whole 90% CI lies inside +-margin (operationally identical to TOST p<0.05 both sides).
+  and TOST equivalence against pre-specified margins. Equivalence is established only
+  when the whole 90% CI lies inside a pre-specified +-margin.
 """
 import os, sys
 import numpy as np, pandas as pd
@@ -81,16 +79,6 @@ def excluded(ci_lo, ci_hi, margin):
     return (ci_lo > -margin) and (ci_hi < margin)
 
 
-def smallest_excluded(ci_lo, ci_hi, candidate_margins):
-    """The smallest margin from the candidate grid that the CI lies entirely within.
-    (== the tightest bound we can affirmatively make; the CI half-width on the
-    binding side is the continuous analogue.)"""
-    for m in sorted(candidate_margins):
-        if excluded(ci_lo, ci_hi, m):
-            return m
-    return None
-
-
 def main():
     df = pd.read_csv(IN)
     df = df[df["source"] == "biopsy"].copy()
@@ -105,10 +93,10 @@ def main():
 
     rows = []
     print("=" * 78)
-    print("EQUIVALENCE BOUND on donor-level zonation-structure metrics (biopsy only)")
+    print("PRECISION AND EQUIVALENCE on donor-level zonation metrics (biopsy only)")
     print("Metric scale: PC/PP anchor fractions are proportions in [0,1];")
     print("PP:PC is a dimensionless ratio. Diff = mean(high F) - mean(low F).")
-    print("90% CI -> we EXCLUDE a coordinated shift larger than +-margin if CI inside +-margin.")
+    print("Equivalence is established only if the 90% CI is inside a pre-specified +-margin.")
     print("=" * 78)
 
     for lname, hname, lF, hF in contrasts:
@@ -122,23 +110,19 @@ def main():
 
             # candidate margins on this metric's native scale
             if kind == "abs":
-                cand = ABS_MARGINS + [REL_MARGIN * base]  # +-20% of baseline fraction too
                 margin_notes = (f"abs {ABS_MARGINS}; "
                                 f"rel20%={REL_MARGIN*base:.4f} (=0.20*F1mean {base:.4f})")
             else:
                 # ratio: only the relative margin is meaningful
-                cand = [REL_MARGIN * base]
                 margin_notes = f"rel20%={REL_MARGIN*base:.4f} (=0.20*F1mean {base:.4f})"
 
             # report exclusion per fixed absolute margin (anchor fractions only) + the rel margin
             excl_005 = excluded(tlo, thi, 0.05) if kind == "abs" else None
             excl_010 = excluded(tlo, thi, 0.10) if kind == "abs" else None
             excl_rel = excluded(tlo, thi, REL_MARGIN * base)
-            sm_t = smallest_excluded(tlo, thi, cand)
-            sm_b = smallest_excluded(blo, bhi, cand)
-            # continuous tightest bound = max |CI endpoint| (the binding side)
-            tight_t = max(abs(tlo), abs(thi))
-            tight_b = max(abs(blo), abs(bhi))
+            # Descriptive precision only; these values are not pre-specified equivalence margins.
+            max_endpoint_t = max(abs(tlo), abs(thi))
+            max_endpoint_b = max(abs(blo), abs(bhi))
 
             print(f"  {mlabel}: mean {lname}={lo.mean():.4f} {hname}={hi.mean():.4f} "
                   f"Diff={diff:+.4f}")
@@ -150,7 +134,7 @@ def main():
                       f"EXCLUDE +-20%? {excl_rel}")
             else:
                 print(f"     EXCLUDE +-20%? {excl_rel}")
-            print(f"     tightest bound (t)  : +-{tight_t:.4f}   (boot: +-{tight_b:.4f})")
+            print(f"     max |CI endpoint| (descriptive): t={max_endpoint_t:.4f}, bootstrap={max_endpoint_b:.4f}")
 
             rows.append(dict(
                 contrast=f"{lname}v{hname}", n_low=len(lo), n_high=len(hi),
@@ -162,7 +146,8 @@ def main():
                 rel20_margin=round(REL_MARGIN * base, 5),
                 exclude_abs_0p05=excl_005, exclude_abs_0p10=excl_010,
                 exclude_rel_20pct=excl_rel,
-                tightest_bound_t=round(tight_t, 5), tightest_bound_boot=round(tight_b, 5),
+                max_abs_t_ci_endpoint=round(max_endpoint_t, 5),
+                max_abs_boot_ci_endpoint=round(max_endpoint_b, 5),
             ))
 
     out = pd.DataFrame(rows)

@@ -14,12 +14,14 @@ import numpy as np, pandas as pd
 from scipy import stats
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import config
+from thinning import thin_genes
 
 # --- identical to src/confound/mde.py ---
 PCanch = ['GLUL', 'CYP3A4']
 PPanch = ['ASS1', 'PCK1', 'HAL', 'ALDOB']
 DETOX  = ['CYP2E1', 'CYP1A2', 'ADH4', 'AKR1D1', 'SLCO1B3']
 B = 1500
+M = 8
 OUT = os.path.join(str(config.ANALYSIS_TABLES), 'geneset_verify_within_pc_detox.csv')
 
 
@@ -38,22 +40,21 @@ def load():
 
 
 def per_donor(hep):
-    rng = np.random.RandomState(0)
     h = hep[hep['E_raw'] >= B].copy()
     p = (B / h['E_raw'].values)
-    genes = set(PCanch + PPanch + DETOX)
-    ds = {g: rng.binomial(h[g].values.astype(int), p) for g in genes}
-    PCh1 = sum((ds[g] > 0).astype(int) for g in PCanch)
-    PPh1 = sum((ds[g] > 0).astype(int) for g in PPanch)
-    h['PC'] = (PCh1 >= 1) & (PPh1 < 2)           # PC gate exactly as mde.py
-    h['detoxsum'] = sum(ds[g] for g in DETOX)
     rows = []
-    for d, s in h.groupby('donor'):
-        pcm = s[s['PC']]
-        rows.append(dict(donor=d, F=s['F'].iloc[0],
-                         n_pc=len(pcm),
-                         detox=(pcm['detoxsum'].mean() if len(pcm) >= 20 else np.nan)))
-    return pd.DataFrame(rows)
+    for draw in range(M):
+        ds = thin_genes(h, PCanch + PPanch + DETOX, p, base_seed=draw)
+        PCh1 = sum((ds[g] > 0).astype(int) for g in PCanch)
+        PPh1 = sum((ds[g] > 0).astype(int) for g in PPanch)
+        hd=h.copy(); hd['PC'] = (PCh1 >= 1) & (PPh1 < 2)
+        hd['detoxsum'] = sum(ds[g] for g in DETOX)
+        for d, s in hd.groupby('donor'):
+            pcm = s[s['PC']]
+            rows.append(dict(donor=d, F=s['F'].iloc[0], draw=draw, n_pc=len(pcm),
+                             detox=(pcm['detoxsum'].mean() if len(pcm) >= 20 else np.nan)))
+    return pd.DataFrame(rows).groupby(['donor','F'],as_index=False).agg(
+        n_pc=('n_pc','mean'),detox=('detox','mean'))
 
 
 def main():

@@ -23,7 +23,7 @@ File: `results/tables/analysis/geneset_verify_camera_cpm_vs_tmm.csv`
 **Verdict:** detox sets stay Down with **near-identical (marginally stronger)** FDRs under TMM. The competitive significance is **not** a CPM artifact.
 
 ## TEST 2 — Self-contained rotation test (limma::mroast, TMM, 9,999 rotations)
-roast tests each set in **absolute** terms (does it move on its own?), not relative to the rest of the transcriptome — so it is not competitive/compositional.
+roast is a **self-contained** test (does the set move against its own null?), rather than a competitive comparison with genes outside the set. It still analyzes normalized sequencing counts and does not establish absolute molecule loss or enzyme activity.
 File: `results/tables/analysis/geneset_verify_roast.csv`
 
 | gene_set | Dir | PropDown | PValue | FDR |
@@ -32,7 +32,7 @@ File: `results/tables/analysis/geneset_verify_roast.csv`
 | pericentral_anchors | Down | 0.15 | 0.032 | 0.081 (borderline) |
 | detox_phase2 | Down | 0.13 | 0.154 | 0.220 (ns) |
 
-**Verdict:** the **CYP xenobiotic family moves Down on its own** (survives FDR). The broader pericentral anchor set is borderline; phase-II detox does **not** reach significance in absolute terms. So the *self-contained* signal is real but **narrower and weaker** than the competitive test implies — the competitive test borrows strength from the up-going biliary/EMT contrast.
+**Verdict:** the **CYP xenobiotic family moves Down in the self-contained test** (survives FDR). The broader pericentral anchor set is borderline; phase-II detox does **not** reach self-contained significance. The supported set-level signal is therefore narrower than the competitive result.
 
 ## TEST 3 — Contaminant removal (drop budget-eaters, renormalize, re-test)
 Dropped **65 genes**: all cholangiocyte_ductular + CTRL_EMT + CTRL_interferon set members present, plus the **20** genome-wide genes with rho_F>0 & fdr_trend<0.05 in `dge_genomewide.csv`. Renormalized (TMM) and re-tested the detox sets.
@@ -47,20 +47,20 @@ File: `results/tables/analysis/geneset_verify_decontam.csv`
 **Verdict:** after removing the things that could eat library budget, the detox sets stay Down with **essentially unchanged** FDRs. The Down call is **not driven by the up-going compositional shift**.
 
 ## TEST 4 — Within-PC, depth-matched detox burden (decisive, non-compositional)
-Per-cell measure, immune to the compositional concern: detox UMIs per **pericentral** nucleus on counts **down-thinned to a common 1,500-UMI budget** (reproduces `src/confound/mde.py` pipeline exactly — DETOX = CYP2E1/CYP1A2/ADH4/AKR1D1/SLCO1B3, same PC gate, same thinning). 37 of 38 donors had ≥20 PC nuclei.
+Separate per-cell measure: detox UMIs per **pericentral** nucleus on counts **down-thinned to a common 1,500-UMI budget**, averaged over eight deterministic draws (DETOX = CYP2E1/CYP1A2/ADH4/AKR1D1/SLCO1B3, same PC gate as `src/confound/mde.py`). This avoids between-cell library-depth and donor-composition differences, but remains a relative measurement within a fixed sequencing budget. 37 of 38 donors had ≥20 PC nuclei.
 File: `results/tables/analysis/geneset_verify_within_pc_detox.csv`
 
 | stage | nDonors | mean detox UMIs/nuc |
 |---|---|---|
-| F0 | 2 | 12.45 |
-| F1 | 8 | 11.88 |
+| F0 | 2 | 12.48 |
+| F1 | 8 | 11.86 |
 | F2 | 12 | 10.21 |
-| F3 | 11 | 9.92 |
-| F4 | 4 | 8.79 |
+| F3 | 11 | 10.04 |
+| F4 | 4 | 9.02 |
 
-- Donor-level **Spearman(detox, F) = −0.481, p = 0.003** (n=37) — monotone decline across all five stages.
-- **F1→F4: 11.88 → 8.79** UMIs/nuc (diff **−3.09**, 95% CI **[−4.74, −1.44]**, Welch p=0.002, Cohen d=−2.1).
-- Observed |diff| 3.09 **exceeds** the published MDE (F1 vs F4, 80% power) of 2.78 UMIs/nuc.
+- Donor-level **Spearman(detox, F) = −0.461, p = 0.0041** (n=37).
+- **F1→F4: 11.861 → 9.015** UMIs/nuc (diff **−2.846**, 95% CI **[−4.383, −1.309]**, Welch p=0.0022).
+- The MDE calculation is a design diagnostic, not an additional significance threshold; the estimate and interval above are the primary endpoint summary.
 
 This matches the deck's "~12.7→8.9" (F0=12.45, F1→F4 = 11.88→8.79; the headline figure rounded the ends).
 
@@ -70,9 +70,9 @@ This matches the deck's "~12.7→8.9" (F0=12.45, F1→F4 = 11.88→8.79; the hea
 Per-gene pseudobulk DGE: **20 of 22** pericentral/detox landmark genes have rho_F < 0 (coordinated direction), but **not one** survives per-gene FDR (min **fdr_trend = 0.80**, `dge_genomewide.csv`). This is exactly the "many genes each shifting a little, same direction" pattern that per-gene FDR misses but a set test and a per-cell aggregate detect. The `CLAIMS_LEDGER` "FALSIFIED (row 1b)" refers specifically to the **per-gene** claim — *no single detox gene is individually significant* — which remains true and is **not** contradicted here.
 
 ## VERDICT
-**(a) Real per-hepatocyte program change — survives composition control.** The pericentral-detox dimming is **not** a compositional/competitive artifact: it survives TMM normalization (Test 1), survives removal of the up-going budget-eaters (Test 3), and is independently confirmed by a per-cell, depth-matched within-PC measure that compositionality cannot touch (Test 4, Spearman −0.48, p=0.003). The one honest limit: in a strictly self-contained rotation test (Test 2) only the **CYP xenobiotic core** clears FDR on its own; the broader anchor/phase-II sets are borderline-to-null in absolute terms, so the *strength* of the competitive FDRs is partly borrowed from the up-going biliary/EMT contrast.
+**Scoped verdict.** The relative pericentral-detox decline is supported by TMM-normalized CAMERA, removal of the up-going budget-eaters, a self-contained test for the CYP core, and a separate within-PC depth-matched measure (Spearman −0.461, p=0.0041). Only the **CYP xenobiotic core** clears FDR in the self-contained rotation test; the broader anchor and phase-II sets are borderline-to-null there. None of these checks establishes absolute molecular or functional loss.
 
 **One-line wording for the deck:**
-> The pericentral-detox program dims coordinately with fibrosis — a real per-hepatocyte decline (within-PC depth-matched detox burden falls 11.9→8.8 UMIs/nucleus F1→F4, Spearman −0.48, p=0.003; gene-set Down survives TMM and contaminant removal), even though no single detox gene clears per-gene FDR.
+> The relative pericentral-detox program declines with fibrosis: within-PC depth-matched burden falls 11.86→9.02 UMIs/nucleus from F1 to F4 (Spearman −0.461, p=0.0041), while the CYP set is Down in both CAMERA and mROAST; no single detox gene clears per-gene FDR.
 
-**Strongest defensible claim:** the *coordinated* detox decline is robust to composition; the *CYP xenobiotic core* is the part that also moves in an absolute self-contained test. Biliary/ductular attribution of the up-going contrast remains a **lead, not closed**.
+**Strongest defensible claim:** a *relative, coordinated* detox decline is robust across the selected normalization and aggregation checks; the *CYP xenobiotic core* is the part that also clears the self-contained test. Biliary/ductular attribution of the up-going contrast remains a **lead, not closed**.

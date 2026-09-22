@@ -1,5 +1,7 @@
 # Detox-dimming dossier — complete provenance, in plain English + raw numbers
 
+> **Superseded working dossier.** The single-draw estimates and strong identity/composition language below are retained as investigation history. Use [EVIDENCE.md](../EVIDENCE.md) and the [current technical report](../reports/Report_complete.pdf) for the verified eight-draw result and current interpretation.
+
 One-line: **In matched MASLD biopsies, hepatocytes keep their zonal identity (no rezonation), but
 the pericentral detox program dims in level. This is real (survives composition control), invisible
 to single-gene DGE, and surfaces only with gene-set + per-cell tests.**

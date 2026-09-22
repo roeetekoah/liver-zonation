@@ -1,5 +1,7 @@
 # F19 — The zonation-preservation claim, in full (what we say, how it's grounded, what it is NOT)
 
+> **Superseded working claim.** Current intervals do not establish the pre-specified ±5 or ±10 percentage-point equivalence margins. Use [EVIDENCE.md](../../EVIDENCE.md) and the current technical report; do not use the preservation language below as the public conclusion.
+
 **Status: LIVE.** The single stable claim (Decision D3):
 > **Across acquisition-matched biopsy MASLD (fibrosis F1 → cirrhotic F4), hepatocyte gene-expression
 > zonation is preserved** — meaning no detectable change AND large coordinated shifts affirmatively excluded.

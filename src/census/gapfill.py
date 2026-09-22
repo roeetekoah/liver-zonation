@@ -8,7 +8,8 @@ import numpy as np, pandas as pd
 import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import config
-rng=np.random.RandomState(0); B=1500; OUTD=str(config.ANALYSIS_TABLES)
+from thinning import thin_genes
+B=1500; OUTD=str(config.ANALYSIS_TABLES)
 
 PCprog=['GLUL','CYP3A4','CYP2E1','CYP1A2','ADH4','AKR1D1','SLCO1B3']
 PPprog=['CPS1','ASS1','ALDOB','PCK1','HAL','ARG1']
@@ -26,7 +27,7 @@ def load():
     hep['biopsy']=(~hep['donor'].str.startswith('CL'))&(hep['stage']!='Healthy control')
     hep['explant']=hep['donor'].str.startswith('CL')
     hep=hep[hep['E_raw']>=B].copy(); p=(B/hep['E_raw']).values
-    for g in set(PCprog+PPprog): hep[g+'_ds']=rng.binomial(hep[g].values.astype(int),p)
+    for g,v in thin_genes(hep,PCprog+PPprog,p).items(): hep[g+'_ds']=v
     hep['PCp']=hep[[g+'_ds' for g in PCprog]].sum(axis=1)
     hep['PPp']=hep[[g+'_ds' for g in PPprog]].sum(axis=1)
     PCh=(hep[[g+'_ds' for g in PCanch]]>0).sum(axis=1); PPh=(hep[[g+'_ds' for g in PPanch]]>0).sum(axis=1)

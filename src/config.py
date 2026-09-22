@@ -1,10 +1,16 @@
-"""Central path config. Import as: from config import PAPER1, SIGNATURES, ...
-Run scripts from the src/ directory, or ensure src/ is on sys.path."""
+"""Central paths for the analysis.
+
+Run scripts from the repository root. Large inputs and generated outputs may live
+outside the checkout by setting ``LIVER_ZONATION_DATA_ROOT`` and
+``LIVER_ZONATION_RESULTS_ROOT``.
+"""
+import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent          # repo root (Hackathon/)
-DATA_RAW   = ROOT / "data" / "raw"
-DATA_PROC  = ROOT / "data" / "processed"
+DATA_ROOT  = Path(os.environ.get("LIVER_ZONATION_DATA_ROOT", ROOT / "data")).expanduser().resolve()
+DATA_RAW   = DATA_ROOT / "raw"
+DATA_PROC  = DATA_ROOT / "processed"
 PAPER1     = DATA_PROC / "paper1"                        # counts.mtx, genes.txt, barcodes.txt, *_metadata.csv
 PAPER2_TRAIN = DATA_PROC / "paper2_train.npz"
 SIGNATURES = ROOT / "data" / "signatures"   # moved under data/ 2026-06-23
@@ -30,7 +36,7 @@ def signature_files(which: str = DEFAULT_SET):
     """Return (pericentral_path, periportal_path) for a named set; default = transcriptome-wide 'full'."""
     return SIGNATURE_SETS[which]
 PC_GENES, PP_GENES = SIGNATURE_SETS[DEFAULT_SET]   # transcriptome-wide by default
-RESULTS    = ROOT / "results"
+RESULTS    = Path(os.environ.get("LIVER_ZONATION_RESULTS_ROOT", ROOT / "results")).expanduser().resolve()
 FIGURES    = RESULTS / "figures"
 TABLES     = RESULTS / "tables"
 REPORTS    = RESULTS / "reports"                       # all human-facing PDFs live here

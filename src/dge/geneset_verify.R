@@ -17,9 +17,12 @@
 suppressMessages({library(limma); library(edgeR)})
 
 root <- getwd()
-P1  <- file.path(root, "data", "processed", "paper1")
+DATA_ROOT <- Sys.getenv("LIVER_ZONATION_DATA_ROOT", unset=file.path(root, "data"))
+RESULTS_ROOT <- Sys.getenv("LIVER_ZONATION_RESULTS_ROOT", unset=file.path(root, "results"))
+P1  <- file.path(DATA_ROOT, "processed", "paper1")
 SIG <- file.path(root, "data", "signatures")
-OUTD<- file.path(root, "results", "tables", "analysis")
+OUTD<- file.path(RESULTS_ROOT, "tables", "analysis")
+dir.create(OUTD, recursive=TRUE, showWarnings=FALSE)
 
 pb <- read.csv(file.path(P1, "pseudobulk_hep_by_donor.csv"), check.names=FALSE)
 rownames(pb) <- pb$gene; pb$gene <- NULL

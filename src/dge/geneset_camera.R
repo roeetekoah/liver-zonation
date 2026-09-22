@@ -8,9 +8,12 @@ suppressMessages({library(limma)})
 
 # run from repo root: Rscript src/dge/geneset_camera.R
 root <- getwd()
-P1  <- file.path(root, "data", "processed", "paper1")
+DATA_ROOT <- Sys.getenv("LIVER_ZONATION_DATA_ROOT", unset=file.path(root, "data"))
+RESULTS_ROOT <- Sys.getenv("LIVER_ZONATION_RESULTS_ROOT", unset=file.path(root, "results"))
+P1  <- file.path(DATA_ROOT, "processed", "paper1")
 SIG <- file.path(root, "data", "signatures")
-OUT <- file.path(root, "results", "tables", "analysis", "geneset_camera.csv")
+OUT <- file.path(RESULTS_ROOT, "tables", "analysis", "geneset_camera.csv")
+dir.create(dirname(OUT), recursive=TRUE, showWarnings=FALSE)
 
 pb <- read.csv(file.path(P1, "pseudobulk_hep_by_donor.csv"), check.names=FALSE)
 rownames(pb) <- pb$gene; pb$gene <- NULL

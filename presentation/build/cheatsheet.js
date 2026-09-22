@@ -7,7 +7,7 @@ const PC="1D4ED8", DUAL="7C3AED", BIOPSY="0D9488", AMBER="C0561B", CONFOUND="BE1
 const SERIF="Georgia";
 const COURSE="Computational Genomics 76553  ·  HUJI  ·  MASLD snRNA-seq hackathon  —  methods & concepts reference";
 
-const p=new pptxgen(); p.layout="LAYOUT_WIDE"; p.author="Roee Tekoah, Shira Gelbstein";
+const p=new pptxgen(); p.layout="LAYOUT_WIDE"; p.author="Roee Tekoah";
 const bleed=(s)=>s.addShape(p.shapes.RECTANGLE,{x:0,y:0,w:13.333,h:7.5,fill:{color:BG},line:{type:"none"}});
 function head(s,kicker,headline){
   s.addShape(p.shapes.RECTANGLE,{x:0.5,y:0.34,w:0.16,h:0.26,fill:{color:ORANGE}});

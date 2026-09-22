@@ -1,19 +1,19 @@
 endpoint,comparison,n1,n2,donor_SD,MDE,mean,MDE_pct_of_mean
-PC-anchor fraction,F0 vs F4,2,4,0.128,0.311,0.3,103
-PC-anchor fraction,F1 vs F4,8,4,0.126,0.216,0.266,81
-PC-anchor fraction,F1 vs F3 (interior),8,12,0.086,0.11,0.224,49
-PP-anchor fraction,F0 vs F4,2,4,0.098,0.237,0.21,113
-PP-anchor fraction,F1 vs F4,8,4,0.098,0.167,0.229,73
-PP-anchor fraction,F1 vs F3 (interior),8,12,0.117,0.15,0.267,56
-dual (>=2 UMI) fraction,F0 vs F4,2,4,0.004,0.01,0.003,303
-dual (>=2 UMI) fraction,F1 vs F4,8,4,0.01,0.017,0.006,287
-dual (>=2 UMI) fraction,F1 vs F3 (interior),8,12,0.009,0.012,0.007,179
-null fraction,F0 vs F4,2,4,0.096,0.234,0.391,60
-null fraction,F1 vs F4,8,4,0.17,0.291,0.403,72
-null fraction,F1 vs F3 (interior),8,12,0.174,0.223,0.405,55
-gradient: zonal-extreme fraction,F0 vs F4,2,4,0.088,0.214,0.477,45
-gradient: zonal-extreme fraction,F1 vs F4,8,4,0.072,0.124,0.474,26
-gradient: zonal-extreme fraction,F1 vs F3 (interior),8,12,0.075,0.096,0.426,23
-within-PC detox burden (UMIs/nuc),F0 vs F4,2,4,1.954,4.739,10.137,47
-within-PC detox burden (UMIs/nuc),F1 vs F4,8,4,1.623,2.782,10.745,26
-within-PC detox burden (UMIs/nuc),F1 vs F3 (interior),8,11,1.896,2.467,10.694,23
+PC-anchor fraction,F0 vs F4,2,4,0.138,0.334,0.301,111
+PC-anchor fraction,F1 vs F4,8,4,0.129,0.221,0.262,84
+PC-anchor fraction,F1 vs F3 (interior),8,12,0.088,0.112,0.221,51
+PP-anchor fraction,F0 vs F4,2,4,0.093,0.227,0.205,111
+PP-anchor fraction,F1 vs F4,8,4,0.096,0.164,0.227,72
+PP-anchor fraction,F1 vs F3 (interior),8,12,0.118,0.15,0.266,56
+dual (>=2 UMI) fraction,F0 vs F4,2,4,0.003,0.007,0.003,257
+dual (>=2 UMI) fraction,F1 vs F4,8,4,0.012,0.021,0.006,337
+dual (>=2 UMI) fraction,F1 vs F3 (interior),8,12,0.011,0.014,0.007,192
+null fraction,F0 vs F4,2,4,0.099,0.241,0.399,60
+null fraction,F1 vs F4,8,4,0.173,0.297,0.412,72
+null fraction,F1 vs F3 (interior),8,12,0.177,0.226,0.411,55
+gradient: zonal-extreme fraction,F0 vs F4,2,4,0.092,0.223,0.462,48
+gradient: zonal-extreme fraction,F1 vs F4,8,4,0.061,0.104,0.466,22
+gradient: zonal-extreme fraction,F1 vs F3 (interior),8,12,0.074,0.095,0.433,22
+within-PC detox burden (UMIs/nuc),F0 vs F4,2,4,1.753,4.252,10.171,42
+within-PC detox burden (UMIs/nuc),F1 vs F4,8,4,1.494,2.562,10.912,23
+within-PC detox burden (UMIs/nuc),F1 vs F3 (interior),8,11,1.763,2.294,10.805,21
