@@ -1,14 +1,16 @@
 <div align="center">
 
-# Liver Zonation: A Computational Reanalysis
+# Liver Zonation
 
-**A Python/R workflow for testing whether a reported liver-zonation signal survives donor-level, acquisition-matched analysis.**
+**A donor-level reanalysis of single-nucleus RNA evidence in chronic liver disease.**
 
-[Evidence](EVIDENCE.md) · [Technical report](reports/Report_complete.pdf) · [Reproduce](REPRODUCING.md)
+Python · R · Statistical inference · Reproducible research
+
+[Evidence map](EVIDENCE.md) · [Technical report](reports/Report_complete.pdf) · [Analysis code](src/README.md) · [Reproduce](REPRODUCING.md)
 
 </div>
 
-![Analysis overview](docs/assets/analysis-overview.svg)
+![Analysis workflow: separate acquisition groups, measure raw RNA at donor level, and verify traceable results. Matched biopsies show no clear progressive collapse; a CYP program declines relatively; endpoint comparisons remain acquisition-confounded.](docs/assets/analysis-overview.svg)
 
 ## The question
 
@@ -18,29 +20,29 @@ The source cohort contains 47 donors and 99,809 nuclei. The disease-stage analys
 
 ## What I built
 
-- A raw-RNA extraction and validation route that distinguishes RNA-assay UMIs from the repository's historical SCT matrix.
-- Deterministic, repeated binomial thinning for fair molecule-detection comparisons across nuclei.
-- Donor-level zonation measurements, sensitivity analyses, differential expression, gene-set tests, and confound checks across Python and R.
-- A clean runner that writes into a fresh output directory, records input hashes and commands, and rejects stale outputs.
-- A technical report and evidence map that connect the biological question to the computational decisions, results, and limitations.
+- **Input validation:** a raw-RNA extraction route that distinguishes RNA-assay UMIs from the repository's historical SCT matrix, so molecule-count analyses use the intended assay.
+- **Controlled measurement:** deterministic, repeated binomial thinning for comparable detection depth, with donor-level zonation measurements and sensitivity analyses.
+- **Statistical analysis:** differential expression, gene-set tests, and acquisition-confound checks across Python and R, with estimates and uncertainty tied to the biological question.
+- **Reproducible execution:** a [verified runner](scripts/run_verified.py) that requires a fresh output directory, records input hashes and commands, and prevents stale outputs from entering a rerun.
+- **Evidence traceability:** an [evidence map](EVIDENCE.md) and [technical report](reports/Report_complete.pdf) connecting each public claim to its methods, result tables, and limitations.
 
-I developed the analysis workflow, carried out the reanalysis, and wrote the report and presentation. The project uses public data and established statistical methods from the cited studies and software packages.
+I developed the workflow, carried out the reanalysis, and wrote the technical report. The project uses public data and established statistical methods from the cited studies and software packages.
 
 ## What the analysis found
 
-### 1. No clear progressive collapse in the matched-biopsy measurements
+### 1 · Matched biopsies show no clear progressive collapse
 
 Pericentral, periportal, strict co-expression, and double-negative measurements are flat or non-monotone across biopsy fibrosis stages. The F1-to-F4 pericentral-fraction difference is **+3.45 percentage points** (90% CI **−13.63 to +20.54**). The pre-specified ±5 and ±10 point equivalence margins are **not** established, so the data do not rule out a modest shift.
 
 These are separate detection metrics, not a four-way partition: permissive PC/PP gates and the stricter co-expression gate leave a **weak-dual remainder of 9.41%** of retained biopsy nuclei. The public tables now show that remainder explicitly.
 
-### 2. A relative CYP detoxification program declines
+### 2 · A CYP detoxification program declines relatively
 
 The 13-gene CYP set trends downward in both a competitive test (CAMERA FDR **2.32×10⁻⁶**) and a self-contained rotation test (mROAST FDR **0.015**). A separate five-gene, within-pericentral measure falls from **11.86 to 9.02 UMIs per nucleus** from F1 to F4; the donor-level fibrosis trend is **Spearman ρ = −0.461, p = 0.004**.
 
 This is a relative RNA-program measurement under a fixed sequencing budget. It does not establish absolute loss of detoxification capacity, spatial reorganization, or a causal mechanism. The 13-gene set and five-gene per-cell measure are related checks, not identical replications.
 
-### 3. Endpoint comparisons are acquisition-confounded
+### 3 · Endpoint comparisons are acquisition-confounded
 
 Healthy and end-stage samples were acquired differently from the needle-biopsy disease series. The endpoint groups also carry a broad stress signature across cell lineages. This makes the pooled healthy-to-end-stage trajectory unsuitable for isolating a disease-stage effect from tissue procurement.
 
@@ -67,7 +69,9 @@ python scripts/run_verified.py \
   --output-root /path/to/new-empty-output
 ```
 
-The runner validates the raw-count extraction, rebuilds the donor metrics, precision/equivalence table, genome-wide screens, Plan A model, CAMERA/mROAST checks, and within-PC measure. It writes logs and a hash manifest to the new output directory. See [REPRODUCING.md](REPRODUCING.md) for data preparation, tested versions, and the distinction between a results rerun and extraction from the original Seurat object.
+The runner validates the raw-count extraction, rebuilds the donor metrics, precision/equivalence table, genome-wide screens, Plan A model, CAMERA/mROAST checks, and within-PC measure. It writes logs and a hash manifest to the new output directory.
+
+See [REPRODUCING.md](REPRODUCING.md) for data preparation, tested versions, and the distinction between a results rerun and extraction from the original Seurat object. The bounded route **does not rerun decontX**; its saved output concerns per-gene Plan A only, not the CYP gene-set trend.
 
 ## Scope
 
