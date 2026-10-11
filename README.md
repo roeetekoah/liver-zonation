@@ -1,8 +1,8 @@
 <div align="center">
 
-# Liver Zonation
+# LiZARD — Liver Zonation Analysis, Robustness & Donor effects.
 
-**A donor-level reanalysis of single-nucleus RNA evidence in chronic liver disease.**
+**A donor-aware computational reanalysis of liver zonation in chronic disease.**
 
 Python · R · Statistical inference · Reproducible research
 
@@ -10,7 +10,7 @@ Python · R · Statistical inference · Reproducible research
 
 </div>
 
-![Analysis workflow: separate acquisition groups, measure raw RNA at donor level, and verify traceable results. Matched biopsies show no clear progressive collapse; a CYP program declines relatively; endpoint comparisons remain acquisition-confounded.](docs/assets/analysis-overview.svg)
+![LiZARD analysis workflow: separate acquisition groups, measure raw RNA at donor level, and verify traceable results. Matched biopsies show no clear progressive collapse; a CYP program declines relatively; endpoint comparisons remain acquisition-confounded.](docs/assets/analysis-overview.svg)
 
 ## The question
 

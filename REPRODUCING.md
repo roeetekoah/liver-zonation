@@ -1,4 +1,4 @@
-# Reproducing the selected analysis route
+# Reproducing LiZARD
 
 The repository supports two levels of review:
 

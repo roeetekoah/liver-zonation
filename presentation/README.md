@@ -1,4 +1,4 @@
-# Presentation materials
+# LiZARD analytical figures
 
 This directory preserves the course presentation, its sources, and generated figures.
 

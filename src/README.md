@@ -1,4 +1,4 @@
-# src/ — code, grouped by analysis leg
+# LiZARD analysis suite
 
 All current analysis code. Scripts are grouped into subfolders that map onto the project's **findings**
 (see [`../findings/README.md`](../findings/README.md), audited in [`../CLAIMS_LEDGER.md`](../CLAIMS_LEDGER.md)).

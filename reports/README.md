@@ -1,4 +1,4 @@
-# Reports
+# LiZARD technical report
 
 [Report_complete.pdf](Report_complete.pdf) is the current reviewed technical report and the only report linked from the portfolio-facing README.
 

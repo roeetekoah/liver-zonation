@@ -1,4 +1,4 @@
-# Current evidence map
+# LiZARD evidence map
 
 This page is the current public claim-to-evidence index. Historical investigation notes remain in `FINDINGS.md` and `CLAIMS_LEDGER.md`, but they do not override the scoped statements below.
 

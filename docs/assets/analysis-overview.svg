@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="570" viewBox="0 0 1200 570" role="img" aria-labelledby="title desc">
-  <title id="title">Liver zonation: a donor-level computational reanalysis</title>
-  <desc id="desc">From 47 donors and 99,809 nuclei, the analysis separates 38 matched biopsy donors, measures raw RNA with eight deterministic thinning draws, and produces traceable results. The matched measurements show no clear progressive collapse but do not establish equivalence at plus or minus 5 or 10 percentage points. A CYP program declines relatively. Endpoint comparisons remain acquisition-confounded.</desc>
+  <title id="title">LiZARD — Liver Zonation Analysis, Robustness &amp; Donor effects.</title>
+  <desc id="desc">A donor-aware computational reanalysis of liver zonation in chronic disease. From 47 donors and 99,809 nuclei, the analysis separates 38 matched biopsy donors, measures raw RNA with eight deterministic thinning draws, and produces traceable results. The matched measurements show no clear progressive collapse but do not establish equivalence at plus or minus 5 or 10 percentage points. A CYP program declines relatively. Endpoint comparisons remain acquisition-confounded.</desc>
   <defs>
     <marker id="arrow" markerWidth="6" markerHeight="8" refX="5" refY="4" orient="auto"><path d="M0,0 L6,4 L0,8" fill="none" stroke="#7897a5" stroke-width="1.4"/></marker>
     <style>
       text{font-family:'Segoe UI',Arial,sans-serif}
       .eyebrow{font-size:14px;font-weight:600;letter-spacing:1.8px;fill:#9cd8d7}
-      .title{font-size:33px;font-weight:700;fill:#f4f8fa}
+      .title{font-size:28px;font-weight:700;fill:#f4f8fa}
       .subtitle{font-size:19px;fill:#b6cbd5}
       .step{font-size:13px;font-weight:600;letter-spacing:1.5px;fill:#9cb8c5}
       .heading{font-size:25px;font-weight:700;fill:#f4f8fa}
@@ -17,9 +17,9 @@
   </defs>
 
   <rect width="1200" height="570" rx="20" fill="#10232d"/>
-  <text x="48" y="44" class="eyebrow">COMPUTATIONAL REANALYSIS</text>
-  <text x="48" y="88" class="title">Liver zonation, tested at the donor level</text>
-  <text x="48" y="122" class="subtitle">Match acquisition. Control detection depth. Quantify uncertainty.</text>
+  <text x="48" y="44" class="eyebrow">LiZARD</text>
+  <text x="48" y="88" class="title">Liver Zonation Analysis, Robustness &amp; Donor effects.</text>
+  <text x="48" y="122" class="subtitle">A donor-aware computational reanalysis of liver zonation in chronic disease.</text>
 
   <!-- Workflow: equal-width cards keep the reading order clear at GitHub width. -->
   <rect x="48" y="157" width="344" height="151" rx="12" fill="#193642" stroke="#315462"/>

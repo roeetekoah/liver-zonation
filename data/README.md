@@ -1,4 +1,4 @@
-# data/
+# LiZARD data provenance and reuse
 
 Local data store. **Nothing in `raw/` or `processed/` is committed** (multi-GB and
 copyrighted) — each machine downloads `raw/` and regenerates `processed/` locally.
